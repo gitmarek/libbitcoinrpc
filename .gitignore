@@ -3,6 +3,8 @@ build
 tmp
 .lib
 
+*.orig
+
 # https://github.com/github/gitignore
 
 # Object files
