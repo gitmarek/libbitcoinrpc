@@ -46,7 +46,7 @@ lib: $(LIBDIR)/lib$(NAME).so
 
 $(LIBDIR)/lib$(NAME).so: $(LIBDIR)/lib$(NAME).so.$(VERSION)
 	ldconfig -v -n $(LIBDIR)
-	ln -s lib$(NAME).so.$(MAJOR) $(LIBDIR)/lib$(NAME).so
+	ln -fs lib$(NAME).so.$(MAJOR) $(LIBDIR)/lib$(NAME).so
 
 $(LIBDIR)/lib$(NAME).so.$(VERSION): $(SRCDIR)/$(NAME).o
 	$(CC) -shared -Wl,-soname,lib$(NAME).so.$(MAJOR) \
