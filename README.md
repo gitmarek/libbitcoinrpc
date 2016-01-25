@@ -40,9 +40,9 @@ To use the library it is enough to include the header file:
 
     #include <bitcoinrpc.h>
 
-in your source code and provide following linker flags during compilation:
+in your source code and provide the following linker flag during compilation:
 
-    -lbitcoinrpc -luuid -ljansson -lcurl
+    -lbitcoinrpc
 
 For further information, see documentation in [doc/](./doc/README.md)
 and the header file: `src/bitcoinrpc.h`.
