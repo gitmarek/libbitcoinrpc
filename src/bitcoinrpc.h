@@ -62,4 +62,16 @@ typedef enum {
 } BITCOINRPCEcode;
 
 
+/* RPC methods */
+typedef enum {
+
+  BITCOINRPC_METHOD_GETINFO,            /* "getinfo" */
+  BITCOINRPC_METHOD_GETNETWORKINFO,     /* "getnetworkinfo" */
+  BITCOINRPC_METHOD_GETWALLETINFO,      /* "getwalletinfo" */
+  BITCOINRPC_METHOD_HELP
+
+} BITCOINRPC_METHOD;
+
+
+
 #endif  /* BITCOINRPC_H_51fe7847_aafe_4e78_9823_eff094a30775 */
