@@ -27,6 +27,7 @@ VERSION := $(VMAJOR).$(VMINOR).$(VPATCH)
 
 NAME := bitcoinrpc
 SRCDIR := src
+SRCFILES := $(SRCDIR)/*.c
 LIBDIR := .lib
 BINDIR := bin
 
@@ -49,17 +50,22 @@ $(LIBDIR)/lib$(NAME).so: $(LIBDIR)/lib$(NAME).so.$(VERSION)
 	ln -fs lib$(NAME).so.$(MAJOR) $(LIBDIR)/lib$(NAME).so
 
 $(LIBDIR)/lib$(NAME).so.$(VERSION): $(SRCDIR)/$(NAME).o
-	$(CC) -shared -Wl,-soname,lib$(NAME).so.$(MAJOR) \
-	$^ -o $@ \
+	$(CC) $(CFLAGS) -shared -Wl,-soname,lib$(NAME).so.$(MAJOR) \
+	$(SRCFILES) -o $@ \
 	-Wl,--copy-dt-needed-entries $(LDFLAGS)
 
+test: lib $(NAME)_test
 
-test: $(NAME)_test
-
-$(NAME)_test: lib
+$(NAME)_test: $(SRCDIR)/test/$(NAME)_test.o
 	$(CC) $(CFLAGS) $(SRCDIR)/test/$(NAME)_test.c -o $(BINDIR)/$@ \
 		-l$(NAME) -L$(LIBDIR) -I $(SRCDIR) \
 		-Wl,-rpath=$(LIBDIR)
+
+$(SRCDIR)/test/$(NAME)_test.o:
+	$(CC) $(CFLAGS) $(SRCDIR)/test/$(NAME)_test.c -c -o $@ \
+		-l$(NAME) -L$(LIBDIR) -I $(SRCDIR) \
+		-Wl,-rpath=$(LIBDIR)
+
 
 .PHONY: clean
 clean:
