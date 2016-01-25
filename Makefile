@@ -35,6 +35,8 @@ LDFLAGS := -luuid -ljansson -lcurl
 CFLAGS := -fPIC -O3 -g -Wall -Werror -std=c99
 CC := gcc
 
+override CFLAGS := $(CFLAGS) -D VERSION=\"$(VERSION)\"
+
 all: prep lib test
 
 prep:
@@ -55,7 +57,7 @@ $(LIBDIR)/lib$(NAME).so.$(VERSION): $(SRCDIR)/$(NAME).o
 test: $(NAME)_test
 
 $(NAME)_test: lib
-	$(CC) $(SRCDIR)/test/$(NAME)_test.c -o $(BINDIR)/$@ \
+	$(CC) $(CFLAGS) $(SRCDIR)/test/$(NAME)_test.c -o $(BINDIR)/$@ \
 		-l$(NAME) -L$(LIBDIR) -I $(SRCDIR) \
 		-Wl,-rpath=$(LIBDIR)
 
