@@ -36,8 +36,17 @@ command:
 (not implemented yet)
 
 ## Usage
-See documentation in [doc/](./doc/README.md) and the header file:
-`bitcoinrpc.h`.  Please notice that the code is in the beta stage.
+To use the library it is enough to include the header file:
+
+    #include <bitcoinrpc.h>
+
+in your source code and provide following linker flags during compilation:
+
+    -lbitcoinrpc -luuid -ljansson -lcurl
+
+For further information, see documentation in [doc/](./doc/README.md)
+and the header file: `src/bitcoinrpc.h`.
+Please notice that the code is in the beta stage.
 
 
 # License
