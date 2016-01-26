@@ -40,12 +40,19 @@ struct bitcoinrpc_cl
   char pass[BITCOINRPC_PARAM_MAXLEN];
   char addr[BITCOINRPC_PARAM_MAXLEN];
   unsigned int port;
+
   char url[BITCOINRPC_URL_LEN];
 
   char tmpstr[BITCOINRPC_PARAM_MAXLEN]; /* very internal */
   unsigned int tmpstr_len;
 
   CURL *curl;
+
+  /*
+  This is a legacy pointer. You can point to an auxilliary structure,
+  if you want not to touch this one (e.g. not to break ABI).
+  */
+  void *legacy_ptr_4f1af859_c918_484a_b3f6_9fe51235a3a0;
 };
 
 

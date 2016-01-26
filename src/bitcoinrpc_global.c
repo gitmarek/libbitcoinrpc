@@ -31,6 +31,12 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 struct bitcoinrpc_global_data_s_
 {
   char* str;
+
+  /*
+  This is a legacy pointer. You can point to an auxilliary structure,
+  if you want not to touch this one (e.g. not to break ABI).
+  */
+  void *legacy_ptr_4f1af859_c918_484a_b3f6_9fe51235a3a0;
 };
 
 bitcoinrpc_global_data_t *bitcoinrpc_global_data_;
