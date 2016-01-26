@@ -1,5 +1,5 @@
 # The MIT License (MIT)
-# Copyright (c) 2016 Marek Miller and Andrea Bernardo Ciddio (Code::Chunks)
+# Copyright (c) 2016 Andrea Bernardo Ciddio (Code::Chunks) and Marek Miller
 #
 # Permission is hereby granted, free of charge, to any person obtaining
 # a copy of this software and associated documentation files (the
@@ -20,10 +20,9 @@
 # OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 # WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-VMAJOR := 0
-VMINOR := 0
-VPATCH := 0
-VERSION := $(VMAJOR).$(VMINOR).$(VPATCH)
+MAJOR := 0
+MINOR := 0
+VERSION := $(MAJOR).$(MINOR)
 
 NAME := bitcoinrpc
 SRCDIR := src
