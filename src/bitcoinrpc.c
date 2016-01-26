@@ -25,36 +25,3 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <stdio.h>
 
 #include "bitcoinrpc.h"
-
-
-/*
-Names of Bitcoin RPC methods and how to get them from BITCOINRPC_METHOD codes.
-*/
-struct BITCOINRPC_METHOD_struct_
-{
-    BITCOINRPC_METHOD m;
-    char *str;
-    unsigned char requires_params;
-};
-
-#define BITCOINRPC_METHOD_names_len_ 4   /* remember to update it! */
-
-const struct BITCOINRPC_METHOD_struct_
-BITCOINRPC_METHOD_names_[BITCOINRPC_METHOD_names_len_] =
-{
-  { BITCOINRPC_METHOD_GETINFO,            "getinfo",             0 },
-  { BITCOINRPC_METHOD_GETNETWORKINFO,     "getnetworkinfo",      0 },
-  { BITCOINRPC_METHOD_GETWALLETINFO,      "getwalletinfo",       0 },
-  { BITCOINRPC_METHOD_HELP,               "help",                0 },
-};
-
-const struct BITCOINRPC_METHOD_struct_ *
-bitcoinrpc_method_st_ (const BITCOINRPC_METHOD m)
-{
-  for (int i = 0; i < BITCOINRPC_METHOD_names_len_; i++)
-  {
-    if (BITCOINRPC_METHOD_names_[i].m == m)
-      return &BITCOINRPC_METHOD_names_[i];
-  }
-  return NULL;
-}

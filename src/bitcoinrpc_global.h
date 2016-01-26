@@ -31,7 +31,6 @@ Global data internal to library (not accesed by a user).
 
 #include <stdlib.h>
 
-
 struct bitcoinrpc_global_data_s_;
 
 typedef

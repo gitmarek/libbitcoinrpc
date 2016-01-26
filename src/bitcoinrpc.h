@@ -26,6 +26,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #define BITCOINRPC_H_51fe7847_aafe_4e78_9823_eff094a30775
 
 #include <stdlib.h>
+#include <jansson.h>
 
 /* Name and version */
 #define BITCOINRPC_LIBNAME "bitcoinrpc"
@@ -56,6 +57,7 @@ Maximal length of the server url:
 typedef enum {
 
   BITCOINRPCE_OK,                   /* Success */
+  BITCOINRPCE_ERR,                  /* unspecific error */
   BITCOINRPCE_ALLOC,                /* cannot allocate more memory */
   BITCOINRPCE_BUG,                  /* a bug in the library (please report) */
   BITCOINRPCE_CON,                  /* connection error */
@@ -81,6 +83,7 @@ struct bitcoinrpc_err
 {
   BITCOINRPCEcode code;
   char msg[BITCOINRPC_ERRMSG_MAXLEN];
+
 };
 
 typedef
@@ -120,7 +123,6 @@ bitcoinrpc_global_set_freefunc ( void (* const f) (void *ptr) );
 
 
 /* -------------bitcoinrpc_cl --------------------- */
-/* The handle. */
 struct bitcoinrpc_cl;
 
 typedef
@@ -150,6 +152,59 @@ bitcoinrpc_cl_init_params ( const char* user, const char* pass,
 /* Free the handle. */
 BITCOINRPCEcode
 bitcoinrpc_cl_free (bitcoinrpc_cl_t *cl);
+
+
+/* ------------- bitcoinrpc_method --------------------- */
+struct bitcoinrpc_method;
+
+typedef
+  struct bitcoinrpc_method
+bitcoinrpc_method_t;
+
+/* Initialise a new method without params */
+bitcoinrpc_method_t *
+bitcoinrpc_method_init (const BITCOINRPC_METHOD m,
+                        bitcoinrpc_err_t *e);
+
+
+/*
+The argument json_t params to functions below is always copied
+to library internals and the original pointer is no longer needed
+after the function returns.  It is the obligation of the user to free
+the original pointer by decreasing its reference count (see jansson
+library documentation).
+*/
+
+/*
+Initialise a new method with json_t array as params.
+If params == NULL, this is the same as bitcoinrpc_method_init.
+ */
+bitcoinrpc_method_t *
+bitcoinrpc_method_init_params (const BITCOINRPC_METHOD m,
+                              json_t * const params, bitcoinrpc_err_t *e);
+
+
+/* Set a new json object as method parameters */
+BITCOINRPCEcode
+bitcoinrpc_method_set_params (bitcoinrpc_method_t *method, json_t *params);
+
+/* Update method parameters with new ones, overwrite existing keys. */
+BITCOINRPCEcode
+bitcoinrpc_method_update_params (bitcoinrpc_method_t *method, json_t *params);
+
+/* Only the values of existing keys are updated */
+BITCOINRPCEcode
+bitcoinrpc_method_update_existing_params (bitcoinrpc_method_t *method, json_t *params);
+
+/* Get a deepcopy of the method's parameters and store it in params */
+BITCOINRPCEcode
+bitcoinrpc_method_get_params (bitcoinrpc_method_t *method, json_t **params);
+
+/* Destroy the method */
+BITCOINRPCEcode
+bitcoinrpc_method_free (bitcoinrpc_method_t *method);
+
+
 
 
 
