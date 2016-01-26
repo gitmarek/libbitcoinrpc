@@ -62,5 +62,11 @@ The memory freeing function used by the library
 extern void (* bitcoinrpc_global_freefunc) (void *ptr);
 
 
+BITCOINRPCEcode
+bitcoinrpc_err_set_(bitcoinrpc_err_t *e, BITCOINRPCEcode code, char* msg);
+
+#define bitcoinrpc_RETURN return bitcoinrpc_err_set_
+#define bitcoinrpc_RETURN_OK return bitcoinrpc_err_set_(e, BITCOINRPCE_OK, NULL)
+#define bitcoinrpc_RETURN_ALLOC return bitcoinrpc_err_set_(e, BITCOINRPCE_ALLOC, "cannot allocate memory")
 
 #endif /* BITCOINRPC_GLOBAL_H_5fe378f8_8280_4f1c_a3c3_7c84da05eff5 */

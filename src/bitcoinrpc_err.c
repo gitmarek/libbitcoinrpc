@@ -22,5 +22,20 @@ OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
+#include <string.h>
+
 #include "bitcoinrpc.h"
 #include "bitcoinrpc_global.h"
+
+
+BITCOINRPCEcode
+bitcoinrpc_err_set_(bitcoinrpc_err_t *e, BITCOINRPCEcode code, char* msg)
+{
+  if (e != NULL)
+  {
+    e->code = code;
+    if (msg != NULL)
+      strncpy(e->msg, msg, BITCOINRPC_ERRMSG_MAXLEN);  
+  }
+  return code;
+}

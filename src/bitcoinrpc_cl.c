@@ -50,30 +50,34 @@ struct bitcoinrpc_cl
 
   /*
   This is a legacy pointer. You can point to an auxilliary structure,
-  if you want not to touch this one (e.g. not to break ABI).
+  if you prefer not to touch this one (e.g. not to break ABI).
   */
   void *legacy_ptr_4f1af859_c918_484a_b3f6_9fe51235a3a0;
 };
 
 
 bitcoinrpc_cl_t*
-bitcoinrpc_cl_init (void)
+bitcoinrpc_cl_init (bitcoinrpc_err_t *e)
 {
   return bitcoinrpc_cl_init_params (BITCOINRPC_USER_DEFAULT,
                                 BITCOINRPC_PASS_DEFAULT,
                                 BITCOINRPC_ADDR_DEFAULT,
-                                BITCOINRPC_PORT_DEFAULT);
+                                BITCOINRPC_PORT_DEFAULT, e);
 }
 
 
 bitcoinrpc_cl_t*
 bitcoinrpc_cl_init_params ( const char* user, const char* pass,
-                            const char* addr, const unsigned int port)
+                            const char* addr, const unsigned int port,
+                            bitcoinrpc_err_t *e)
 {
 
   bitcoinrpc_cl_t *cl = malloc (sizeof * cl);
   if (NULL == cl)
+  {
+    bitcoinrpc_err_set_(e, BITCOINRPCE_ALLOC, "cannot allocate memory");
     return NULL;
+  }
 
   memset (cl->tmpstr, 0, BITCOINRPC_PARAM_MAXLEN);
 
@@ -88,23 +92,35 @@ bitcoinrpc_cl_init_params ( const char* user, const char* pass,
   uuid_unparse_lower (cl->uuid, cl->uuid_str);
 
   if (NULL == user)
+  {
+    bitcoinrpc_err_set_(e, BITCOINRPCE_PARAM, "user name set to NULL");
     return NULL;
+  }
   /* make room for terminating '\0' */
   strncpy(cl->user, user, BITCOINRPC_PARAM_MAXLEN - 1);
 
   if (NULL == pass)
+  {
+    bitcoinrpc_err_set_(e, BITCOINRPCE_PARAM, "password set to NULL");
     return NULL;
+  }
   strncpy(cl->pass, pass, BITCOINRPC_PARAM_MAXLEN - 1);
 
   if (NULL == addr)
+  {
+    bitcoinrpc_err_set_(e, BITCOINRPCE_PARAM, "addres set to NULL");
     return NULL;
+  }
   strncpy(cl->addr, addr, BITCOINRPC_PARAM_MAXLEN - 1);
 
   cl->port = port;
 
   cl->curl = curl_easy_init();
   if (NULL == cl->curl)
+  {
+    bitcoinrpc_err_set_(e, BITCOINRPCE_CURLE, "curl_easy_init() returned NULL");
     return NULL;
+  }
 
   return cl;
 }

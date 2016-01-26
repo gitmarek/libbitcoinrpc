@@ -76,13 +76,25 @@ typedef enum {
 
 } BITCOINRPC_METHOD;
 
-/* -------------bitcoinrpc_global --------------------- */
+/* ---------------- bitcoinrpc_err --------------------- */
+struct bitcoinrpc_err
+{
+  BITCOINRPCEcode code;
+  char msg[BITCOINRPC_ERRMSG_MAXLEN];
+};
+
+typedef
+  struct bitcoinrpc_err
+bitcoinrpc_err_t;
+
+
+/* --------------- bitcoinrpc_global ------------------- */
 /*
 The global initialisation function.
 Please call this function from your main thread before any other call.
 */
 BITCOINRPCEcode
-bitcoinrpc_global_init (void);
+bitcoinrpc_global_init (bitcoinrpc_err_t *e);
 
 /*
 The global cleanup function.
@@ -120,7 +132,7 @@ Initialise a new RPC client with default values: BITCOINRPC_*_DEFAULT.
 Return NULL in case of error.
 */
 bitcoinrpc_cl_t*
-bitcoinrpc_cl_init (void);
+bitcoinrpc_cl_init (bitcoinrpc_err_t *e);
 
 
 /*
@@ -131,12 +143,14 @@ BITCOINRPC_PARAM_MAXLEN chars are copied to store a parameter.
 */
 bitcoinrpc_cl_t*
 bitcoinrpc_cl_init_params ( const char* user, const char* pass,
-                            const char* addr, const unsigned int port);
+                            const char* addr, const unsigned int port,
+                            bitcoinrpc_err_t *e);
 
 
 /* Free the handle. */
 BITCOINRPCEcode
 bitcoinrpc_cl_free (bitcoinrpc_cl_t *cl);
+
 
 
 #endif  /* BITCOINRPC_H_51fe7847_aafe_4e78_9823_eff094a30775 */

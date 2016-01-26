@@ -206,16 +206,21 @@ main (int argc, char **argv)
 
   fprintf(stderr, "%s-%s starting...\n", PROGNAME, BITCOINRPC_VERSION);
 
-  if (bitcoinrpc_global_init() != BITCOINRPCE_OK)
+  bitcoinrpc_err_t e;
+  if (bitcoinrpc_global_init(&e) != BITCOINRPCE_OK)
     abort();
 
   fprintf (stderr, "Initialising the RPC client and connecting to: "
                    "http://%s:%s@%s:%d\n", o.user, o.pass, o.addr, o.port);
-  bitcoinrpc_cl_t *cl = bitcoinrpc_cl_init_params(
-    o.user, o.pass, o.addr, o.port);
+
+  bitcoinrpc_cl_t *cl = bitcoinrpc_cl_init_params(o.user, o.pass,
+                                                  o.addr, o.port,
+                                                  &e);
+
   if (NULL == cl)
   {
-    fprintf(stderr, "error: Cannot initialise a new client.\n");
+    fprintf(stderr, "error: %s\n", e.msg);
+    exit(EXIT_FAILURE);
   }
 
   fprintf(stderr, "Free the resources... ");
