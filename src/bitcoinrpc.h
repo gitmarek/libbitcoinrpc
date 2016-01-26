@@ -72,7 +72,7 @@ typedef enum {
 
 } BITCOINRPC_METHOD;
 
-
+/* -------------bitcoinrpc_global --------------------- */
 /*
 The global initialisation function.
 Please call this function from your main thread before any other call.
@@ -87,6 +87,16 @@ internal garbage.
 */
 BITCOINRPCEcode
 bitcoinrpc_global_cleanup (void);
+
+
+/* -------------bitcoinrpc_cl --------------------- */
+/* The handle. */
+struct bitcoinrpc_cl;
+
+typedef
+  struct bitcoinrpc_cl
+bitcoinrpc_cl_t;
+
 
 
 #endif  /* BITCOINRPC_H_51fe7847_aafe_4e78_9823_eff094a30775 */
