@@ -72,7 +72,7 @@ bitcoinrpc_cl_init_params ( const char* user, const char* pass,
                             bitcoinrpc_err_t *e)
 {
 
-  bitcoinrpc_cl_t *cl = malloc (sizeof * cl);
+  bitcoinrpc_cl_t *cl = bitcoinrpc_global_allocfunc (sizeof * cl);
   if (NULL == cl)
   {
     bitcoinrpc_err_set_(e, BITCOINRPCE_ALLOC, "cannot allocate memory");
@@ -131,6 +131,7 @@ bitcoinrpc_cl_free (bitcoinrpc_cl_t *cl)
 {
 
   curl_easy_cleanup (cl->curl);
+  bitcoinrpc_global_freefunc(cl);
   cl->curl = NULL;
 
   return BITCOINRPCE_OK;
