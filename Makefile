@@ -35,37 +35,53 @@ LDFLAGS := -luuid -ljansson -lcurl
 CFLAGS := -fPIC -O3 -g -Wall -Werror -std=c99
 CC := gcc
 
-override CFLAGS := $(CFLAGS) -D VERSION=\"$(VERSION)\"
+# -----------------------------------------------------------------------------
+CFLAGS += -D VERSION=\"$(VERSION)\"
+
+SHELL := /bin/sh
+SRCFILES = $(shell find $(SRCDIR) -maxdepth 1 -iname '*.c')
+OBJFILES = $(shell echo $(SRCFILES) | sed 's/\.c/\.o/g')
+
 
 all: prep lib test
 
 prep:
+	@echo
 	@mkdir -p $(LIBDIR) $(BINDIR)
 
 lib: $(LIBDIR)/lib$(NAME).so
 
 $(LIBDIR)/lib$(NAME).so: $(LIBDIR)/lib$(NAME).so.$(VERSION)
+	@echo
 	ldconfig -v -n $(LIBDIR)
 	ln -fs lib$(NAME).so.$(MAJOR) $(LIBDIR)/lib$(NAME).so
 
-$(LIBDIR)/lib$(NAME).so.$(VERSION): $(SRCDIR)/$(NAME).o
+$(LIBDIR)/lib$(NAME).so.$(VERSION): $(OBJFILES)
+	@echo
 	$(CC) $(CFLAGS) -shared -Wl,-soname,lib$(NAME).so.$(MAJOR) \
-	$(SRCFILES) -o $@ \
+	$(OBJFILES) \
+	-o $@ \
 	-Wl,--copy-dt-needed-entries $(LDFLAGS)
+
+$(OBJFILES):
+	$(CC) $(CFLAGS) -c $(@:.o=.c) \
+	-o $@
+
 
 # --------- test ----------------
 test: lib $(TESTNAME)
 
 $(TESTNAME): $(TESTSRCDIR)/$(TESTNAME).o
+	@echo
 	$(CC) $(CFLAGS) $(TESTSRCDIR)/$(TESTNAME).c -o $(BINDIR)/$@ \
-		-l$(NAME) -L$(LIBDIR) -I $(SRCDIR) \
-		-Wl,-rpath=$(LIBDIR)
+		-l$(NAME) -L$(LIBDIR) -I $(SRCDIR) -Wl,-rpath=$(LIBDIR)
 
 $(TESTSRCDIR)/$(TESTNAME).o:
 	$(CC) $(CFLAGS) $(TESTSRCDIR)/$(TESTNAME).c -c -o $@ \
-		-l$(NAME) -L$(LIBDIR) -I $(SRCDIR) \
-		-Wl,-rpath=$(LIBDIR)
-# --------------------------------
+		-l$(NAME) -L$(LIBDIR) -I $(SRCDIR) -Wl,-rpath=$(LIBDIR)
+
+
+# ---------- clean -----------------
 
 .PHONY: clean
 clean:
