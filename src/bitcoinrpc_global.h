@@ -22,37 +22,21 @@ OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
-#include <stdlib.h>
-#include <curl/curl.h>
-#include "bitcoinrpc.h"
-#include "bitcoinrpc_global.h"
+/*
+Global data internal to library (not accesed by a user).
+*/
 
-/* so far useless */
-struct bitcoinrpc_global_data_s_
-{
-  char* str;
-};
-
-bitcoinrpc_global_data_t *bitcoinrpc_global_data_;
-
-BITCOINRPCEcode
-bitcoinrpc_global_init (void)
-{
-  bitcoinrpc_global_data_ = malloc (sizeof *bitcoinrpc_global_data_);
-  if (NULL == bitcoinrpc_global_data_)
-    return BITCOINRPCE_ALLOC;
-
-  return ( curl_global_init(CURL_GLOBAL_ALL) == CURLE_OK )?
-          BITCOINRPCE_OK : BITCOINRPCE_CURLE;
-}
+#ifndef BITCOINRPC_GLOBAL_H_5fe378f8_8280_4f1c_a3c3_7c84da05eff5
+#define BITCOINRPC_GLOBAL_H_5fe378f8_8280_4f1c_a3c3_7c84da05eff5
 
 
-BITCOINRPCEcode
-bitcoinrpc_global_cleanup (void)
-{
-  free(bitcoinrpc_global_data_);
-  bitcoinrpc_global_data_ = NULL;
-  curl_global_cleanup();
+struct bitcoinrpc_global_data_s_;
 
-  return BITCOINRPCE_OK;
-}
+typedef
+  struct bitcoinrpc_global_data_s_
+bitcoinrpc_global_data_t;
+
+extern bitcoinrpc_global_data_t *bitcoinrpc_global_data_;
+
+
+#endif /* BITCOINRPC_GLOBAL_H_5fe378f8_8280_4f1c_a3c3_7c84da05eff5 */

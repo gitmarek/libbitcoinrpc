@@ -27,7 +27,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 /* Name and version */
 #define BITCOINRPC_LIBNAME "bitcoinrpc"
-#define BITCOINRPC_VERSION VERSION  /* from Makefile */
+#define BITCOINRPC_VERSION "0.0.0"
 
 /* Defalut port and address a RPC client connects to */
 #define BITCOINRPC_ADDR_DEFAULT "127.0.0.1"
@@ -72,6 +72,21 @@ typedef enum {
 
 } BITCOINRPC_METHOD;
 
+
+/*
+The global initialisation function.
+Please call this function from your main thread before any other call.
+*/
+BITCOINRPCEcode
+bitcoinrpc_global_init (void);
+
+/*
+The global cleanup function.
+Please call this function at the end of your program to collect library's
+internal garbage.
+*/
+BITCOINRPCEcode
+bitcoinrpc_global_cleanup (void);
 
 
 #endif  /* BITCOINRPC_H_51fe7847_aafe_4e78_9823_eff094a30775 */

@@ -53,7 +53,7 @@ print_help_page (void)
 The default output is quite verbose, but everything goes to stderr.\n\
 If you want a quiet work, you can safely streamline stderr to /dev/null.\n\
 \n\
-Written by Marek Miller and others, see AUTHORS file.\n\
+Written by Marek Miller and others, see CREDITS file.\n\
 Report bugs to marek.l.miller@gmail.com\n\
 \n\
 License: MIT (see https://opensource.org/licenses/MIT).\n\
