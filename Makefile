@@ -26,10 +26,10 @@ VERSION := $(MAJOR).$(MINOR)
 
 NAME := bitcoinrpc
 SRCDIR := src
-SRCFILES := $(SRCDIR)/*.c
+TESTNAME := $(NAME)_test
+TESTSRCDIR := $(SRCDIR)/test
 LIBDIR := .lib
 BINDIR := bin
-
 LDFLAGS := -luuid -ljansson -lcurl
 
 CFLAGS := -fPIC -O3 -g -Wall -Werror -std=c99
@@ -53,18 +53,19 @@ $(LIBDIR)/lib$(NAME).so.$(VERSION): $(SRCDIR)/$(NAME).o
 	$(SRCFILES) -o $@ \
 	-Wl,--copy-dt-needed-entries $(LDFLAGS)
 
-test: lib $(NAME)_test
+# --------- test ----------------
+test: lib $(TESTNAME)
 
-$(NAME)_test: $(SRCDIR)/test/$(NAME)_test.o
-	$(CC) $(CFLAGS) $(SRCDIR)/test/$(NAME)_test.c -o $(BINDIR)/$@ \
+$(TESTNAME): $(TESTSRCDIR)/$(TESTNAME).o
+	$(CC) $(CFLAGS) $(TESTSRCDIR)/$(TESTNAME).c -o $(BINDIR)/$@ \
 		-l$(NAME) -L$(LIBDIR) -I $(SRCDIR) \
 		-Wl,-rpath=$(LIBDIR)
 
-$(SRCDIR)/test/$(NAME)_test.o:
-	$(CC) $(CFLAGS) $(SRCDIR)/test/$(NAME)_test.c -c -o $@ \
+$(TESTSRCDIR)/$(TESTNAME).o:
+	$(CC) $(CFLAGS) $(TESTSRCDIR)/$(TESTNAME).c -c -o $@ \
 		-l$(NAME) -L$(LIBDIR) -I $(SRCDIR) \
 		-Wl,-rpath=$(LIBDIR)
-
+# --------------------------------
 
 .PHONY: clean
 clean:
