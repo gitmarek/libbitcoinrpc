@@ -25,3 +25,12 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <stdio.h>
 
 #include "bitcoinrpc.h"
+#include "bitcoinrpc_global.h"
+
+BITCOINRPCEcode
+bitcoinrpc_call (bitcoinrpc_cl_t * cl, bitcoinrpc_method_t * method,
+                 bitcoinrpc_resp_t *resp, bitcoinrpc_err_t *e)
+{
+  
+  bitcoinrpc_RETURN_OK;
+}

@@ -205,7 +205,18 @@ BITCOINRPCEcode
 bitcoinrpc_method_free (bitcoinrpc_method_t *method);
 
 
+/* ------------- bitcoinrpc_resp --------------------- */
+struct bitcoinrpc_resp;
 
+typedef
+  struct bitcoinrpc_resp
+bitcoinrpc_resp_t;
+
+
+/* ------------- bitcoinrpc_call --------------------- */
+BITCOINRPCEcode
+bitcoinrpc_call (bitcoinrpc_cl_t * cl, bitcoinrpc_method_t * method,
+                 bitcoinrpc_resp_t *resp, bitcoinrpc_err_t *e);
 
 
 #endif  /* BITCOINRPC_H_51fe7847_aafe_4e78_9823_eff094a30775 */
