@@ -29,19 +29,21 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #define BITCOINRPC_LIBNAME "bitcoinrpc"
 #define BITCOINRPC_VERSION "0.0.0"
 
-/* Defalut port and address a RPC client connects to */
+/* Defalut parameters of a RPC client */
+#define BITCOINRPC_USER_DEFAULT ""
+#define BITCOINRPC_PASS_DEFAULT ""
 #define BITCOINRPC_ADDR_DEFAULT "127.0.0.1"
 #define BITCOINRPC_PORT_DEFAULT 8332
 
 /*
-Maximal length of a string that holds client's parameters
-(including the terminating '\0' character).
+Maximal length of a string that holds a client's parameter
+(user name, password or address), including the terminating '\0' character.
 */
-#define BITCOINRPC_STR_MAXLEN 250
+#define BITCOINRPC_PARAM_MAXLEN 257
 
 /*
 Maximal length of the server url:
-"http://%s:%s@%s:%d" = 3*BITCOINRPC_STR_MAXLEN + 15
+"http://%s:%s@%s:%d" = 3*BITCOINRPC_PARAM_MAXLEN + 15
 */
 #define BITCOINRPC_URL_LEN 765
 
@@ -97,6 +99,27 @@ typedef
   struct bitcoinrpc_cl
 bitcoinrpc_cl_t;
 
+/*
+Initialise a new RPC client with default values: BITCOINRPC_*_DEFAULT.
+Return NULL in case of error.
+*/
+bitcoinrpc_cl_t*
+bitcoinrpc_cl_init (void);
 
+
+/*
+Initialise and set some parameters (may not be NULL; in that case the
+function returns NULL as well). The parameter values are copied,
+so the original pointers are no longer needed. At most
+BITCOINRPC_PARAM_MAXLEN chars are copied to store a parameter.
+*/
+bitcoinrpc_cl_t*
+bitcoinrpc_cl_init_params ( const char* user, const char* pass,
+                            const char* addr, const unsigned int port);
+
+
+/* Free the handle. */
+BITCOINRPCEcode
+bitcoinrpc_cl_free (bitcoinrpc_cl_t *cl);
 
 #endif  /* BITCOINRPC_H_51fe7847_aafe_4e78_9823_eff094a30775 */

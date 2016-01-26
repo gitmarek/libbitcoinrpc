@@ -63,9 +63,9 @@ The software is provided \"as is\", without warranty of any kind.\n\
 
 struct options
 {
-  char user[BITCOINRPC_STR_MAXLEN];
-  char pass[BITCOINRPC_STR_MAXLEN];
-  char addr[BITCOINRPC_STR_MAXLEN];
+  char user[BITCOINRPC_PARAM_MAXLEN];
+  char pass[BITCOINRPC_PARAM_MAXLEN];
+  char addr[BITCOINRPC_PARAM_MAXLEN];
   unsigned int port;
 };
 typedef struct options options_t;
@@ -115,31 +115,31 @@ int parse_command_options (int argc, char **argv, options_t *o)
 
           if (strncmp("rpc-user", long_options[option_index].name, 8) == 0)
           {
-            if (strlen(optarg) >= BITCOINRPC_STR_MAXLEN)
+            if (strlen(optarg) >= BITCOINRPC_PARAM_MAXLEN)
             {
-              fprintf(stderr, "error: The argument to --rpc-user is longer than %d characters.\n Either specify a shorter user name, or change the source code.\n", BITCOINRPC_STR_MAXLEN);
+              fprintf(stderr, "error: The argument to --rpc-user is longer than %d characters.\n Either specify a shorter user name, or change the source code.\n", BITCOINRPC_PARAM_MAXLEN);
               return 1;
             }
-            strncpy(o->user, optarg, BITCOINRPC_STR_MAXLEN);
+            strncpy(o->user, optarg, BITCOINRPC_PARAM_MAXLEN);
           }
 
           if (strncmp("rpc-password", long_options[option_index].name, 12) == 0)
           {
-            if (strlen(optarg) > BITCOINRPC_STR_MAXLEN)
+            if (strlen(optarg) > BITCOINRPC_PARAM_MAXLEN)
             {
-              fprintf(stderr, "error: The argument to --rpc-password is lnger than %d characters.\n Either specify a shorter password, or change the source code.\n", BITCOINRPC_STR_MAXLEN);
+              fprintf(stderr, "error: The argument to --rpc-password is lnger than %d characters.\n Either specify a shorter password, or change the source code.\n", BITCOINRPC_PARAM_MAXLEN);
               return 1;
             }
-            strncpy(o->pass, optarg, BITCOINRPC_STR_MAXLEN);
+            strncpy(o->pass, optarg, BITCOINRPC_PARAM_MAXLEN);
           }
           if (strncmp("rpc-address", long_options[option_index].name, 11) == 0)
           {
-            if (strlen(optarg) > BITCOINRPC_STR_MAXLEN)
+            if (strlen(optarg) > BITCOINRPC_PARAM_MAXLEN)
             {
-              fprintf(stderr, "error: The argument to --rpc-address is longer than %d characters.\n Either specify a shorter address, or change the source code.\n", BITCOINRPC_STR_MAXLEN);
+              fprintf(stderr, "error: The argument to --rpc-address is longer than %d characters.\n Either specify a shorter address, or change the source code.\n", BITCOINRPC_PARAM_MAXLEN);
               return 1;
             }
-            strncpy(o->addr, optarg, BITCOINRPC_STR_MAXLEN);
+            strncpy(o->addr, optarg, BITCOINRPC_PARAM_MAXLEN);
           }
           if (strncmp("rpc-port", long_options[option_index].name, 8) == 0)
           {
@@ -196,7 +196,7 @@ main (int argc, char **argv)
   /* Parse command line options */
   options_t o;
   /* defaults */
-  strncpy(o.addr, BITCOINRPC_ADDR_DEFAULT, BITCOINRPC_STR_MAXLEN);
+  strncpy(o.addr, BITCOINRPC_ADDR_DEFAULT, BITCOINRPC_PARAM_MAXLEN);
   o.port = BITCOINRPC_PORT_DEFAULT;
 
   if (parse_command_options(argc, argv, &o) != 0) {
@@ -205,6 +205,26 @@ main (int argc, char **argv)
   }
 
   fprintf(stderr, "%s-%s starting...\n", PROGNAME, BITCOINRPC_VERSION);
+
+  if (bitcoinrpc_global_init() != BITCOINRPCE_OK)
+    abort();
+
+  fprintf (stderr, "Initialising the RPC client and connecting to: "
+                   "http://%s:%s@%s:%d\n", o.user, o.pass, o.addr, o.port);
+  bitcoinrpc_cl_t *cl = bitcoinrpc_cl_init_params(
+    o.user, o.pass, o.addr, o.port);
+  if (NULL == cl)
+  {
+    fprintf(stderr, "error: Cannot initialise a new client.\n");
+  }
+
+  fprintf(stderr, "Free the resources... ");
+  bitcoinrpc_cl_free(cl);
+  if (bitcoinrpc_global_cleanup() != BITCOINRPCE_OK)
+  {
+    fprintf(stderr, "failure.\n");
+    abort();
+  }
 
   fprintf(stderr, "done.\n");
   exit(EXIT_SUCCESS);
