@@ -26,12 +26,13 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <string.h>
 #include <curl/curl.h>
 #include <uuid/uuid.h>
+
 #include "bitcoinrpc.h"
 #include "bitcoinrpc_global.h"
 
+
 struct bitcoinrpc_cl
 {
-
   uuid_t uuid;
   char uuid_str[37];  /* man 3 uuid_unparse */
 
@@ -45,9 +46,7 @@ struct bitcoinrpc_cl
   unsigned int tmpstr_len;
 
   CURL *curl;
-
 };
-
 
 
 bitcoinrpc_cl_t*

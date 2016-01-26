@@ -29,6 +29,8 @@ Global data internal to library (not accesed by a user).
 #ifndef BITCOINRPC_GLOBAL_H_5fe378f8_8280_4f1c_a3c3_7c84da05eff5
 #define BITCOINRPC_GLOBAL_H_5fe378f8_8280_4f1c_a3c3_7c84da05eff5
 
+#include <stdlib.h>
+
 
 struct bitcoinrpc_global_data_s_;
 
@@ -37,6 +39,28 @@ typedef
 bitcoinrpc_global_data_t;
 
 extern bitcoinrpc_global_data_t *bitcoinrpc_global_data_;
+
+
+/* The default memory allocating function used by the library */
+void *
+bitcoinrpc_global_allocfunc_default_ (size_t size);
+
+/* The default memory freeing function used by the library */
+void
+bitcoinrpc_global_freefunc_default_ (void *ptr);
+
+/*
+The memory allocating function used by the library
+(the default is just standard malloc() ).
+ */
+extern void * (*bitcoinrpc_global_allocfunc) (size_t size);
+
+/*
+The memory freeing function used by the library
+(the default is just standard free() ).
+*/
+extern void (* bitcoinrpc_global_freefunc) (void *ptr);
+
 
 
 #endif /* BITCOINRPC_GLOBAL_H_5fe378f8_8280_4f1c_a3c3_7c84da05eff5 */

@@ -35,10 +35,19 @@ struct bitcoinrpc_global_data_s_
 
 bitcoinrpc_global_data_t *bitcoinrpc_global_data_;
 
+void * (*bitcoinrpc_global_allocfunc) (size_t size) =
+                                bitcoinrpc_global_allocfunc_default_;
+void (*bitcoinrpc_global_freefunc) (void *ptr) =
+                                bitcoinrpc_global_freefunc_default_;
+
+
 BITCOINRPCEcode
 bitcoinrpc_global_init (void)
 {
-  bitcoinrpc_global_data_ = malloc (sizeof *bitcoinrpc_global_data_);
+
+  bitcoinrpc_global_data_ = bitcoinrpc_global_allocfunc_default_ (
+                                    sizeof *bitcoinrpc_global_data_);
+
   if (NULL == bitcoinrpc_global_data_)
     return BITCOINRPCE_ALLOC;
 
@@ -50,9 +59,42 @@ bitcoinrpc_global_init (void)
 BITCOINRPCEcode
 bitcoinrpc_global_cleanup (void)
 {
-  free(bitcoinrpc_global_data_);
+  /*
+  bitcoinrpc_global_data_ was allocated with
+  bitcoinrpc_global_allocfunc_default_(), so it has to be freed
+  by the default as well.
+  */
+  bitcoinrpc_global_freefunc_default_(bitcoinrpc_global_data_);
   bitcoinrpc_global_data_ = NULL;
   curl_global_cleanup();
 
+  return BITCOINRPCE_OK;
+}
+
+
+void *
+bitcoinrpc_global_allocfunc_default_ (size_t size)
+{
+  return malloc (size);
+}
+
+void
+bitcoinrpc_global_freefunc_default_ (void *ptr)
+{
+  free (ptr);
+}
+
+BITCOINRPCEcode
+bitcoinrpc_global_set_allocfunc ( void * (* const f) (size_t size) )
+{
+  bitcoinrpc_global_allocfunc = f;
+  return BITCOINRPCE_OK;
+}
+
+
+BITCOINRPCEcode
+bitcoinrpc_global_set_freefunc ( void (* const f) (void *ptr) )
+{
+  bitcoinrpc_global_freefunc = f;
   return BITCOINRPCE_OK;
 }

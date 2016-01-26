@@ -25,6 +25,8 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #ifndef BITCOINRPC_H_51fe7847_aafe_4e78_9823_eff094a30775
 #define BITCOINRPC_H_51fe7847_aafe_4e78_9823_eff094a30775
 
+#include <stdlib.h>
+
 /* Name and version */
 #define BITCOINRPC_LIBNAME "bitcoinrpc"
 #define BITCOINRPC_VERSION "0.0.0"
@@ -90,6 +92,20 @@ internal garbage.
 BITCOINRPCEcode
 bitcoinrpc_global_cleanup (void);
 
+/*
+Set a memory allocating function for the library routines.
+(the default is just standard malloc() ).
+*/
+BITCOINRPCEcode
+bitcoinrpc_global_set_allocfunc ( void * (* const f) (size_t size) );
+
+/*
+Set a memory freeing function for the library routines.
+(the default is just standard free() ).
+*/
+BITCOINRPCEcode
+bitcoinrpc_global_set_freefunc ( void (* const f) (void *ptr) );
+
 
 /* -------------bitcoinrpc_cl --------------------- */
 /* The handle. */
@@ -121,5 +137,6 @@ bitcoinrpc_cl_init_params ( const char* user, const char* pass,
 /* Free the handle. */
 BITCOINRPCEcode
 bitcoinrpc_cl_free (bitcoinrpc_cl_t *cl);
+
 
 #endif  /* BITCOINRPC_H_51fe7847_aafe_4e78_9823_eff094a30775 */
