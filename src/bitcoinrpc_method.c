@@ -94,8 +94,14 @@ BITCOINRPCEcode
 bitcoinrpc_method_make_postjson_ (bitcoinrpc_method_t *method)
 {
 
+  if (NULL != method->post_json)
+    json_decref(method->post_json);
+
   const struct BITCOINRPC_METHOD_struct_ * ms = bitcoinrpc_method_st_(method->m);
   json_object_set_new (method->post_json, "method", json_string(ms->str));
+
+  json_object_set_new (method->post_json, "id", json_string (method->uuid_str));
+
   if (ms->requires_params)
     json_object_set (method->post_json, "params", method->params_json);
   else
@@ -114,13 +120,24 @@ bitcoinrpc_method_make_poststr_ (bitcoinrpc_method_t *method)
   if (e != BITCOINRPCE_OK)
     return e; /* pass error furher */
 
-  free(method->post_str);
+  if (NULL != method->post_str)
+    free(method->post_str);
+
   method->post_str = json_dumps (method->post_json, JSON_COMPACT);
+
   if (NULL == method->post_str)
     return BITCOINRPCE_JSON;
 
   return BITCOINRPCE_OK;
 }
+
+
+json_t *
+bitcoinrpc_method_get_postjson_ (bitcoinrpc_method_t *method)
+{
+  return method->post_json;
+}
+
 
 BITCOINRPCEcode
 bitcoinrpc_method_compare_uuid_ (bitcoinrpc_method_t *method, uuid_t u)
@@ -136,7 +153,14 @@ bitcoinrpc_method_update_uuid_ (bitcoinrpc_method_t *method)
   uuid_generate_random (method->uuid);
   uuid_unparse_lower (method->uuid, method->uuid_str);
 
-  return BITCOINRPCE_OK;
+  return bitcoinrpc_method_make_poststr_ (method);
+}
+
+
+char*
+bitcoinrpc_method_get_uuidstr_ (bitcoinrpc_method_t *method)
+{
+  return method->uuid_str;
 }
 /* ------------------------------------------------------------------------  */
 
@@ -180,8 +204,8 @@ bitcoinrpc_method_init_params (const BITCOINRPC_METHOD m,
   if (NULL == method->post_json)
     return NULL;
 
-  /* make post_str */
-  if (bitcoinrpc_method_make_poststr_ (method) != BITCOINRPCE_OK)
+  /* make post_json */
+  if (bitcoinrpc_method_update_uuid_  (method) != BITCOINRPCE_OK)
     return NULL;
 
   return method;
@@ -228,7 +252,7 @@ bitcoinrpc_method_set_params (bitcoinrpc_method_t *method, json_t *params)
   json_decref(method->params_json);
   method->params_json = jp;
 
-  return bitcoinrpc_method_make_poststr_(method);
+  return bitcoinrpc_method_update_uuid_ (method);
 }
 
 /* Update method parameters with new ones, overwrite existing keys. */
@@ -259,7 +283,7 @@ bitcoinrpc_method_update_params (bitcoinrpc_method_t *method, json_t *params)
   }
   json_decref(jp);
 
-  return bitcoinrpc_method_make_poststr_(method);
+  return bitcoinrpc_method_update_uuid_ (method);
 }
 
 /* Only the values of existing keys are updated */
@@ -290,7 +314,7 @@ bitcoinrpc_method_update_existing_params (bitcoinrpc_method_t *method, json_t *p
     }
     json_decref(jp);
 
-    return bitcoinrpc_method_make_poststr_(method);
+    return bitcoinrpc_method_update_uuid_  (method);
 }
 
 

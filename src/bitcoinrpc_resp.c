@@ -43,6 +43,22 @@ struct bitcoinrpc_resp
 };
 
 
+/* Internal stuff */
+BITCOINRPCEcode
+bitcoinrpc_resp_set_json_ (bitcoinrpc_resp_t *resp, json_t *json)
+{
+
+  if (NULL == resp)
+    return BITCOINRPCE_BUG;
+
+  resp->json = json_deep_copy(json);
+  if (NULL == resp->json)
+    return BITCOINRPCE_JSON;
+
+  return BITCOINRPCE_OK;
+}
+/* ------------------------------------------------------------------------- */
+
 bitcoinrpc_resp_t *
 bitcoinrpc_resp_init (void)
 {

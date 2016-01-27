@@ -55,6 +55,16 @@ struct bitcoinrpc_cl
   void *legacy_ptr_4f1af859_c918_484a_b3f6_9fe51235a3a0;
 };
 
+/*
+Internal stuff
+*/
+CURL*
+bitcoinrpc_cl_get_curl_ (bitcoinrpc_cl_t *cl)
+{
+  if (NULL == cl)
+    return NULL;
+  return cl->curl;
+}
 
 bitcoinrpc_cl_t*
 bitcoinrpc_cl_init (void)
@@ -116,6 +126,16 @@ bitcoinrpc_cl_free (bitcoinrpc_cl_t *cl)
   curl_easy_cleanup (cl->curl);
   bitcoinrpc_global_freefunc(cl);
   cl->curl = NULL;
+
+  return BITCOINRPCE_OK;
+}
+
+BITCOINRPCEcode
+bitcoinrpc_cl_get_url (bitcoinrpc_cl_t *cl, char *buf)
+{
+  if (NULL == cl || NULL == buf)
+    return BITCOINRPCE_PARAM;
+  strncpy(buf, cl->url, BITCOINRPC_URL_LEN);
 
   return BITCOINRPCE_OK;
 }

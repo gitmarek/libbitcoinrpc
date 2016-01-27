@@ -23,25 +23,13 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
 /*
-Access bitcoinrpc_method_t internals
+Routines to access resp internal stuff
 */
 
-#ifndef BITCOINRPC_METHOD_H_1d9cedfd_a1d6_4b80_9ad4_fcc4549abcad
-#define BITCOINRPC_METHOD_H_1d9cedfd_a1d6_4b80_9ad4_fcc4549abcad
-
-#include <uuid/uuid.h>
-
+#ifndef BITCOINRPC_RESP_H_fba55207_d817_4c13_b509_5ac187863cb9
+#define BITCOINRPC_RESP_H_fba55207_d817_4c13_b509_5ac187863cb9
 
 BITCOINRPCEcode
-bitcoinrpc_method_compare_uuid_ (bitcoinrpc_method_t *method, uuid_t u);
+bitcoinrpc_resp_set_json_ (bitcoinrpc_resp_t *resp, json_t *json);
 
-BITCOINRPCEcode
-bitcoinrpc_method_update_uuid_ (bitcoinrpc_method_t *method);
-
-char*
-bitcoinrpc_method_get_uuidstr_ (bitcoinrpc_method_t *method);
-
-json_t *
-bitcoinrpc_method_get_postjson_ (bitcoinrpc_method_t *method);
-
-#endif /* BITCOINRPC_METHOD_H_1d9cedfd_a1d6_4b80_9ad4_fcc4549abcad */
+#endif /* BITCOINRPC_RESP_H_fba55207_d817_4c13_b509_5ac187863cb9 */

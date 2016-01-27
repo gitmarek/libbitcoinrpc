@@ -154,6 +154,9 @@ BITCOINRPCEcode
 bitcoinrpc_cl_free (bitcoinrpc_cl_t *cl);
 
 
+BITCOINRPCEcode
+bitcoinrpc_cl_get_url (bitcoinrpc_cl_t *cl, char *buf);
+
 /* ------------- bitcoinrpc_method --------------------- */
 struct bitcoinrpc_method;
 
