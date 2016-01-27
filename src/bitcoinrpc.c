@@ -62,7 +62,10 @@ bitcoinrpc_call (bitcoinrpc_cl_t * cl, bitcoinrpc_method_t * method,
 
   json_t *j;
   char *data;
-  char url[BITCOINRPC_URL_LEN];
+  char url[BITCOINRPC_URL_MAXLEN];
+  char user[BITCOINRPC_PARAM_MAXLEN];
+  char pass[BITCOINRPC_PARAM_MAXLEN];
+  char credentials[2 * BITCOINRPC_PARAM_MAXLEN + 1];
   struct bitcoinrpc_call_json_resp_ jresp;
   BITCOINRPCEcode ecode;
   CURL * curl;
@@ -99,9 +102,14 @@ bitcoinrpc_call (bitcoinrpc_cl_t * cl, bitcoinrpc_method_t * method,
     bitcoinrpc_RETURN (e, BITCOINRPCE_BUG, "url malformed; please report a bug");
   curl_easy_setopt(curl, CURLOPT_URL, url);
 
+  bitcoinrpc_cl_get_user(cl, user);
+  bitcoinrpc_cl_get_pass(cl, pass);
+  snprintf(credentials, 2 * BITCOINRPC_PARAM_MAXLEN + 1,
+    "%s:%s", user, pass);
+  curl_easy_setopt(curl, CURLOPT_USERPWD,	credentials);
+
   curl_easy_setopt(curl, CURLOPT_USE_SSL, CURLUSESSL_TRY);
   curl_easy_setopt(curl, CURLOPT_ERRORBUFFER, curl_errbuf);
-
   curl_err =	curl_easy_perform(curl);
 
   json_decref(j); /* no longer needed */

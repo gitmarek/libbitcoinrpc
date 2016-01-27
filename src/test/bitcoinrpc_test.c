@@ -168,9 +168,9 @@ int parse_command_options (int argc, char **argv, options_t *o)
         }
     } /* while(1) */
 
-  if (pass_flag == 0 || user_flag == 0)
+  if (pass_flag == 0)
   {
-    fprintf (stderr, "Please specify RPC client user name and password.\n");
+    fprintf (stderr, "Please specify at least a password for RPC client.\n");
     exit (EXIT_FAILURE);
   }
 
@@ -194,8 +194,11 @@ main (int argc, char **argv)
   /* Parse command line options */
   options_t o;
   /* defaults */
+  strncpy (o.user, BITCOINRPC_USER_DEFAULT, BITCOINRPC_PARAM_MAXLEN);
+  strncpy (o.pass, BITCOINRPC_PASS_DEFAULT, BITCOINRPC_PARAM_MAXLEN);
   strncpy (o.addr, BITCOINRPC_ADDR_DEFAULT, BITCOINRPC_PARAM_MAXLEN);
   o.port = BITCOINRPC_PORT_DEFAULT;
+
 
   if (parse_command_options(argc, argv, &o) != 0) {
     fprintf (stderr, "There was a problem parsing command line options.\nExit.\n");

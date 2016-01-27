@@ -47,9 +47,9 @@ Maximal length of a string that holds a client's parameter
 
 /*
 Maximal length of the server url:
-"http://%s:%s@%s:%d" = 3*BITCOINRPC_PARAM_MAXLEN + 15
+"http://%s:%d" = 2*BITCOINRPC_PARAM_MAXLEN + 15
 */
-#define BITCOINRPC_URL_LEN 765
+#define BITCOINRPC_URL_MAXLEN 529
 
 /* Maximal length of an error message */
 #define BITCOINRPC_ERRMSG_MAXLEN 1000
@@ -157,7 +157,20 @@ bitcoinrpc_cl_init_params ( const char* user, const char* pass,
 BITCOINRPCEcode
 bitcoinrpc_cl_free (bitcoinrpc_cl_t *cl);
 
+/*
+Copy value to buf. The buffer is assumed to contain at least
+BITCOINRPC_PARAM_MAXLEN chars. At most BITCOINRPC_PARAM_MAXLEN chars are copied.
+*/
+BITCOINRPCEcode
+bitcoinrpc_cl_get_user (bitcoinrpc_cl_t *cl, char *buf);
 
+BITCOINRPCEcode
+bitcoinrpc_cl_get_pass (bitcoinrpc_cl_t *cl, char *buf);
+
+/*
+Copy value to buf. The buffer is assumed to contain at least
+BITCOINRPC_URL_MAXLEN chars. At most BITCOINRPC_URL_MAXLEN chars are copied.
+*/
 BITCOINRPCEcode
 bitcoinrpc_cl_get_url (bitcoinrpc_cl_t *cl, char *buf);
 

@@ -42,7 +42,7 @@ struct bitcoinrpc_cl
   char addr[BITCOINRPC_PARAM_MAXLEN];
   unsigned int port;
 
-  char url[BITCOINRPC_URL_LEN];
+  char url[BITCOINRPC_URL_MAXLEN];
 
   char tmpstr[BITCOINRPC_PARAM_MAXLEN]; /* very internal */
   unsigned int tmpstr_len;
@@ -62,8 +62,8 @@ Internal stuff
 */
 
 # define bitcoinrpc_cl_update_url_(cl) \
-snprintf(cl->url, BITCOINRPC_URL_LEN, "http://%s:%s@%s:%d", \
-         cl->user, cl->pass, cl->addr, cl->port);
+snprintf(cl->url, BITCOINRPC_URL_MAXLEN, "http://%s:%d", \
+         cl->addr, cl->port);
 
 
 CURL*
@@ -152,6 +152,29 @@ bitcoinrpc_cl_free (bitcoinrpc_cl_t *cl)
   return BITCOINRPCE_OK;
 }
 
+
+BITCOINRPCEcode
+bitcoinrpc_cl_get_user (bitcoinrpc_cl_t *cl, char *buf)
+{
+  if (NULL == cl || NULL == buf)
+    return BITCOINRPCE_PARAM;
+  strncpy(buf, cl->user, BITCOINRPC_PARAM_MAXLEN);
+
+  return BITCOINRPCE_OK;
+}
+
+
+BITCOINRPCEcode
+bitcoinrpc_cl_get_pass (bitcoinrpc_cl_t *cl, char *buf)
+{
+  if (NULL == cl || NULL == buf)
+    return BITCOINRPCE_PARAM;
+  strncpy(buf, cl->pass, BITCOINRPC_PARAM_MAXLEN);
+
+  return BITCOINRPCE_OK;
+}
+
+
 BITCOINRPCEcode
 bitcoinrpc_cl_get_url (bitcoinrpc_cl_t *cl, char *buf)
 {
@@ -160,7 +183,7 @@ bitcoinrpc_cl_get_url (bitcoinrpc_cl_t *cl, char *buf)
 
   if (NULL == cl || NULL == buf)
     return BITCOINRPCE_PARAM;
-  strncpy(buf, cl->url, BITCOINRPC_URL_LEN);
+  strncpy(buf, cl->url, BITCOINRPC_URL_MAXLEN);
 
   return BITCOINRPCE_OK;
 }
