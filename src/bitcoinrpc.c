@@ -33,5 +33,9 @@ bitcoinrpc_call (bitcoinrpc_cl_t * cl, bitcoinrpc_method_t * method,
                  bitcoinrpc_resp_t *resp, bitcoinrpc_err_t *e)
 {
 
+  /* update method's uuid */
+
+  /* call bitcoinrpc_resp_check */
+
   bitcoinrpc_RETURN_OK;
 }

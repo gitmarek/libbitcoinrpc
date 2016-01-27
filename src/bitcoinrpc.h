@@ -28,6 +28,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <stdlib.h>
 #include <jansson.h>
 
+
 /* Name and version */
 #define BITCOINRPC_LIBNAME "bitcoinrpc"
 #define BITCOINRPC_VERSION "0.0.0"
@@ -57,6 +58,7 @@ Maximal length of the server url:
 typedef enum {
 
   BITCOINRPCE_OK,                   /* Success */
+  BITCOINRPCE_CHECK,                /* see: bitcoinrpc_resp_check() */
   BITCOINRPCE_ERR,                  /* unspecific error */
   BITCOINRPCE_ALLOC,                /* cannot allocate more memory */
   BITCOINRPCE_BUG,                  /* a bug in the library (please report) */
@@ -83,7 +85,6 @@ struct bitcoinrpc_err
 {
   BITCOINRPCEcode code;
   char msg[BITCOINRPC_ERRMSG_MAXLEN];
-
 };
 
 typedef
@@ -181,6 +182,9 @@ bitcoinrpc_method_t *
 bitcoinrpc_method_init_params (const BITCOINRPC_METHOD m,
                                json_t * const params);
 
+/* Destroy the method */
+BITCOINRPCEcode
+bitcoinrpc_method_free (bitcoinrpc_method_t *method);
 
 /* Set a new json object as method parameters */
 BITCOINRPCEcode
@@ -198,10 +202,6 @@ bitcoinrpc_method_update_existing_params (bitcoinrpc_method_t *method, json_t *p
 BITCOINRPCEcode
 bitcoinrpc_method_get_params (bitcoinrpc_method_t *method, json_t **params);
 
-/* Destroy the method */
-BITCOINRPCEcode
-bitcoinrpc_method_free (bitcoinrpc_method_t *method);
-
 
 /* ------------- bitcoinrpc_resp --------------------- */
 struct bitcoinrpc_resp;
@@ -210,11 +210,34 @@ typedef
   struct bitcoinrpc_resp
 bitcoinrpc_resp_t;
 
+bitcoinrpc_resp_t *
+bitcoinrpc_resp_init (void);
+
+BITCOINRPCEcode
+bitcoinrpc_resp_free (bitcoinrpc_resp_t *resp);
+
+/*
+Get a deepcopy of the json object representing the response
+from the server or NULL in case of error.
+*/
+json_t *
+bitcoinrpc_resp_get (bitcoinrpc_resp_t *resp);
+
+/*
+Check if the resp comes as a result of calling method.
+Returns BITCOINRPCE_CHECK, if not. This check is already performed by
+bitcoinrpc_call()
+*/
+BITCOINRPCEcode
+bitcoinrpc_resp_check (bitcoinrpc_resp_t *resp, bitcoinrpc_method_t *method);
+
 
 /* ------------- bitcoinrpc_call --------------------- */
+
 BITCOINRPCEcode
 bitcoinrpc_call (bitcoinrpc_cl_t * cl, bitcoinrpc_method_t * method,
                  bitcoinrpc_resp_t *resp, bitcoinrpc_err_t *e);
+
 
 
 #endif  /* BITCOINRPC_H_51fe7847_aafe_4e78_9823_eff094a30775 */
