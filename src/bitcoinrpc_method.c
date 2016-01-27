@@ -75,7 +75,6 @@ struct bitcoinrpc_method
 
   json_t  *params_json;
   json_t  *post_json;
-  char    *post_str;
 
   /*
   This is a legacy pointer. You can point to an auxilliary structure,
@@ -95,7 +94,12 @@ bitcoinrpc_method_make_postjson_ (bitcoinrpc_method_t *method)
 {
 
   if (NULL != method->post_json)
+  {
     json_decref(method->post_json);
+    method->post_json = json_object();
+    if (NULL == method->post_json)
+      return BITCOINRPCE_JSON;
+  }
 
   const struct BITCOINRPC_METHOD_struct_ * ms = bitcoinrpc_method_st_(method->m);
   json_object_set_new (method->post_json, "method", json_string(ms->str));
@@ -103,30 +107,14 @@ bitcoinrpc_method_make_postjson_ (bitcoinrpc_method_t *method)
   json_object_set_new (method->post_json, "id", json_string (method->uuid_str));
 
   if (ms->requires_params)
+  {
     json_object_set (method->post_json, "params", method->params_json);
+  }
   else
+  {
     json_object_set (method->post_json, "params", json_array());
+  }
 
-  return BITCOINRPCE_OK;
-}
-
-
-BITCOINRPCEcode
-bitcoinrpc_method_make_poststr_ (bitcoinrpc_method_t *method)
-{
-
-  BITCOINRPCEcode e;
-  e = bitcoinrpc_method_make_postjson_ (method);
-  if (e != BITCOINRPCE_OK)
-    return e; /* pass error furher */
-
-  if (NULL != method->post_str)
-    free(method->post_str);
-
-  method->post_str = json_dumps (method->post_json, JSON_COMPACT);
-
-  if (NULL == method->post_str)
-    return BITCOINRPCE_JSON;
 
   return BITCOINRPCE_OK;
 }
@@ -153,7 +141,7 @@ bitcoinrpc_method_update_uuid_ (bitcoinrpc_method_t *method)
   uuid_generate_random (method->uuid);
   uuid_unparse_lower (method->uuid, method->uuid_str);
 
-  return bitcoinrpc_method_make_poststr_ (method);
+  return bitcoinrpc_method_make_postjson_ (method);
 }
 
 
@@ -182,9 +170,6 @@ bitcoinrpc_method_init_params (const BITCOINRPC_METHOD m,
 
   method->m = m;
   method->post_json = NULL;
-  method->post_str = NULL;
-
-  bitcoinrpc_method_update_uuid_ (method);
 
   json_t *jp;
   if (NULL == params)
@@ -220,9 +205,6 @@ bitcoinrpc_method_free (bitcoinrpc_method_t *method)
 
   json_decref(method->post_json);
   json_decref(method->params_json);
-  free(method->post_str);
-
-  bitcoinrpc_global_freefunc(method->post_str);
 
   return BITCOINRPCE_OK;
 }

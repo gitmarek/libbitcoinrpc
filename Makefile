@@ -31,8 +31,9 @@ TESTSRCDIR := $(SRCDIR)/test
 LIBDIR := .lib
 BINDIR := bin
 LDFLAGS := -luuid -ljansson -lcurl
+TESTLDFLAGS := -ljansson
 
-CFLAGS := -fPIC -O3 -g -Wall -Werror -std=c99
+CFLAGS := -fPIC -O3 -g -Wall -Werror -Wextra -std=c99
 CC := gcc
 
 # -----------------------------------------------------------------------------
@@ -74,7 +75,7 @@ test: lib $(TESTNAME)
 $(TESTNAME): $(TESTSRCDIR)/$(TESTNAME).o
 	@echo
 	$(CC) $(CFLAGS) $(TESTSRCDIR)/$(TESTNAME).c -o $(BINDIR)/$@ \
-		-l$(NAME) -L$(LIBDIR) -I $(SRCDIR) -Wl,-rpath=$(LIBDIR)
+		-l$(NAME) $(TESTLDFLAGS) -L$(LIBDIR) -I $(SRCDIR) -Wl,-rpath=$(LIBDIR)
 
 $(TESTSRCDIR)/$(TESTNAME).o:
 	$(CC) $(CFLAGS) $(TESTSRCDIR)/$(TESTNAME).c -c -o $@ \

@@ -59,6 +59,34 @@ bitcoinrpc_resp_set_json_ (bitcoinrpc_resp_t *resp, json_t *json)
 
   return BITCOINRPCE_OK;
 }
+
+
+BITCOINRPCEcode
+bitcoinrpc_resp_update_uuid_ (bitcoinrpc_resp_t *resp)
+{
+
+  int e;
+  const char *uuid_str = NULL;
+  uuid_t uuid;
+
+  if (NULL == resp || NULL == resp->json)
+    return BITCOINRPCE_PARAM;
+
+  json_t *jid = json_deep_copy (json_object_get (resp->json, "id"));
+  if (NULL == jid)
+    return BITCOINRPCE_JSON;
+  uuid_str = json_string_value(jid);
+  if (NULL == uuid_str)
+    return BITCOINRPCE_JSON;
+
+  e = uuid_parse(uuid_str, uuid);
+  if (e != 0)
+    return BITCOINRPCE_PARAM;
+  uuid_copy(resp->uuid,uuid);
+  json_decref(jid);
+
+  return BITCOINRPCE_OK;
+}
 /* ------------------------------------------------------------------------- */
 
 bitcoinrpc_resp_t *
@@ -109,5 +137,6 @@ bitcoinrpc_resp_check (bitcoinrpc_resp_t *resp, bitcoinrpc_method_t *method)
   if (NULL == resp || NULL == method)
     return BITCOINRPCE_PARAM;
 
+  bitcoinrpc_resp_update_uuid_ (resp);
   return bitcoinrpc_method_compare_uuid_ (method, resp->uuid);
 }

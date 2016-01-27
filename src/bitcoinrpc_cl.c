@@ -59,6 +59,12 @@ struct bitcoinrpc_cl
 /*
 Internal stuff
 */
+
+# define bitcoinrpc_cl_update_url_(cl) \
+snprintf(cl->url, BITCOINRPC_URL_LEN, "http://%s:%s@%s:%d", \
+         cl->user, cl->pass, cl->addr, cl->port);
+
+
 CURL*
 bitcoinrpc_cl_get_curl_ (bitcoinrpc_cl_t *cl)
 {
@@ -66,6 +72,8 @@ bitcoinrpc_cl_get_curl_ (bitcoinrpc_cl_t *cl)
     return NULL;
   return cl->curl;
 }
+
+/* ------------------------------------------------------------------------ */
 
 bitcoinrpc_cl_t*
 bitcoinrpc_cl_init (void)
@@ -113,7 +121,10 @@ bitcoinrpc_cl_init_params ( const char* user, const char* pass,
 
   cl->port = port;
 
+  bitcoinrpc_cl_update_url_ (cl);
+
   cl->curl = curl_easy_init();
+  if (NULL == cl->curl)
     return NULL;
 
   return cl;
@@ -134,6 +145,9 @@ bitcoinrpc_cl_free (bitcoinrpc_cl_t *cl)
 BITCOINRPCEcode
 bitcoinrpc_cl_get_url (bitcoinrpc_cl_t *cl, char *buf)
 {
+
+  bitcoinrpc_cl_update_url_ (cl); /* one never knows */
+
   if (NULL == cl || NULL == buf)
     return BITCOINRPCE_PARAM;
   strncpy(buf, cl->url, BITCOINRPC_URL_LEN);

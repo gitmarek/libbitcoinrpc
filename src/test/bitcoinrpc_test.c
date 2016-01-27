@@ -27,6 +27,8 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <getopt.h>
 #include <string.h>
 
+#include <jansson.h>
+
 #include <bitcoinrpc.h>
 
 #define PROGNAME "bitcoinrpc_test"
@@ -206,7 +208,6 @@ main (int argc, char **argv)
 
   fprintf(stderr, "%s-%s starting...\n", PROGNAME, BITCOINRPC_VERSION);
 
-  bitcoinrpc_err_t e;
   if (bitcoinrpc_global_init() != BITCOINRPCE_OK)
     abort();
 
@@ -218,12 +219,41 @@ main (int argc, char **argv)
 
   if (NULL == cl)
   {
-    fprintf(stderr, "error: %s\n", e.msg);
+    fprintf(stderr, "error: cannot initialise a new client.\n");
     exit(EXIT_FAILURE);
   }
 
+  bitcoinrpc_method_t *m = bitcoinrpc_method_init(BITCOINRPC_METHOD_GETNETWORKINFO);
+  if (NULL == m)
+  {
+    fprintf(stderr, "error: cannot initialise a new method.\n");
+    exit(EXIT_FAILURE);
+  }
+
+  bitcoinrpc_resp_t *r  = bitcoinrpc_resp_init();
+  if (NULL == r)
+  {
+    fprintf(stderr, "error: cannot initialise a new responce holder.\n");
+    exit(EXIT_FAILURE);
+  }
+
+  bitcoinrpc_err_t e;
+  bitcoinrpc_call(cl, m, r, &e);
+  if (e.code != BITCOINRPCE_OK)
+  {
+    fprintf(stderr, "error: %s\n", e.msg);
+  }
+
+  char *data;
+  json_t *j = bitcoinrpc_resp_get(r);
+  data = json_dumps(j, JSON_INDENT(2));
+  fprintf(stderr, "%s\n", data);
+  free(data);
+
   fprintf(stderr, "Free the resources... ");
   bitcoinrpc_cl_free(cl);
+  bitcoinrpc_method_free(m);
+  bitcoinrpc_resp_free(r);
   if (bitcoinrpc_global_cleanup() != BITCOINRPCE_OK)
   {
     fprintf(stderr, "failure.\n");

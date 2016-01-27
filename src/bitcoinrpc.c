@@ -64,6 +64,7 @@ bitcoinrpc_call (bitcoinrpc_cl_t * cl, bitcoinrpc_method_t * method,
   char *data;
   char url[BITCOINRPC_URL_LEN];
   struct bitcoinrpc_call_json_resp_ jresp;
+  BITCOINRPCEcode ecode;
   CURL * curl;
   CURLcode curl_err;
   char curl_errbuf[CURL_ERROR_SIZE];
@@ -92,7 +93,10 @@ bitcoinrpc_call (bitcoinrpc_cl_t * cl, bitcoinrpc_method_t * method,
   curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, bitcoinrpc_call_write_callback_);
   curl_easy_setopt(curl, CURLOPT_WRITEDATA, &jresp);
 
-  bitcoinrpc_cl_get_url (cl, url);
+  ecode = bitcoinrpc_cl_get_url (cl, url);
+
+  if (ecode != BITCOINRPCE_OK)
+    bitcoinrpc_RETURN (e, BITCOINRPCE_BUG, "url malformed; please report a bug");
   curl_easy_setopt(curl, CURLOPT_URL, url);
 
   curl_easy_setopt(curl, CURLOPT_USE_SSL, CURLUSESSL_TRY);
@@ -110,6 +114,10 @@ bitcoinrpc_call (bitcoinrpc_cl_t * cl, bitcoinrpc_method_t * method,
     bitcoinrpc_RETURN (e, BITCOINRPCE_CURLE, errbuf);
   }
 
+  /*
+  fprintf(stderr, "%s\n", json_dumps(bitcoinrpc_method_get_postjson_ (method), JSON_INDENT(2)));
+  fprintf(stderr, "%s\n", json_dumps(jresp.json, JSON_INDENT(2)));
+  */
   bitcoinrpc_resp_set_json_ (resp, jresp.json);
   json_decref(jresp.json); /* no longer needed, since we have deep copy in resp */
 
