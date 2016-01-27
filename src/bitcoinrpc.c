@@ -40,7 +40,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 struct bitcoinrpc_call_json_resp_
 {
-   json_t *resp;
+   json_t *json;
    json_error_t err;
 };
 
@@ -50,7 +50,7 @@ bitcoinrpc_call_write_callback_ (char *ptr, size_t size, size_t nmemb, void *use
 {
   size_t n = size * nmemb;
   struct bitcoinrpc_call_json_resp_ *j = (struct bitcoinrpc_call_json_resp_ *) userdata;
-  j->resp = json_loads (ptr, JSON_REJECT_DUPLICATES, &(j->err));
+  j->json = json_loads (ptr, JSON_REJECT_DUPLICATES, &(j->err));
   return n;
 }
 
@@ -110,8 +110,8 @@ bitcoinrpc_call (bitcoinrpc_cl_t * cl, bitcoinrpc_method_t * method,
     bitcoinrpc_RETURN (e, BITCOINRPCE_CURLE, errbuf);
   }
 
-  bitcoinrpc_resp_set_json_ (resp, jresp.resp);
-  json_decref(jresp.resp); /* no longer needed, since we have deep copy in resp */
+  bitcoinrpc_resp_set_json_ (resp, jresp.json);
+  json_decref(jresp.json); /* no longer needed, since we have deep copy in resp */
 
   if (bitcoinrpc_resp_check (resp, method) != BITCOINRPCE_OK)
     bitcoinrpc_RETURN (e, BITCOINRPCE_CHECK, "response id does not match post id");

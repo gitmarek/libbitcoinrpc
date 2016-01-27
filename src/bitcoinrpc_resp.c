@@ -28,6 +28,8 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "bitcoinrpc.h"
 #include "bitcoinrpc_global.h"
 #include "bitcoinrpc_method.h"
+#include "bitcoinrpc_resp.h"
+
 
 struct bitcoinrpc_resp
 {
