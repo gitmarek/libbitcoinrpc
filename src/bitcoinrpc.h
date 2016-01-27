@@ -73,11 +73,14 @@ typedef enum {
 /* RPC methods */
 typedef enum {
 
-  BITCOINRPC_METHOD_GETINFO,            /* "getinfo" */
-  BITCOINRPC_METHOD_GETNETWORKINFO,     /* "getnetworkinfo" */
-  BITCOINRPC_METHOD_GETWALLETINFO,      /* "getwalletinfo" */
-  BITCOINRPC_METHOD_HELP,               /* help */
-  BITCOINRPC_METHOD_SETTXFEE            /* settxfee */
+/* Control RPC */
+  BITCOINRPC_METHOD_GETINFO,            /* deprecated */
+  BITCOINRPC_METHOD_HELP,
+  BITCOINRPC_METHOD_STOP,
+
+  BITCOINRPC_METHOD_GETNETWORKINFO,
+  BITCOINRPC_METHOD_GETWALLETINFO,
+  BITCOINRPC_METHOD_SETTXFEE
 
 } BITCOINRPC_METHOD;
 

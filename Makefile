@@ -82,7 +82,7 @@ $(TESTSRCDIR)/$(TESTNAME).o:
 		-l$(NAME) -L$(LIBDIR) -I $(SRCDIR) -Wl,-rpath=$(LIBDIR)
 
 
-# ---------- clean -----------------
+# ---------- clean --------------
 
 .PHONY: clean
 clean:

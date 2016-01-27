@@ -274,11 +274,14 @@ main (int argc, char **argv)
 
   bitcoinrpc_call(cl, m_settx, r, &e);
   if (e.code != BITCOINRPCE_OK)
-    printf("%s\n", e.msg);
+    fprintf(stderr, "%s\n", e.msg);
   fprintf (stderr, "new tx fee: ");
 
   /* call getinfo one more time */
   bitcoinrpc_call (cl, m, r, &e);
+  if (e.code != BITCOINRPCE_OK)
+    fprintf(stderr, "%s\n", e.msg);
+
 
   j = bitcoinrpc_resp_get (r);
   fprintf (stderr, "%.8f\n", json_real_value ( json_object_get ( json_object_get (j, "result"), "paytxfee")));

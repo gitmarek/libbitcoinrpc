@@ -39,7 +39,7 @@ struct BITCOINRPC_METHOD_struct_
     unsigned char requires_params;
 };
 
-#define BITCOINRPC_METHOD_names_len_ 5   /* remember to update it! */
+#define BITCOINRPC_METHOD_names_len_ 6   /* remember to update it! */
 
 const struct BITCOINRPC_METHOD_struct_
 BITCOINRPC_METHOD_names_[BITCOINRPC_METHOD_names_len_] =
@@ -49,6 +49,7 @@ BITCOINRPC_METHOD_names_[BITCOINRPC_METHOD_names_len_] =
   { BITCOINRPC_METHOD_GETWALLETINFO,      "getwalletinfo",       0 },
   { BITCOINRPC_METHOD_HELP,               "help",                0 },
   { BITCOINRPC_METHOD_SETTXFEE,           "settxfee",            1 },
+  { BITCOINRPC_METHOD_STOP,               "stop",                1 },
 };
 
 
