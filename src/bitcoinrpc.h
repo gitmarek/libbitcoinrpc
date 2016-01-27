@@ -97,7 +97,7 @@ The global initialisation function.
 Please call this function from your main thread before any other call.
 */
 BITCOINRPCEcode
-bitcoinrpc_global_init (bitcoinrpc_err_t *e);
+bitcoinrpc_global_init (void);
 
 /*
 The global cleanup function.
@@ -134,7 +134,7 @@ Initialise a new RPC client with default values: BITCOINRPC_*_DEFAULT.
 Return NULL in case of error.
 */
 bitcoinrpc_cl_t*
-bitcoinrpc_cl_init (bitcoinrpc_err_t *e);
+bitcoinrpc_cl_init (void);
 
 
 /*
@@ -145,8 +145,7 @@ BITCOINRPC_PARAM_MAXLEN chars are copied to store a parameter.
 */
 bitcoinrpc_cl_t*
 bitcoinrpc_cl_init_params ( const char* user, const char* pass,
-                            const char* addr, const unsigned int port,
-                            bitcoinrpc_err_t *e);
+                            const char* addr, const unsigned int port );
 
 
 /* Free the handle. */
@@ -163,8 +162,7 @@ bitcoinrpc_method_t;
 
 /* Initialise a new method without params */
 bitcoinrpc_method_t *
-bitcoinrpc_method_init (const BITCOINRPC_METHOD m,
-                        bitcoinrpc_err_t *e);
+bitcoinrpc_method_init (const BITCOINRPC_METHOD m);
 
 
 /*
@@ -181,7 +179,7 @@ If params == NULL, this is the same as bitcoinrpc_method_init.
  */
 bitcoinrpc_method_t *
 bitcoinrpc_method_init_params (const BITCOINRPC_METHOD m,
-                              json_t * const params, bitcoinrpc_err_t *e);
+                               json_t * const params);
 
 
 /* Set a new json object as method parameters */

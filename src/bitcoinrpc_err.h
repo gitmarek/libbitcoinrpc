@@ -22,21 +22,19 @@ OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
-#include <string.h>
+/*
+Routines to handle errors
+*/
 
-#include "bitcoinrpc.h"
-#include "bitcoinrpc_global.h"
-#include "bitcoinrpc_err.h"
+#ifndef BITCOINRPC_ERR_H_f341d1bf_4b5d_44d3_a772_1bde3dcbddea
+#define BITCOINRPC_ERR_H_f341d1bf_4b5d_44d3_a772_1bde3dcbddea
 
 
 BITCOINRPCEcode
-bitcoinrpc_err_set_(bitcoinrpc_err_t *e, BITCOINRPCEcode code, char* msg)
-{
-  if (e != NULL)
-  {
-    e->code = code;
-    if (msg != NULL)
-      strncpy(e->msg, msg, BITCOINRPC_ERRMSG_MAXLEN);
-  }
-  return code;
-}
+bitcoinrpc_err_set_(bitcoinrpc_err_t *e, BITCOINRPCEcode code, char* msg);
+
+#define bitcoinrpc_RETURN return bitcoinrpc_err_set_
+#define bitcoinrpc_RETURN_OK return bitcoinrpc_err_set_(e, BITCOINRPCE_OK, NULL)
+#define bitcoinrpc_RETURN_ALLOC return bitcoinrpc_err_set_(e, BITCOINRPCE_ALLOC, "cannot allocate memory")
+
+#endif /* BITCOINRPC_ERR_H_f341d1bf_4b5d_44d3_a772_1bde3dcbddea */

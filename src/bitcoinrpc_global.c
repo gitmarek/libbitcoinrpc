@@ -48,22 +48,19 @@ void (*bitcoinrpc_global_freefunc) (void *ptr) =
 
 
 BITCOINRPCEcode
-bitcoinrpc_global_init (bitcoinrpc_err_t *e)
+bitcoinrpc_global_init (void)
 {
 
   bitcoinrpc_global_data_ = bitcoinrpc_global_allocfunc_default_ (
                                     sizeof *bitcoinrpc_global_data_);
 
   if (NULL == bitcoinrpc_global_data_)
-  {
-    bitcoinrpc_RETURN_ALLOC;
-  }
+    return BITCOINRPCE_ALLOC;
 
   if ( curl_global_init(CURL_GLOBAL_ALL) != CURLE_OK )
-  {
-    bitcoinrpc_RETURN(e, BITCOINRPCE_CURLE, "curl_global_init() returned error");
-  }
-  bitcoinrpc_RETURN_OK;
+    return BITCOINRPCE_CURLE;
+
+  return BITCOINRPCE_OK;
 }
 
 

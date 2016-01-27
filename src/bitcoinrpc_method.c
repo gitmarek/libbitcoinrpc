@@ -85,8 +85,7 @@ struct bitcoinrpc_method
 
 
 BITCOINRPCEcode
-bitcoinrpc_method_make_postjson_(bitcoinrpc_method_t *method,
-                                bitcoinrpc_err_t *e)
+bitcoinrpc_method_make_postjson_ (bitcoinrpc_method_t *method)
 {
 
   const struct BITCOINRPC_METHOD_struct_ * ms = bitcoinrpc_method_st_(method->m);
@@ -101,48 +100,45 @@ bitcoinrpc_method_make_postjson_(bitcoinrpc_method_t *method,
 
 
 BITCOINRPCEcode
-bitcoinrpc_method_make_poststr_(bitcoinrpc_method_t *method,
-                                bitcoinrpc_err_t *e)
+bitcoinrpc_method_make_poststr_ (bitcoinrpc_method_t *method)
 {
-  bitcoinrpc_method_make_postjson_(method, e);
-  if (e->code != BITCOINRPCE_OK)
-    return e->code; /* pass error furher */
+
+  BITCOINRPCEcode e;
+  e = bitcoinrpc_method_make_postjson_ (method);
+  if (e != BITCOINRPCE_OK)
+    return e; /* pass error furher */
 
   free(method->post_str);
-  method->post_str = json_dumps(method->post_json, JSON_COMPACT);
+  method->post_str = json_dumps (method->post_json, JSON_COMPACT);
   if (NULL == method->post_str)
-    return bitcoinrpc_err_set_(e, BITCOINRPCE_JSON, "JSON error while writing POST data");
+    return BITCOINRPCE_JSON;
 
   return BITCOINRPCE_OK;
 }
 
 
 bitcoinrpc_method_t *
-bitcoinrpc_method_init (const BITCOINRPC_METHOD m,
-                        bitcoinrpc_err_t *e)
+bitcoinrpc_method_init (const BITCOINRPC_METHOD m)
 {
-  return bitcoinrpc_method_init_params (m, NULL, e);
+  return bitcoinrpc_method_init_params (m, NULL);
 }
 
 
 bitcoinrpc_method_t *
 bitcoinrpc_method_init_params (const BITCOINRPC_METHOD m,
-                              json_t * const params, bitcoinrpc_err_t *e)
+                               json_t * const params)
 {
   bitcoinrpc_method_t *method = bitcoinrpc_global_allocfunc (sizeof *method);
 
   if (NULL == method)
-  {
-    bitcoinrpc_err_set_(e, BITCOINRPCE_ALLOC, "cannot allocate memory");
     return NULL;
-  }
 
   method->m = m;
   method->post_json = NULL;
   method->post_str = NULL;
 
-  uuid_generate_random(method->uuid);
-  uuid_unparse_lower(method->uuid, method->uuid_str);
+  uuid_generate_random (method->uuid);
+  uuid_unparse_lower (method->uuid, method->uuid_str);
 
   json_t *jp;
 
@@ -152,29 +148,20 @@ bitcoinrpc_method_init_params (const BITCOINRPC_METHOD m,
   }
   else
   {
-    jp = json_deep_copy(params);
+    jp = json_deep_copy (params);
   }
 
   if (NULL == jp)
-  {
-    bitcoinrpc_err_set_(e, BITCOINRPCE_JSON, "libjansson cannot copy an object");
     return NULL;
-  }
   method->params_json = jp;
 
   method->post_json = json_object();
   if (NULL == method->post_json)
-  {
-    bitcoinrpc_err_set_(e, BITCOINRPCE_JSON, "libjansson cannot allocate a new object");
     return NULL;
-  }
 
   /* make post_str */
-  if (bitcoinrpc_method_make_poststr_(method, e) != BITCOINRPCE_OK)
-  {
-    /* pass error further */
+  if (bitcoinrpc_method_make_poststr_ (method) != BITCOINRPCE_OK)
     return NULL;
-  }
 
   return method;
 }
@@ -220,7 +207,7 @@ bitcoinrpc_method_set_params (bitcoinrpc_method_t *method, json_t *params)
   json_decref(method->params_json);
   method->params_json = jp;
 
-  return bitcoinrpc_method_make_poststr_(method, NULL);
+  return bitcoinrpc_method_make_poststr_(method);
 }
 
 /* Update method parameters with new ones, overwrite existing keys. */
@@ -251,7 +238,7 @@ bitcoinrpc_method_update_params (bitcoinrpc_method_t *method, json_t *params)
   }
   json_decref(jp);
 
-  return bitcoinrpc_method_make_poststr_(method, NULL);
+  return bitcoinrpc_method_make_poststr_(method);
 }
 
 /* Only the values of existing keys are updated */
@@ -282,7 +269,7 @@ bitcoinrpc_method_update_existing_params (bitcoinrpc_method_t *method, json_t *p
     }
     json_decref(jp);
 
-    return bitcoinrpc_method_make_poststr_(method, NULL);
+    return bitcoinrpc_method_make_poststr_(method);
 }
 
 
