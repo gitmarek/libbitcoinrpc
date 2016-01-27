@@ -22,25 +22,20 @@ OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
-#include <stdio.h>
+/*
+Access bitcoinrpc_method_t internals
+*/
 
-#include "bitcoinrpc.h"
-#include "bitcoinrpc_global.h"
-#include "bitcoinrpc_err.h"
-#include "bitcoinrpc_method.h"
+#ifndef BITCOINRPC_METHOD_H_1d9cedfd_a1d6_4b80_9ad4_fcc4549abcad
+#define BITCOINRPC_METHOD_H_1d9cedfd_a1d6_4b80_9ad4_fcc4549abcad
+
+#include <uuid/uuid.h>
 
 
 BITCOINRPCEcode
-bitcoinrpc_call (bitcoinrpc_cl_t * cl, bitcoinrpc_method_t * method,
-                 bitcoinrpc_resp_t *resp, bitcoinrpc_err_t *e)
-{
+bitcoinrpc_method_compare_uuid_ (bitcoinrpc_method_t *method, uuid_t u);
 
-  if (NULL == cl || NULL == method || NULL == resp )
-    return BITCOINRPCE_PARAM;
+BITCOINRPCEcode
+bitcoinrpc_method_update_uuid_ (bitcoinrpc_method_t *method);
 
-  bitcoinrpc_method_update_uuid_ (method);
-
-  /* call bitcoinrpc_resp_check */
-
-  bitcoinrpc_RETURN_OK;
-}
+#endif /* BITCOINRPC_METHOD_H_1d9cedfd_a1d6_4b80_9ad4_fcc4549abcad */

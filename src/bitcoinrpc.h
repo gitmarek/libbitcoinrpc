@@ -65,7 +65,7 @@ typedef enum {
   BITCOINRPCE_CON,                  /* connection error */
   BITCOINRPCE_CURLE,                /* libcurl returned some error */
   BITCOINRPCE_JSON,                 /* error parsing json data */
-  BITCOINRPCE_PARAM                 /* wrong parameter */
+  BITCOINRPCE_PARAM                 /* wrong parameter, e.g. NULL */
 
 } BITCOINRPCEcode;
 
@@ -233,6 +233,11 @@ bitcoinrpc_resp_check (bitcoinrpc_resp_t *resp, bitcoinrpc_method_t *method);
 
 
 /* ------------- bitcoinrpc_call --------------------- */
+
+/*
+Call the server with method. Save response in resp.
+If e == NULL, it is ignored.
+*/
 
 BITCOINRPCEcode
 bitcoinrpc_call (bitcoinrpc_cl_t * cl, bitcoinrpc_method_t * method,

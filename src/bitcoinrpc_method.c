@@ -27,7 +27,10 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #include "bitcoinrpc.h"
 #include "bitcoinrpc_global.h"
+#include "bitcoinrpc_method.h"
 
+
+#define BITCOINRPC_METHOD_names_len_ 4   /* remember to update it! */
 
 /*
 Names of Bitcoin RPC methods and how to get them from BITCOINRPC_METHOD codes.
@@ -39,7 +42,6 @@ struct BITCOINRPC_METHOD_struct_
     unsigned char requires_params;
 };
 
-#define BITCOINRPC_METHOD_names_len_ 4   /* remember to update it! */
 
 const struct BITCOINRPC_METHOD_struct_
 BITCOINRPC_METHOD_names_[BITCOINRPC_METHOD_names_len_] =
@@ -61,7 +63,7 @@ bitcoinrpc_method_st_ (const BITCOINRPC_METHOD m)
   }
   return NULL;
 }
-
+/* ------------------------------------------------------------------------- */
 
 struct bitcoinrpc_method
 {
@@ -83,6 +85,10 @@ struct bitcoinrpc_method
 
 };
 
+
+/*
+Internal methods
+*/
 
 BITCOINRPCEcode
 bitcoinrpc_method_make_postjson_ (bitcoinrpc_method_t *method)
@@ -116,6 +122,23 @@ bitcoinrpc_method_make_poststr_ (bitcoinrpc_method_t *method)
   return BITCOINRPCE_OK;
 }
 
+BITCOINRPCEcode
+bitcoinrpc_method_compare_uuid_ (bitcoinrpc_method_t *method, uuid_t u)
+{
+  return ( uuid_compare(method->uuid, u) == 0)?
+    BITCOINRPCE_OK : BITCOINRPCE_CHECK;
+}
+
+
+BITCOINRPCEcode
+bitcoinrpc_method_update_uuid_ (bitcoinrpc_method_t *method)
+{
+  uuid_generate_random (method->uuid);
+  uuid_unparse_lower (method->uuid, method->uuid_str);
+
+  return BITCOINRPCE_OK;
+}
+/* ------------------------------------------------------------------------  */
 
 bitcoinrpc_method_t *
 bitcoinrpc_method_init (const BITCOINRPC_METHOD m)
@@ -137,11 +160,9 @@ bitcoinrpc_method_init_params (const BITCOINRPC_METHOD m,
   method->post_json = NULL;
   method->post_str = NULL;
 
-  uuid_generate_random (method->uuid);
-  uuid_unparse_lower (method->uuid, method->uuid_str);
+  bitcoinrpc_method_update_uuid_ (method);
 
   json_t *jp;
-
   if (NULL == params)
   {
     jp = json_array();
