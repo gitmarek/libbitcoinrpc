@@ -76,7 +76,8 @@ typedef enum {
   BITCOINRPC_METHOD_GETINFO,            /* "getinfo" */
   BITCOINRPC_METHOD_GETNETWORKINFO,     /* "getnetworkinfo" */
   BITCOINRPC_METHOD_GETWALLETINFO,      /* "getwalletinfo" */
-  BITCOINRPC_METHOD_HELP
+  BITCOINRPC_METHOD_HELP,               /* help */
+  BITCOINRPC_METHOD_SETTXFEE            /* settxfee */
 
 } BITCOINRPC_METHOD;
 
@@ -192,14 +193,6 @@ bitcoinrpc_method_free (bitcoinrpc_method_t *method);
 /* Set a new json object as method parameters */
 BITCOINRPCEcode
 bitcoinrpc_method_set_params (bitcoinrpc_method_t *method, json_t *params);
-
-/* Update method parameters with new ones, overwrite existing keys. */
-BITCOINRPCEcode
-bitcoinrpc_method_update_params (bitcoinrpc_method_t *method, json_t *params);
-
-/* Only the values of existing keys are updated */
-BITCOINRPCEcode
-bitcoinrpc_method_update_existing_params (bitcoinrpc_method_t *method, json_t *params);
 
 /* Get a deepcopy of the method's parameters and store it in params */
 BITCOINRPCEcode

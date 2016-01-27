@@ -33,7 +33,6 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #define PROGNAME "bitcoinrpc_test"
 
-
 void
 print_help_page (void)
 {
@@ -51,9 +50,6 @@ print_help_page (void)
     --rpc-user=USER             User name for RPC calls (default: user)\n\
     --rpc-password=PASS         Password for RPC calls (dafault: password)\n\
                                 See your bitcoin.conf file.\n\
-\n\
-The default output is quite verbose, but everything goes to stderr.\n\
-If you want a quiet work, you can safely streamline stderr to /dev/null.\n\
 \n\
 Written by Marek Miller and others, see CREDITS file.\n\
 Report bugs to marek.l.miller@gmail.com\n\
@@ -198,7 +194,7 @@ main (int argc, char **argv)
   /* Parse command line options */
   options_t o;
   /* defaults */
-  strncpy(o.addr, BITCOINRPC_ADDR_DEFAULT, BITCOINRPC_PARAM_MAXLEN);
+  strncpy (o.addr, BITCOINRPC_ADDR_DEFAULT, BITCOINRPC_PARAM_MAXLEN);
   o.port = BITCOINRPC_PORT_DEFAULT;
 
   if (parse_command_options(argc, argv, &o) != 0) {
@@ -206,58 +202,98 @@ main (int argc, char **argv)
     exit (EXIT_FAILURE);
   }
 
-  fprintf(stderr, "%s-%s starting...\n", PROGNAME, BITCOINRPC_VERSION);
+  fprintf (stderr, "%s-%s starting...\n", PROGNAME, BITCOINRPC_VERSION);
 
   if (bitcoinrpc_global_init() != BITCOINRPCE_OK)
     abort();
 
+
+
+  bitcoinrpc_err_t e;
+  char *data;
+  bitcoinrpc_resp_t *r;
+  bitcoinrpc_method_t *m, *m_settx;
+  json_t *j, *params;
+
+  /* initialise client */
   fprintf (stderr, "Initialising the RPC client and connecting to: "
                    "http://%s:%s@%s:%d\n", o.user, o.pass, o.addr, o.port);
 
-  bitcoinrpc_cl_t *cl = bitcoinrpc_cl_init_params(o.user, o.pass,
+  bitcoinrpc_cl_t *cl = bitcoinrpc_cl_init_params (o.user, o.pass,
                                                   o.addr, o.port);
 
   if (NULL == cl)
   {
-    fprintf(stderr, "error: cannot initialise a new client.\n");
-    exit(EXIT_FAILURE);
+    fprintf (stderr, "error: cannot initialise a new client.\n");
+    exit (EXIT_FAILURE);
   }
 
-  bitcoinrpc_method_t *m = bitcoinrpc_method_init(BITCOINRPC_METHOD_GETNETWORKINFO);
+  /* initialise method  */
+  m = bitcoinrpc_method_init (BITCOINRPC_METHOD_GETINFO);
   if (NULL == m)
   {
-    fprintf(stderr, "error: cannot initialise a new method.\n");
-    exit(EXIT_FAILURE);
+    fprintf (stderr, "error: cannot initialise a new method.\n");
+    exit (EXIT_FAILURE);
   }
 
-  bitcoinrpc_resp_t *r  = bitcoinrpc_resp_init();
+  /* initialise response */
+  r = bitcoinrpc_resp_init();
   if (NULL == r)
   {
-    fprintf(stderr, "error: cannot initialise a new responce holder.\n");
+    fprintf (stderr, "error: cannot initialise a new responce holder.\n");
+    exit (EXIT_FAILURE);
+  }
+
+  fprintf (stderr, "getinfo: \n");
+  bitcoinrpc_call (cl, m, r, &e);
+  if (e.code != BITCOINRPCE_OK)
+    fprintf (stderr, "error: %s\n", e.msg);
+
+  j = bitcoinrpc_resp_get (r);
+  data = json_dumps (j, JSON_INDENT(2));
+  fprintf (stderr, "%s\n", data);
+  json_decref (j);
+  free (data);
+
+  /* new method: settxfee */
+  m_settx = bitcoinrpc_method_init (BITCOINRPC_METHOD_SETTXFEE);
+  if (NULL == m_settx)
+  {
+    fprintf (stderr, "error: cannot initialise a new method.\n");
     exit(EXIT_FAILURE);
   }
 
-  bitcoinrpc_err_t e;
-  bitcoinrpc_call(cl, m, r, &e);
+  double x = (double) rand() / RAND_MAX;
+  fprintf (stderr, "Setting tx fee to %.8f\n", x);
+
+  params = json_array();
+  json_array_append_new (params, json_real(x));
+  if ( bitcoinrpc_method_set_params (m_settx, params) != BITCOINRPCE_OK)
+    fprintf (stderr, "error: cannot set params\n");
+  json_decref (params);
+
+  bitcoinrpc_call(cl, m_settx, r, &e);
   if (e.code != BITCOINRPCE_OK)
-  {
-    fprintf(stderr, "error: %s\n", e.msg);
-  }
+    printf("%s\n", e.msg);
+  fprintf (stderr, "new tx fee: ");
 
-  char *data;
-  json_t *j = bitcoinrpc_resp_get(r);
-  data = json_dumps(j, JSON_INDENT(2));
-  fprintf(stderr, "%s\n", data);
-  free(data);
+  /* call getinfo one more time */
+  bitcoinrpc_call (cl, m, r, &e);
 
-  fprintf(stderr, "Free the resources... ");
-  bitcoinrpc_cl_free(cl);
-  bitcoinrpc_method_free(m);
-  bitcoinrpc_resp_free(r);
+  j = bitcoinrpc_resp_get (r);
+  fprintf (stderr, "%.8f\n", json_real_value ( json_object_get ( json_object_get (j, "result"), "paytxfee")));
+  json_decref (j);
+
+
+
+  fprintf (stderr, "Free the resources... ");
+  bitcoinrpc_cl_free (cl);
+  bitcoinrpc_method_free (m);
+  bitcoinrpc_resp_free (r);
   if (bitcoinrpc_global_cleanup() != BITCOINRPCE_OK)
   {
-    fprintf(stderr, "failure.\n");
-    abort();
+    fprintf (stderr, "failure.\n");
+    abort ();
   }
 
   fprintf(stderr, "done.\n");

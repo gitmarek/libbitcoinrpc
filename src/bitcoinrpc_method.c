@@ -29,9 +29,6 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "bitcoinrpc_global.h"
 #include "bitcoinrpc_method.h"
 
-
-#define BITCOINRPC_METHOD_names_len_ 4   /* remember to update it! */
-
 /*
 Names of Bitcoin RPC methods and how to get them from BITCOINRPC_METHOD codes.
 */
@@ -42,6 +39,7 @@ struct BITCOINRPC_METHOD_struct_
     unsigned char requires_params;
 };
 
+#define BITCOINRPC_METHOD_names_len_ 5   /* remember to update it! */
 
 const struct BITCOINRPC_METHOD_struct_
 BITCOINRPC_METHOD_names_[BITCOINRPC_METHOD_names_len_] =
@@ -50,6 +48,7 @@ BITCOINRPC_METHOD_names_[BITCOINRPC_METHOD_names_len_] =
   { BITCOINRPC_METHOD_GETNETWORKINFO,     "getnetworkinfo",      0 },
   { BITCOINRPC_METHOD_GETWALLETINFO,      "getwalletinfo",       0 },
   { BITCOINRPC_METHOD_HELP,               "help",                0 },
+  { BITCOINRPC_METHOD_SETTXFEE,           "settxfee",            1 },
 };
 
 
@@ -235,68 +234,6 @@ bitcoinrpc_method_set_params (bitcoinrpc_method_t *method, json_t *params)
   method->params_json = jp;
 
   return bitcoinrpc_method_update_uuid_ (method);
-}
-
-/* Update method parameters with new ones, overwrite existing keys. */
-BITCOINRPCEcode
-bitcoinrpc_method_update_params (bitcoinrpc_method_t *method, json_t *params)
-{
-  json_t *jp;
-
-  if (NULL == method)
-    return BITCOINRPCE_PARAM;
-
-  if (NULL == params)
-  {
-    jp = json_array();
-  }
-  else
-  {
-    jp = json_deep_copy(params);
-  }
-
-  if (NULL == jp)
-    return BITCOINRPCE_JSON;
-
-  if (json_object_update(method->params_json, jp) != 0)
-  {
-      json_decref(jp);
-      return BITCOINRPCE_JSON;
-  }
-  json_decref(jp);
-
-  return bitcoinrpc_method_update_uuid_ (method);
-}
-
-/* Only the values of existing keys are updated */
-BITCOINRPCEcode
-bitcoinrpc_method_update_existing_params (bitcoinrpc_method_t *method, json_t *params)
-{
-    json_t *jp;
-
-    if (NULL == method)
-      return BITCOINRPCE_PARAM;
-
-    if (NULL == params)
-    {
-      jp = json_array();
-    }
-    else
-    {
-      jp = json_deep_copy(params);
-    }
-
-    if (NULL == jp)
-      return BITCOINRPCE_JSON;
-
-    if (json_object_update_existing(method->params_json, jp) != 0)
-    {
-        json_decref(jp);
-        return BITCOINRPCE_JSON;
-    }
-    json_decref(jp);
-
-    return bitcoinrpc_method_update_uuid_  (method);
 }
 
 
