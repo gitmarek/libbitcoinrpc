@@ -48,6 +48,7 @@ struct bitcoinrpc_cl
   unsigned int tmpstr_len;
 
   CURL *curl;
+  struct curl_slist *curl_headers;
 
   /*
   This is a legacy pointer. You can point to an auxilliary structure,
@@ -124,6 +125,14 @@ bitcoinrpc_cl_init_params ( const char* user, const char* pass,
   bitcoinrpc_cl_update_url_ (cl);
 
   cl->curl = curl_easy_init();
+
+  cl->curl_headers = NULL;
+  cl->curl_headers = curl_slist_append(cl->curl_headers, "content-type: text/plain;");
+  if (NULL == cl->curl_headers)
+    return NULL;
+
+	curl_easy_setopt(cl->curl, CURLOPT_HTTPHEADER, cl->curl_headers);
+
   if (NULL == cl->curl)
     return NULL;
 
@@ -135,6 +144,7 @@ BITCOINRPCEcode
 bitcoinrpc_cl_free (bitcoinrpc_cl_t *cl)
 {
 
+  curl_slist_free_all(cl->curl_headers);
   curl_easy_cleanup (cl->curl);
   bitcoinrpc_global_freefunc(cl);
   cl->curl = NULL;
