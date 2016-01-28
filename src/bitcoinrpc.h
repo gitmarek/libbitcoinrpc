@@ -167,6 +167,13 @@ bitcoinrpc_cl_get_user (bitcoinrpc_cl_t *cl, char *buf);
 BITCOINRPCEcode
 bitcoinrpc_cl_get_pass (bitcoinrpc_cl_t *cl, char *buf);
 
+BITCOINRPCEcode
+bitcoinrpc_cl_get_addr (bitcoinrpc_cl_t *cl, char *buf);
+
+BITCOINRPCEcode
+bitcoinrpc_cl_get_port (bitcoinrpc_cl_t *cl, unsigned int *bufi);
+
+
 /*
 Copy value to buf. The buffer is assumed to contain at least
 BITCOINRPC_URL_MAXLEN chars. At most BITCOINRPC_URL_MAXLEN chars are copied.

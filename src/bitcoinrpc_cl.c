@@ -176,6 +176,28 @@ bitcoinrpc_cl_get_pass (bitcoinrpc_cl_t *cl, char *buf)
 
 
 BITCOINRPCEcode
+bitcoinrpc_cl_get_addr (bitcoinrpc_cl_t *cl, char *buf)
+{
+  if (NULL == cl || NULL == buf)
+    return BITCOINRPCE_PARAM;
+  strncpy(buf, cl->addr, BITCOINRPC_PARAM_MAXLEN);
+
+  return BITCOINRPCE_OK;
+}
+
+
+BITCOINRPCEcode
+bitcoinrpc_cl_get_port (bitcoinrpc_cl_t *cl, unsigned int *bufi)
+{
+  if (NULL == cl || NULL == bufi)
+    return BITCOINRPCE_PARAM;
+  *bufi = cl->port;
+
+  return BITCOINRPCE_OK;
+}
+
+
+BITCOINRPCEcode
 bitcoinrpc_cl_get_url (bitcoinrpc_cl_t *cl, char *buf)
 {
 

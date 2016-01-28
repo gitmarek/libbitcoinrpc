@@ -1,16 +1,19 @@
 # bitcoinrpc
+
 C language interface to JSON-RPC Bitcoin API.
 
 The library provides basic routines to send RPC queries to a listening
 Bitcoin node, fetch responses and analyse errors. Its main features include:
 
 * Reusable components, allowing to perform many queries through one open
-connection, as well as query listening servers with the same method
+connection, as well as to query many listening servers with the same method
 without reallocating resources.
 * Proper error handling.
 * Convenience functions to perform simple one-time tasks in an efficient way.
 
+
 ## To build the shared library
+
 Please make sure that you have all the required dependencies installed.
 Then type in the project folder:
 
@@ -24,7 +27,9 @@ use:
 
     make clean  
 
+
 ### Build dependencies
+
 These dependencies are required, if you want to use the code:
 
  Library     | Purpose             | Description
@@ -40,11 +45,14 @@ command:
 
 (or other libcurl4-\*-dev flavour).
 
+
 ## Installation
 
 (not implemented yet)
 
+
 ## Usage
+
 To use the library, it is enough to include the header file:
 
     #include <bitcoinrpc.h>
@@ -54,9 +62,17 @@ in your source code and provide the following linker flag during compilation:
     -lbitcoinrpc
 
 For further information, see documentation in [doc/](./doc/README.md)
-and the header file: `src/bitcoinrpc.h`.
-*Please notice that the code is in the beta stage.*
+and the header file: [`src/bitcoinrpc.h`](./src/bitcoinrpc.h).
 
-# License
+*Please notice that the code is in the very early stage of development.*
+
+
+## History
+
+See [Changelog.md](./Changelog.md) and [CREDITS](./CREDITS).
+
+
+## License
+
 The source code is released under the terms of the MIT license.  Please, see
 [LICENSE](./LICENSE) for more information.
