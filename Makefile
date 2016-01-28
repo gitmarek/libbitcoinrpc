@@ -24,32 +24,49 @@ MAJOR := 0
 MINOR := 0
 VERSION := $(MAJOR).$(MINOR)
 
-NAME := bitcoinrpc
-SRCDIR := src
-TESTNAME := $(NAME)_test
-TESTSRCDIR := $(SRCDIR)/test
-LIBDIR := .lib
-BINDIR := bin
-LDFLAGS := -luuid -ljansson -lcurl
+NAME        := bitcoinrpc
+SRCDIR      := src
+DOCDIR      := doc
+TESTNAME    := $(NAME)_test
+TESTSRCDIR  := $(SRCDIR)/test
+LIBDIR      := .lib
+BINDIR      := bin
+LDFLAGS     := -luuid -ljansson -lcurl
 TESTLDFLAGS := -ljansson
 
 CFLAGS := -fPIC -O3 -g -Wall -Werror -Wextra -std=c99
 CC := gcc
 
+SHELL := /bin/sh
+
+INSTALL_PREFIX   := /usr/local
+INSTALL_DOCSPATH := /usr/share/doc
+
+INSTALL_LIBPATH    := $(INSTALL_PREFIX)/lib
+INSTALL_HEADERPATH := $(INSTALL_PREFIX)/include
+INSTALL_MANPATH    := $(shell manpath | cut -f 1 -d ":")
+
+# Programs for installation
+INSTALL_PROGRAM = $(INSTALL)
+INSTALL = install
+INSTALL_DATA = $(INSTALL) -m 644
+
+RM = rm -fv
 # -----------------------------------------------------------------------------
 CFLAGS += -D VERSION=\"$(VERSION)\"
 
-SHELL := /bin/sh
 SRCFILES = $(shell find $(SRCDIR) -maxdepth 1 -iname '*.c')
 OBJFILES = $(shell echo $(SRCFILES) | sed 's/\.c/\.o/g')
 
-
+.PHONY: all
 all: prep lib test
 
+.PHONY: prep
 prep:
 	@echo
 	@mkdir -p $(LIBDIR) $(BINDIR)
 
+.PHONY: lib
 lib: $(LIBDIR)/lib$(NAME).so
 
 $(LIBDIR)/lib$(NAME).so: $(LIBDIR)/lib$(NAME).so.$(VERSION)
@@ -69,7 +86,8 @@ $(OBJFILES):
 	-o $@
 
 
-# --------- test ----------------
+# --------- test -----------------
+.PHONY: test
 test: lib $(TESTNAME)
 
 $(TESTNAME): $(TESTSRCDIR)/$(TESTNAME).o
@@ -82,9 +100,29 @@ $(TESTSRCDIR)/$(TESTNAME).o:
 		-l$(NAME) -L$(LIBDIR) -I $(SRCDIR) -Wl,-rpath=$(LIBDIR)
 
 
-# ---------- clean --------------
-
+# ---------- clean ----------------
 .PHONY: clean
 clean:
 	$(RM) $(SRCDIR)/*.o $(SRCDIR)/test/*.o $(LIBDIR)/*.so* $(BINDIR)/$(NAME)_test
 	$(RM) -d $(LIBDIR) $(BINDIR)
+
+# ---------- install --------------
+.PHONY: install
+install:
+	@echo "Installing to $(INSTALL_PREFIX)/"
+	$(INSTALL) $(LIBDIR)/lib$(NAME).so.$(VERSION) $(INSTALL_LIBPATH)
+	ldconfig  -n $(INSTALL_LIBPATH)
+	ln -fs lib$(NAME).so.$(MAJOR) $(INSTALL_LIBPATH)/lib$(NAME).so
+	$(INSTALL_DATA) $(SRCDIR)/$(NAME).h $(INSTALL_HEADERPATH)
+	@echo "Installing docs to $(INSTALL_DOCSPATH)/$(NAME)"
+	mkdir -p $(INSTALL_DOCSPATH)/$(NAME)
+	$(INSTALL_DATA) $(DOCDIR)/*.md $(INSTALL_DOCSPATH)/$(NAME)
+	@echo "Installing man pages"
+	$(INSTALL_DATA) $(DOCDIR)/man3/$(NAME)*.gz $(INSTALL_MANPATH)/man3
+
+.PHONY: uninstall
+uninstall:
+	@echo "Removing from $(INSTALL_LIBPATH)/"
+	@$(RM) $(INSTALL_LIBPATH)/lib$(NAME).so*
+	@$(RM) $(INSTALL_HEADERPATH)/$(NAME).h
+	@$(RM) $(INSTALL_MANPATH)/man3/$(NAME)*.gz
