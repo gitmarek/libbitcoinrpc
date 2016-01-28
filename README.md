@@ -48,7 +48,7 @@ command:
 
 ## Installation
 
-(not implemented yet)
+*(not implemented yet)*
 
 
 ## Usage
