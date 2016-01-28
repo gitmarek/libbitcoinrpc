@@ -55,8 +55,22 @@ To install the successfully compiled source on Unix type systems, please type:
 as a privileged user  (on Debian-like systems: `sudo make install`).
 By default, it will install the library in `/usr/local/lib` and the header
 file in `/usr/local/include`.  It will also install documentation files in
-`/usr/share/doc/bitcoinrpc`, as well as man pages that all start with
-`bitcoinrpc`.
+`/usr/share/doc/bitcoinrpc`, as well as man pages that all start with:
+'bitcoinrpc'.
+
+On some systems, especially Ubuntu, the directory `/usr/local/lib` is not
+included by default to the `ldconfig` search path.  So either you change
+the `Makefile`'s `INSTALL_PREFIX` value to `/usr` (which may be not a very good
+idea, since most of the libraries installed by `apt-get` are there),
+or add the following line to your `/etc/ld.so.conf`:
+
+    /usr/local/lib
+
+and run:
+
+    sudo ldconfig
+
+See `man 8 ldconfig` for more information.
 
 To remove the files, type:
 
