@@ -30,6 +30,7 @@ format. Just type: `man 3 bitcoinrpc`. *(not implemented yet!)*
 
 
 ### Final note
+
 As you have detected, the main author of this software and its documentation
 is not a native English speaker.  Hence, he will highly appreciate any
 suggestions of how to improve this text in terms of spelling, grammar, syntax

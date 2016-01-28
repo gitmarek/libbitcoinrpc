@@ -52,8 +52,8 @@ To install the successfully compiled source on Unix type systems, please type:
 
     make install
 
-as a privileged user  (on Debian systems: `sudo make install`).
-By default, it will install the library in `/usr/local/lin` and the header
+as a privileged user  (on Debian-like systems: `sudo make install`).
+By default, it will install the library in `/usr/local/lib` and the header
 file in `/usr/local/include`.  It will also install documentation files in
 `/usr/share/doc/bitcoinrpc`, as well as man pages that all start with
 `bitcoinrpc`.
