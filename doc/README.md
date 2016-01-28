@@ -17,8 +17,8 @@ To quickly get a grasp of how to use the library in your code, please see
 the [tutorial](./tutorial.md) and [examples](./examples.md).  Besides, the
 following documents provide more information:
 
-* [design](./design.md) -- overview of the design behind the library
-* [reference](./reference.md) -- full ABI and API reference
+* [Design](./design.md) -- overview of the design behind the library
+* [Reference](./reference.md) -- full ABI and API reference
 
 Instructions how to build and install the library can be found in
 `README.md` file, in the project source directory.
