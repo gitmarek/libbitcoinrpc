@@ -285,10 +285,16 @@ main (int argc, char **argv)
   if (e.code != BITCOINRPCE_OK)
     fprintf(stderr, "%s\n", e.msg);
 
-
   j = bitcoinrpc_resp_get (r);
   fprintf (stderr, "%.8f\n", json_real_value ( json_object_get ( json_object_get (j, "result"), "paytxfee")));
   json_decref (j);
+
+  fprintf (stderr,
+    " * Test convenience functions:\n");
+
+  unsigned int c;
+  bitcoinrpc_cget_getconnectioncount(cl, &c, &e);
+  fprintf (stderr, "getconnectioncount = %d\n", c);
 
 
 

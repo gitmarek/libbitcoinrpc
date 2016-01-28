@@ -134,3 +134,65 @@ bitcoinrpc_call (bitcoinrpc_cl_t * cl, bitcoinrpc_method_t * method,
 
   bitcoinrpc_RETURN_OK;
 }
+
+
+
+/*
+Convenience functions
+*/
+
+#define bitcoinrpc_convenience_init_MACRO_(method) \
+  bitcoinrpc_method_t *m = NULL; \
+  bitcoinrpc_resp_t *r = NULL; \
+  json_t *j = NULL; \
+  \
+  m = bitcoinrpc_method_init(method); \
+  if (NULL == m) \
+  { \
+    bitcoinrpc_RETURN (e, BITCOINRPCE_ALLOC, "cannot initialise a new method"); \
+  } \
+  r = bitcoinrpc_resp_init(); \
+  if (NULL == r) \
+  { \
+    bitcoinrpc_method_free (m); \
+    bitcoinrpc_RETURN (e, BITCOINRPCE_ALLOC, "cannot initialise a new response object"); \
+  }
+
+#define bitcoinrpc_convenience_call_MACRO_\
+  bitcoinrpc_call (cl, m, r, e);\
+  if (e->code != BITCOINRPCE_OK)\
+  {\
+    bitcoinrpc_method_free (m);\
+    bitcoinrpc_resp_free (r);\
+    return e->code;  /* pass error further */\
+  } \
+  j = bitcoinrpc_resp_get (r);
+
+#define bitcoinrpc_convenience_free_MACRO_ \
+  json_decref(j); \
+  bitcoinrpc_method_free (m); \
+  bitcoinrpc_resp_free (r);
+
+
+
+BITCOINRPCEcode
+bitcoinrpc_cget_getconnectioncount (bitcoinrpc_cl_t *cl, unsigned int *c,
+                                    bitcoinrpc_err_t *e)
+{
+  json_t *ctmp;
+
+  bitcoinrpc_convenience_init_MACRO_ (BITCOINRPC_METHOD_GETCONNECTIONCOUNT);
+  bitcoinrpc_convenience_call_MACRO_;
+
+  // fprintf (stderr, "%s\n", json_dumps (j, JSON_INDENT(2)));
+  ctmp =   json_object_get (j, "result");
+  if (NULL == ctmp)
+  {
+    bitcoinrpc_RETURN (e, BITCOINRPCE_JSON, "cannot parse the result");
+  }
+  *c = json_integer_value(ctmp);
+  json_decref(ctmp);
+
+  bitcoinrpc_convenience_free_MACRO_;
+  bitcoinrpc_RETURN_OK;
+}

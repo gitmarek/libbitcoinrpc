@@ -78,7 +78,10 @@ typedef enum {
   BITCOINRPC_METHOD_HELP,
   BITCOINRPC_METHOD_STOP,
 
+/* Network */
   BITCOINRPC_METHOD_GETNETWORKINFO,
+  BITCOINRPC_METHOD_GETCONNECTIONCOUNT,
+
   BITCOINRPC_METHOD_GETWALLETINFO,
   BITCOINRPC_METHOD_SETTXFEE
 
@@ -152,7 +155,6 @@ bitcoinrpc_cl_t*
 bitcoinrpc_cl_init_params ( const char* user, const char* pass,
                             const char* addr, const unsigned int port );
 
-
 /* Free the handle. */
 BITCOINRPCEcode
 bitcoinrpc_cl_free (bitcoinrpc_cl_t *cl);
@@ -172,7 +174,6 @@ bitcoinrpc_cl_get_addr (bitcoinrpc_cl_t *cl, char *buf);
 
 BITCOINRPCEcode
 bitcoinrpc_cl_get_port (bitcoinrpc_cl_t *cl, unsigned int *bufi);
-
 
 /*
 Copy value to buf. The buffer is assumed to contain at least
@@ -263,5 +264,18 @@ bitcoinrpc_call (bitcoinrpc_cl_t * cl, bitcoinrpc_method_t * method,
                  bitcoinrpc_resp_t *resp, bitcoinrpc_err_t *e);
 
 
+/* ------------- Convenience functions --------------- */
+
+/*
+If e == NULL below, then it is ignored
+*/
+
+/*
+Get the total number of connections (both inbound and outbound)
+via 'getconnectioncount' method and save it in c.
+*/
+BITCOINRPCEcode
+bitcoinrpc_cget_getconnectioncount (bitcoinrpc_cl_t *cl, unsigned int *c,
+                                    bitcoinrpc_err_t *e);
 
 #endif  /* BITCOINRPC_H_51fe7847_aafe_4e78_9823_eff094a30775 */
