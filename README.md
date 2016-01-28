@@ -48,7 +48,19 @@ command:
 
 ## Installation
 
-*(not implemented yet)*
+To install the successfully compiled source on Unix type systems, please type:
+
+    make install
+
+as a privileged user  (on Debian systems: `sudo make install`).
+By default, it will install the library in `/usr/local/lin` and the header
+file in `/usr/local/include`.  It will also install documentation files in
+`/usr/share/doc/bitcoinrpc`, as well as man pages that all start with
+`bitcoinrpc`.
+
+To remove the files, type:
+
+    make uninstall
 
 
 ## Usage
@@ -76,3 +88,6 @@ See [Changelog.md](./Changelog.md) and [CREDITS](./CREDITS).
 
 The source code is released under the terms of the MIT license.  Please, see
 [LICENSE](./LICENSE) for more information.
+
+
+*last updated: 2016-01-28*

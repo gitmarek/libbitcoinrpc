@@ -132,6 +132,6 @@ Or you can use convenience functions in the following way:
 5. Clean up the library's internal state: `bitcoinrpc_global_cleanup()`.
 
 For more specific explanation of how to you the library, please refer to
-the [tutorial](./tutoria.md) and [examples](./examples.md).
+the [tutorial](./tutorial.md) and [examples](./examples.md).
 
 *last updated: 2016-01-28*

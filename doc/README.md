@@ -21,7 +21,7 @@ following documents provide more information:
 * [reference](./reference.md) -- full ABI and API reference
 
 Instructions how to build and install the library can be found in
-[README.md](../README.md), in the project main directory.
+`README.md` file, in the project source directory.
 
 After you have installed the software, you should be able to locally
 browse its man pages, describing the library data structures and routines,
