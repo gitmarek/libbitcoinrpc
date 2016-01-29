@@ -35,8 +35,9 @@ version.
 
 Whenever there are changes done to the library that will cause an ABI breakage,
 a soname major number of the library is bumped to a higher one. Again,
-**except for beta**.  In fact, soname number and major version number should
-stay the same in the future. The history of soname bumps looks as follows:
+**except for beta**.  In fact, the soname number and the major version number
+should stay the same in the future.
+The history of soname bumps looks as follows:
 
   * libbitcoinrpc.so.0, *January 2016*
 
@@ -63,6 +64,44 @@ library it is enough to
 What follows is a detailed description of each method and data structure
 within the library.  For a quick and easy introduction to typical use cases,
 see [tutorial](./tutorial.md) and [examples](./examples.md).
+
+
+### Defined constants
+
+The following is the list of constants defined in `bitcoinrpc.h` header.
+
+* `BITCOINRPC_LIBNAME` = "bitcoinrpc"
+
+
+* `BITCOINRPC_VERSION`
+
+  Version string: "MAJOR.MINOR.PATCH"
+
+
+* `BITCOINRPC_USER_DEFAULT` = ""
+* `BITCOINRPC_PASS_DEFAULT` = ""
+* `BITCOINRPC_ADDR_DEFAULT` = "127.0.0.1"
+* `BITCOINRPC_PORT_DEFAULT` = 8332
+
+  Defalut parameters of a RPC client.
+
+
+* `BITCOINRPC_PARAM_MAXLEN` = 33 (32 bytes + `'\0'`)
+
+  Maximal length of a string that holds a client's parameter
+  (user name, password or address), including the terminating `'\0'` character.
+
+
+* `BITCOINRPC_URL_MAXLEN`
+
+  Maximal length of the server url:
+  `"http://%s:%d" = 2*BITCOINRPC_PARAM_MAXLEN + 15`
+
+
+* `BITCOINRPC_ERRMSG_MAXLEN`
+
+  Maximal length of error message reported via `bitcoinrpc_err_t`
+
 
 ### Error codes
 

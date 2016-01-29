@@ -7,3 +7,4 @@ bitcoinrpc_cset_something();
 3. `make install` rule for `Makefile`;
 4. documentation (including man pages);
 5. extensive testing.
+6. add to makefile library constants like BITCOINRPC_PARAM_MAXLEN
