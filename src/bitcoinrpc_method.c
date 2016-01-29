@@ -36,7 +36,6 @@ struct BITCOINRPC_METHOD_struct_
 {
     BITCOINRPC_METHOD m;
     char *str;
-    unsigned char requires_params;
 };
 
 #define BITCOINRPC_METHOD_names_len_ 7   /* remember to update it! */
@@ -44,13 +43,13 @@ struct BITCOINRPC_METHOD_struct_
 const struct BITCOINRPC_METHOD_struct_
 BITCOINRPC_METHOD_names_[BITCOINRPC_METHOD_names_len_] =
 {
-  { BITCOINRPC_METHOD_GETINFO,                "getinfo",             0 },
-  { BITCOINRPC_METHOD_GETCONNECTIONCOUNT,     "getconnectioncount",  0 },
-  { BITCOINRPC_METHOD_GETNETWORKINFO,         "getnetworkinfo",      0 },
-  { BITCOINRPC_METHOD_GETWALLETINFO,          "getwalletinfo",       0 },
-  { BITCOINRPC_METHOD_HELP,                   "help",                0 },
-  { BITCOINRPC_METHOD_SETTXFEE,               "settxfee",            1 },
-  { BITCOINRPC_METHOD_STOP,                   "stop",                1 }
+  { BITCOINRPC_METHOD_GETINFO,                "getinfo",               },
+  { BITCOINRPC_METHOD_GETCONNECTIONCOUNT,     "getconnectioncount",    },
+  { BITCOINRPC_METHOD_GETNETWORKINFO,         "getnetworkinfo",        },
+  { BITCOINRPC_METHOD_GETWALLETINFO,          "getwalletinfo",         },
+  { BITCOINRPC_METHOD_HELP,                   "help",                  },
+  { BITCOINRPC_METHOD_SETTXFEE,               "settxfee",              },
+  { BITCOINRPC_METHOD_STOP,                   "stop",                  }
 };
 
 
@@ -107,13 +106,13 @@ bitcoinrpc_method_make_postjson_ (bitcoinrpc_method_t *method)
 
   json_object_set_new (method->post_json, "id", json_string (method->uuid_str));
 
-  if (ms->requires_params)
+  if (NULL == method->params_json)
   {
-    json_object_set (method->post_json, "params", method->params_json);
+    json_object_set_new (method->post_json, "params", json_array());
   }
   else
   {
-    json_object_set (method->post_json, "params", json_array());
+    json_object_set (method->post_json, "params", method->params_json);
   }
 
 
@@ -175,15 +174,15 @@ bitcoinrpc_method_init_params (const BITCOINRPC_METHOD m,
   json_t *jp;
   if (NULL == params)
   {
-    jp = json_array();
+    jp = NULL;
   }
   else
   {
     jp = json_deep_copy (params);
+    if (NULL == jp)
+      return NULL;
   }
 
-  if (NULL == jp)
-    return NULL;
   method->params_json = jp;
 
   method->post_json = json_object();
@@ -222,15 +221,14 @@ bitcoinrpc_method_set_params (bitcoinrpc_method_t *method, json_t *params)
 
   if (NULL == params)
   {
-    jp = json_array();
+    jp = NULL;
   }
   else
   {
-    jp = json_deep_copy(params);
+    jp = json_deep_copy (params);
+    if (NULL == jp)
+      return BITCOINRPCE_JSON;
   }
-
-  if (NULL == jp)
-    return BITCOINRPCE_JSON;
 
   json_decref(method->params_json);
   method->params_json = jp;
@@ -247,9 +245,16 @@ bitcoinrpc_method_get_params (bitcoinrpc_method_t *method, json_t **params)
   if (NULL == params || NULL == method)
     return BITCOINRPCE_ARG;
 
-  jp = json_deep_copy(method->params_json);
-  if (NULL == jp)
-    return BITCOINRPCE_JSON;
+  if (NULL == params)
+  {
+    jp = NULL;
+  }
+  else
+  {
+    jp = json_deep_copy(method->params_json);
+    if (NULL == jp)
+      return BITCOINRPCE_JSON;
+  }
 
   *params = jp;
 
