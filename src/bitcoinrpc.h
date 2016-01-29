@@ -73,6 +73,9 @@ typedef enum {
 /* RPC methods */
 typedef enum {
 
+  BITCOINRPC_METHOD_NOTIMPLEMENTED,            /* reserved for possible */
+                                               /* user extensions       */
+
   BITCOINRPC_METHOD_GETBESTBLOCKHASH,          /* getbestblockhash */
   BITCOINRPC_METHOD_GETBLOCK,                  /* getblock */
   BITCOINRPC_METHOD_GETBLOCKCHAININFO,         /* getblockchaininfo */

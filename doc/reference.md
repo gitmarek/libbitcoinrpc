@@ -244,10 +244,14 @@ the original pointer by decreasing its reference count:
 
 * **BITCOINRPC_METHOD**
 
-  The enum type storing RPC method names:
+  The enum type storing RPC method names.
+  See Bitcoin [RPC reference](https://bitcoin.org/en/developer-reference#rpc-quick-reference).
 
 ```
 typedef enum {
+
+  BITCOINRPC_METHOD_NOTIMPLEMENTED,            /* reserved for possible */
+                                               /* user extensions       */
 
   BITCOINRPC_METHOD_GETBESTBLOCKHASH,          /* getbestblockhash */
   BITCOINRPC_METHOD_GETBLOCK,                  /* getblock */

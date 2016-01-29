@@ -38,12 +38,14 @@ struct BITCOINRPC_METHOD_struct_
     char *str;
 };
 
-#define BITCOINRPC_METHOD_names_len_ 82   /* remember to update it! */
+#define BITCOINRPC_METHOD_names_len_ 83   /* remember to update it! */
 
 const struct BITCOINRPC_METHOD_struct_
 BITCOINRPC_METHOD_names_[BITCOINRPC_METHOD_names_len_] =
 {
+  { BITCOINRPC_METHOD_NOTIMPLEMENTED,            NULL                        },
 
+  /* Blockchain RPCs */
   { BITCOINRPC_METHOD_GETBESTBLOCKHASH,          "getbestblockhash"          },
   { BITCOINRPC_METHOD_GETBLOCK,                  "getblock"                  },
   { BITCOINRPC_METHOD_GETBLOCKCHAININFO,         "getblockchaininfo"         },
