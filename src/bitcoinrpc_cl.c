@@ -157,7 +157,7 @@ BITCOINRPCEcode
 bitcoinrpc_cl_get_user (bitcoinrpc_cl_t *cl, char *buf)
 {
   if (NULL == cl || NULL == buf)
-    return BITCOINRPCE_PARAM;
+    return BITCOINRPCE_ARG;
   strncpy(buf, cl->user, BITCOINRPC_PARAM_MAXLEN);
 
   return BITCOINRPCE_OK;
@@ -168,7 +168,7 @@ BITCOINRPCEcode
 bitcoinrpc_cl_get_pass (bitcoinrpc_cl_t *cl, char *buf)
 {
   if (NULL == cl || NULL == buf)
-    return BITCOINRPCE_PARAM;
+    return BITCOINRPCE_ARG;
   strncpy(buf, cl->pass, BITCOINRPC_PARAM_MAXLEN);
 
   return BITCOINRPCE_OK;
@@ -179,7 +179,7 @@ BITCOINRPCEcode
 bitcoinrpc_cl_get_addr (bitcoinrpc_cl_t *cl, char *buf)
 {
   if (NULL == cl || NULL == buf)
-    return BITCOINRPCE_PARAM;
+    return BITCOINRPCE_ARG;
   strncpy(buf, cl->addr, BITCOINRPC_PARAM_MAXLEN);
 
   return BITCOINRPCE_OK;
@@ -190,7 +190,7 @@ BITCOINRPCEcode
 bitcoinrpc_cl_get_port (bitcoinrpc_cl_t *cl, unsigned int *bufi)
 {
   if (NULL == cl || NULL == bufi)
-    return BITCOINRPCE_PARAM;
+    return BITCOINRPCE_ARG;
   *bufi = cl->port;
 
   return BITCOINRPCE_OK;
@@ -204,7 +204,7 @@ bitcoinrpc_cl_get_url (bitcoinrpc_cl_t *cl, char *buf)
   bitcoinrpc_cl_update_url_ (cl); /* one never knows */
 
   if (NULL == cl || NULL == buf)
-    return BITCOINRPCE_PARAM;
+    return BITCOINRPCE_ARG;
   strncpy(buf, cl->url, BITCOINRPC_URL_MAXLEN);
 
   return BITCOINRPCE_OK;

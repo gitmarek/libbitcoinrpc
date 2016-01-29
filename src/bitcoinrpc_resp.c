@@ -70,7 +70,7 @@ bitcoinrpc_resp_update_uuid_ (bitcoinrpc_resp_t *resp)
   uuid_t uuid;
 
   if (NULL == resp || NULL == resp->json)
-    return BITCOINRPCE_PARAM;
+    return BITCOINRPCE_ARG;
 
   json_t *jid = json_deep_copy (json_object_get (resp->json, "id"));
   if (NULL == jid)
@@ -81,7 +81,7 @@ bitcoinrpc_resp_update_uuid_ (bitcoinrpc_resp_t *resp)
 
   e = uuid_parse(uuid_str, uuid);
   if (e != 0)
-    return BITCOINRPCE_PARAM;
+    return BITCOINRPCE_ARG;
   uuid_copy(resp->uuid,uuid);
   json_decref(jid);
 
@@ -105,7 +105,7 @@ BITCOINRPCEcode
 bitcoinrpc_resp_free (bitcoinrpc_resp_t *resp)
 {
   if (NULL == resp)
-    return BITCOINRPCE_PARAM;
+    return BITCOINRPCE_ARG;
 
   json_decref (resp->json);
   bitcoinrpc_global_freefunc (resp);
@@ -135,7 +135,7 @@ BITCOINRPCEcode
 bitcoinrpc_resp_check (bitcoinrpc_resp_t *resp, bitcoinrpc_method_t *method)
 {
   if (NULL == resp || NULL == method)
-    return BITCOINRPCE_PARAM;
+    return BITCOINRPCE_ARG;
 
   bitcoinrpc_resp_update_uuid_ (resp);
   return bitcoinrpc_method_compare_uuid_ (method, resp->uuid);

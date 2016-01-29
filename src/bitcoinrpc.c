@@ -73,7 +73,7 @@ bitcoinrpc_call (bitcoinrpc_cl_t * cl, bitcoinrpc_method_t * method,
   char curl_errbuf[CURL_ERROR_SIZE];
 
   if (NULL == cl || NULL == method || NULL == resp )
-    return BITCOINRPCE_PARAM;
+    return BITCOINRPCE_ARG;
 
   j = json_object();
   if (NULL == j)

@@ -57,15 +57,15 @@ Maximal length of the server url:
 /* Error codes */
 typedef enum {
 
-  BITCOINRPCE_OK,                   /* Success */
-  BITCOINRPCE_CHECK,                /* see: bitcoinrpc_resp_check() */
-  BITCOINRPCE_ERR,                  /* unspecific error */
-  BITCOINRPCE_ALLOC,                /* cannot allocate more memory */
-  BITCOINRPCE_BUG,                  /* a bug in the library (please report) */
-  BITCOINRPCE_CON,                  /* connection error */
-  BITCOINRPCE_CURLE,                /* libcurl returned some error */
-  BITCOINRPCE_JSON,                 /* error parsing json data */
-  BITCOINRPCE_PARAM                 /* wrong parameter, e.g. NULL */
+  BITCOINRPCE_OK,                 /* Success */
+  BITCOINRPCE_ALLOC,              /* cannot allocate more memory */
+  BITCOINRPCE_ARG,                /* wrong argument, e.g. NULL */
+  BITCOINRPCE_BUG,                /* a bug in the library (please report) */
+  BITCOINRPCE_CHECK,              /* see: bitcoinrpc_resp_check() */
+  BITCOINRPCE_CON,                /* connection error */
+  BITCOINRPCE_CURLE,              /* libcurl returned some error */
+  BITCOINRPCE_ERR,                /* unspecific error */
+  BITCOINRPCE_JSON,               /* error parsing json data */
 
 } BITCOINRPCEcode;
 

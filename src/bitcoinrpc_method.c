@@ -202,7 +202,7 @@ BITCOINRPCEcode
 bitcoinrpc_method_free (bitcoinrpc_method_t *method)
 {
   if (NULL == method)
-    return BITCOINRPCE_PARAM;
+    return BITCOINRPCE_ARG;
 
   json_decref(method->post_json);
   json_decref(method->params_json);
@@ -218,7 +218,7 @@ bitcoinrpc_method_set_params (bitcoinrpc_method_t *method, json_t *params)
   json_t *jp;
 
   if (NULL == method)
-    return BITCOINRPCE_PARAM;
+    return BITCOINRPCE_ARG;
 
   if (NULL == params)
   {
@@ -245,7 +245,7 @@ bitcoinrpc_method_get_params (bitcoinrpc_method_t *method, json_t **params)
   json_t *jp;
 
   if (NULL == params || NULL == method)
-    return BITCOINRPCE_PARAM;
+    return BITCOINRPCE_ARG;
 
   jp = json_deep_copy(method->params_json);
   if (NULL == jp)

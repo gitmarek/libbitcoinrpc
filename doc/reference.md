@@ -69,17 +69,17 @@ see [tutorial](./tutorial.md) and [examples](./examples.md).
 The error codes are defined as enum type `BITCOINRPCEcode`:
 
 ```
-    typedef enum {
+    ttypedef enum {
 
-      BITCOINRPCE_OK,                /* Success */
-      BITCOINRPCE_CHECK,             /* see: bitcoinrpc_resp_check() */
-      BITCOINRPCE_ERR,               /* unspecific error */
-      BITCOINRPCE_ALLOC,             /* cannot allocate more memory */
-      BITCOINRPCE_BUG,               /* a bug in the library (please report) */
-      BITCOINRPCE_CON,               /* connection error */
-      BITCOINRPCE_CURLE,             /* libcurl returned some error */
-      BITCOINRPCE_JSON,              /* error parsing json data */
-      BITCOINRPCE_PARAM              /* wrong parameter, e.g. NULL */
+      BITCOINRPCE_OK,                 /* Success */
+      BITCOINRPCE_ALLOC,              /* cannot allocate more memory */
+      BITCOINRPCE_ARG,                /* wrong argument, e.g. NULL */
+      BITCOINRPCE_BUG,                /* a bug in the library (please report) */
+      BITCOINRPCE_CHECK,              /* see: bitcoinrpc_resp_check() */
+      BITCOINRPCE_CON,                /* connection error */
+      BITCOINRPCE_CURLE,              /* libcurl returned some error */
+      BITCOINRPCE_ERR,                /* unspecific error */
+      BITCOINRPCE_JSON,               /* error parsing json data */
 
     } BITCOINRPCEcode;
 ```
@@ -175,7 +175,7 @@ Routines to handle RPC client.
   Copy a value of the client `cl` parameter to `buf`. The buffer is assumed
   to contain at least `BITCOINRPC_PARAM_MAXLEN` chars.
   At most `BITCOINRPC_PARAM_MAXLEN` chars are copied. <br>
-  *Return*: `BITCOINRPCE_OK` or `BITCOINRPCE_PARAM` in case of wrong arguments.
+  *Return*: `BITCOINRPCE_OK` or `BITCOINRPCE_ARG` in case of wrong arguments.
 
 
 * `BITCOINRPCEcode`
@@ -184,7 +184,7 @@ Routines to handle RPC client.
   Copy value to `buf`. The buffer is assumed to contain at least
   `BITCOINRPC_URL_MAXLEN` chars.
   At most `BITCOINRPC_URL_MAXLEN` chars are copied. <br>
-  *Return*: `BITCOINRPCE_OK` or `BITCOINRPCE_PARAM` in case of wrong arguments.
+  *Return*: `BITCOINRPCE_OK` or `BITCOINRPCE_ARG` in case of wrong arguments.
 
 
 ### bitcoinrpc_method
