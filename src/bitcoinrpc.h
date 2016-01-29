@@ -73,17 +73,102 @@ typedef enum {
 /* RPC methods */
 typedef enum {
 
-/* Control RPC */
-  BITCOINRPC_METHOD_GETINFO,            /* deprecated */
-  BITCOINRPC_METHOD_HELP,
-  BITCOINRPC_METHOD_STOP,
+  BITCOINRPC_METHOD_GETBESTBLOCKHASH,          /* getbestblockhash */
+  BITCOINRPC_METHOD_GETBLOCK,                  /* getblock */
+  BITCOINRPC_METHOD_GETBLOCKCHAININFO,         /* getblockchaininfo */
+  BITCOINRPC_METHOD_GETBLOCKCOUNT,             /* getblockcount */
+  BITCOINRPC_METHOD_GETBLOCKHASH,              /* getblockhash */
+  BITCOINRPC_METHOD_GETCHAINTIPS,              /* getchaintips */
+  BITCOINRPC_METHOD_GETDIFFICULTY,             /* getdifficulty */
+  BITCOINRPC_METHOD_GETMEMPOOLINFO,            /* getmempoolinfo */
+  BITCOINRPC_METHOD_GETRAWMEMPOOL,             /* getrawmempool */
+  BITCOINRPC_METHOD_GETTXOUT,                  /* gettxout */
+  BITCOINRPC_METHOD_GETTXOUTPROOF,             /* gettxoutproof */
+  BITCOINRPC_METHOD_GETTXOUTSETINFO,           /* gettxoutsetinfo */
+  BITCOINRPC_METHOD_VERIFYCHAIN,               /* verifychain */
+  BITCOINRPC_METHOD_VERIFYTXOUTPROOF,          /* verifytxoutproof */
 
-/* Network */
-  BITCOINRPC_METHOD_GETNETWORKINFO,
-  BITCOINRPC_METHOD_GETCONNECTIONCOUNT,
+/* Control RPCs */
+  BITCOINRPC_METHOD_GETINFO,                   /* getinfo */
+  BITCOINRPC_METHOD_HELP,                      /* help */
+  BITCOINRPC_METHOD_STOP,                      /* stop */
 
-  BITCOINRPC_METHOD_GETWALLETINFO,
-  BITCOINRPC_METHOD_SETTXFEE
+/* Generating RPCs */
+  BITCOINRPC_METHOD_GENERATE,                  /* generate */
+  BITCOINRPC_METHOD_GETGENERATE,               /* getgenerate */
+  BITCOINRPC_METHOD_SETGENERATE,               /* setgenerate */
+
+/* Mining RPCs */
+  BITCOINRPC_METHOD_GETBLOCKTEMPLATE,          /* getblocktemplate */
+  BITCOINRPC_METHOD_GETMININGINFO,             /* getmininginfo */
+  BITCOINRPC_METHOD_GETNETWORKHASHPS,          /* getnetworkhashps */
+  BITCOINRPC_METHOD_PRIORITISETRANSACTION,     /* prioritisetransaction */
+  BITCOINRPC_METHOD_SUBMITBLOCK,               /* submitblock */
+
+/* Network RPCs */
+  BITCOINRPC_METHOD_ADDNODE,                   /* addnode */
+  BITCOINRPC_METHOD_GETADDEDNODEINFO,          /* getaddednodeinfo */
+  BITCOINRPC_METHOD_GETCONNECTIONCOUNT,        /* getconnectioncount */
+  BITCOINRPC_METHOD_GETNETTOTALS,              /* getnettotals */
+  BITCOINRPC_METHOD_GETNETWORKINFO,            /* getnetworkinfo */
+  BITCOINRPC_METHOD_GETPEERINFO,               /* getpeerinfo */
+  BITCOINRPC_METHOD_PING,                      /* ping */
+
+/* Raw transaction RPCs */
+  BITCOINRPC_METHOD_CREATERAWTRANSACTION,      /* createrawtransaction */
+  BITCOINRPC_METHOD_DECODERAWTRANSACTION,      /* decoderawtransaction */
+  BITCOINRPC_METHOD_DECODESCRIPT,              /* decodescript */
+  BITCOINRPC_METHOD_GETRAWTRANSACTION,         /* getrawtransaction */
+  BITCOINRPC_METHOD_SENDRAWTRANSACTION,        /* sendrawtransaction */
+  BITCOINRPC_METHOD_SIGNRAWTRANSACTION,        /* signrawtransaction */
+
+/* Utility RPCs */
+  BITCOINRPC_METHOD_CREATEMULTISIG,            /* createmultisig */
+  BITCOINRPC_METHOD_ESTIMATEFEE,               /* estimatefee */
+  BITCOINRPC_METHOD_ESTIMATEPRIORITY,          /* estimatepriority */
+  BITCOINRPC_METHOD_VALIDATEADDRESS,           /* validateaddress */
+  BITCOINRPC_METHOD_VERIFYMESSAGE,             /* verifymessage */
+
+/* Wallet RPCs */
+  BITCOINRPC_METHOD_ADDMULTISIGADDRESS,        /* addmultisigaddress */
+  BITCOINRPC_METHOD_BACKUPWALLET,              /* backupwallet */
+  BITCOINRPC_METHOD_DUMPPRIVKEY,               /* dumpprivkey */
+  BITCOINRPC_METHOD_DUMPWALLET,                /* dumpwallet */
+  BITCOINRPC_METHOD_ENCRYPTWALLET,             /* encryptwallet */
+  BITCOINRPC_METHOD_GETACCOUNTADDRESS,         /* getaccountaddress */
+  BITCOINRPC_METHOD_GETACCOUNT,                /* getaccount */
+  BITCOINRPC_METHOD_GETADDRESSESBYACCOUNT,     /* getaddressesbyaccount */
+  BITCOINRPC_METHOD_GETBALANCE,                /* getbalance */
+  BITCOINRPC_METHOD_GETNEWADDRESS,             /* getnewaddress */
+  BITCOINRPC_METHOD_GETRAWCHANGEADDRESS,       /* getrawchangeaddress */
+  BITCOINRPC_METHOD_GETRECEIVEDBYACCOUNT,      /* getreceivedbyaccount */
+  BITCOINRPC_METHOD_GETRECEIVEDBYADDRESS,      /* getreceivedbyaddress */
+  BITCOINRPC_METHOD_GETTRANSACTION,            /* gettransaction */
+  BITCOINRPC_METHOD_GETUNCONFIRMEDBALANCE,     /* getunconfirmedbalance */
+  BITCOINRPC_METHOD_GETWALLETINFO,             /* getwalletinfo */
+  BITCOINRPC_METHOD_IMPORTADDRESS,             /* importaddress */
+  BITCOINRPC_METHOD_IMPORTPRIVKEY,             /* importprivkey */
+  BITCOINRPC_METHOD_IMPORTWALLET,              /* importwallet */
+  BITCOINRPC_METHOD_KEYPOOLREFILL,             /* keypoolrefill */
+  BITCOINRPC_METHOD_LISTACCOUNTS,              /* listaccounts */
+  BITCOINRPC_METHOD_LISTADDRESSGROUPINGS,      /* listaddressgroupings */
+  BITCOINRPC_METHOD_LISTLOCKUNSPENT,           /* listlockunspent */
+  BITCOINRPC_METHOD_LISTRECEIVEDBYACCOUNT,     /* listreceivedbyaccount */
+  BITCOINRPC_METHOD_LISTRECEIVEDBYADDRESS,     /* listreceivedbyaddress */
+  BITCOINRPC_METHOD_LISTSINCEBLOCK,            /* listsinceblock */
+  BITCOINRPC_METHOD_LISTTRANSACTIONS,          /* listtransactions */
+  BITCOINRPC_METHOD_LISTUNSPENT,               /* listunspent */
+  BITCOINRPC_METHOD_LOCKUNSPENT,               /* lockunspent */
+  BITCOINRPC_METHOD_MOVE,                      /* move */
+  BITCOINRPC_METHOD_SENDFROM,                  /* sendfrom */
+  BITCOINRPC_METHOD_SENDMANY,                  /* sendmany */
+  BITCOINRPC_METHOD_SENDTOADDRESS,             /* sendtoaddress */
+  BITCOINRPC_METHOD_SETACCOUNT,                /* setaccount */
+  BITCOINRPC_METHOD_SETTXFEE,                  /* settxfee */
+  BITCOINRPC_METHOD_SIGNMESSAGE,               /* signmessage */
+  BITCOINRPC_METHOD_WALLETLOCK,                /* walletlock */
+  BITCOINRPC_METHOD_WALLETPASSPHRASE,          /* walletpassphrase */
+  BITCOINRPC_METHOD_WALLETPASSPHRASECHANGE,    /* walletpassphrasechange */
 
 } BITCOINRPC_METHOD;
 
