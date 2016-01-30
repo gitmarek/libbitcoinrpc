@@ -1,3 +1,4 @@
+
 # bitcoinrpc
 
 C language interface to JSON-RPC Bitcoin API.
@@ -60,9 +61,9 @@ file in `/usr/local/include`.  It will also install documentation files in
 
 On some systems, especially Ubuntu, the directory `/usr/local/lib` is not
 included by default to the `ldconfig` search path.  So either you change
-the `Makefile`'s `INSTALL_PREFIX` value to `/usr` (which may be not a very good
-idea, since most of the libraries installed by `apt-get` are there),
-or add the following line to your `/etc/ld.so.conf`:
+the `Makefile`'s `INSTALL_PREFIX` value from `/usr/local` to `/usr`
+(which may be not a very good idea, since most of the libraries installed by
+`apt-get` are there), or add the following line to your `/etc/ld.so.conf`:
 
     /usr/local/lib
 
