@@ -31,7 +31,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 /* Name and version */
 #define BITCOINRPC_LIBNAME "bitcoinrpc"
-#define BITCOINRPC_VERSION "0.0.0"
+#define BITCOINRPC_VERSION "0.1.0"
 
 /* Defalut parameters of a RPC client */
 #define BITCOINRPC_USER_DEFAULT ""

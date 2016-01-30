@@ -2,7 +2,7 @@
 
 [![Build Status](https://travis-ci.org/bitcoinrpc/libbitcoinrpc.svg?branch=master)](https://travis-ci.org/bitcoinrpc/libbitcoinrpc)
 
-C language interface to JSON-RPC Bitcoin API.
+A C library for JSON-RPC Bitcoin API.
 
 The library provides basic routines to send RPC queries to a listening
 Bitcoin node, fetch responses and analyse errors.
@@ -108,4 +108,4 @@ The source code is released under the terms of the MIT license.  Please, see
 [LICENSE](./LICENSE) for more information.
 
 
-*last updated: 2016-02-02*
+*last updated: 2016-02-05*

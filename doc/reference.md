@@ -27,7 +27,7 @@ scheme, i.e. each version consists of three numbers: MAJOR.MINOR.PATCH.
 The major version 0 denotes beta stage. *Except for major version 0*, only
 major version updates could (and usually do) break backwards compatibility.
 In the beta stage also minor version updates could break ABI, whereas in the
-usual case they are reserved for extensions and major bug fixes.  
+usual case they are reserved for extensions and major bug fixes.
 See `Changelog.md` for the detailed history and changes introduced by each
 version.
 
@@ -195,7 +195,7 @@ library's internal garbage at the end of the program.
 * `BITCOINRPCEcode`
   **bitcoinrpc_global_set_allocfunc** `( void* (* const f) (size_t size) )`
 
-  Set a memory allocating function for the library routines.
+  Set a memory allocating function for the library routines
   (the default is just standard malloc). <br>
   *Return*: `BITCOINRPCE_OK`.
 
@@ -203,7 +203,7 @@ library's internal garbage at the end of the program.
 * `BITCOINRPCEcode`
   **bitcoinrpc_global_set_freefunc** `( void (* const f) (void *ptr) )`
 
-  Set a memory freeing function for the library routines.
+  Set a memory freeing function for the library routines
   (the default is just standard free). <br>
   *Return*: `BITCOINRPCE_OK`.
 
