@@ -120,6 +120,7 @@ The error codes are defined as enum type `BITCOINRPCEcode`:
     BITCOINRPCE_CURLE,              /* libcurl returned some error */
     BITCOINRPCE_ERR,                /* unspecific error */
     BITCOINRPCE_JSON,               /* error parsing json data */
+    BITCOINRPCE_SERV                /* Bitcoin server returned error */
 
     } BITCOINRPCEcode;
 ```
@@ -350,7 +351,7 @@ the original pointer by decreasing its reference count:
     BITCOINRPC_METHOD_SIGNMESSAGE,           /* signmessage */
     BITCOINRPC_METHOD_WALLETLOCK,            /* walletlock */
     BITCOINRPC_METHOD_WALLETPASSPHRASE,      /* walletpassphrase */
-    BITCOINRPC_METHOD_WALLETPASSPHRASECHANGE,/* walletpassphrasechange */
+    BITCOINRPC_METHOD_WALLETPASSPHRASECHANGE /* walletpassphrasechange */
 
     } BITCOINRPC_METHOD;
 
@@ -454,13 +455,14 @@ Store JSON responses from the server.
 
 Routines to conveniently get data from the server.
 If `e == NULL` below, then it is ignored and only standard error codes are
-returned.  Arguments are in the order: <br>
-*client*, *pointers to where store received data*, *error handle*.
+returned.  Arguments are in the order: *client*, *error handle*.
+Returned values are meaningful only if a function gives BITCOINRPCE_OK
+as its error code.
 
 
-* `BITCOINRPCEcode`
-  **bitcoinrpc_cget_getconnectioncount**
+* `unsigned int`
+  **bitcoinrpc_getconnectioncount**
       `(bitcoinrpc_cl_t *cl, unsigned int *c, bitcoinrpc_err_t *e)`
 
-  Get the total number of connections (both inbound and outbound)
-  via 'getconnectioncount' method and save it in `c`.
+  Get the total number of connections (both inbound and outbound) <br>
+  *Return*: Return the number of connected nodes.

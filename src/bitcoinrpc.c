@@ -142,6 +142,8 @@ Convenience functions
 */
 
 #define bitcoinrpc_convenience_init_MACRO_(method) \
+  json_t *jresp; \
+  json_t *jerr; \
   bitcoinrpc_method_t *m = NULL; \
   bitcoinrpc_resp_t *r = NULL; \
   json_t *j = NULL; \
@@ -158,6 +160,7 @@ Convenience functions
     bitcoinrpc_RETURN (e, BITCOINRPCE_ALLOC, "cannot initialise a new response object"); \
   }
 
+
 #define bitcoinrpc_convenience_call_MACRO_\
   bitcoinrpc_call (cl, m, r, e);\
   if (e->code != BITCOINRPCE_OK)\
@@ -168,31 +171,53 @@ Convenience functions
   } \
   j = bitcoinrpc_resp_get (r);
 
+
+#define bitcoinrpc_convenience_errcheck_MACRO_ \
+  jerr  = json_object_get (j, "error"); \
+  if (jerr != json_null()) \
+  { \
+    char errmsg[BITCOINRPC_ERRMSG_MAXLEN]; \
+    char *server_errmsg; \
+    server_errmsg = json_dumps(jerr, JSON_COMPACT); \
+    snprintf(errmsg, BITCOINRPC_ERRMSG_MAXLEN, \
+             "server returned error: %s", \
+             server_errmsg); \
+    free(server_errmsg); \
+    bitcoinrpc_err_set_ (e, BITCOINRPCE_SERV, errmsg); \
+    return -1; \
+  } \
+  else \
+  { \
+    jresp =   json_object_get (j, "result"); \
+    if (NULL == jresp) \
+    { \
+      bitcoinrpc_err_set_ (e, BITCOINRPCE_JSON, "cannot parse the result"); \
+      return -1; \
+    } \
+  }
+
+
 #define bitcoinrpc_convenience_free_MACRO_ \
   json_decref(j); \
+  json_decref(jerr); \
+  json_decref(jresp); \
   bitcoinrpc_method_free (m); \
-  bitcoinrpc_resp_free (r);
+  bitcoinrpc_resp_free (r); \
+  bitcoinrpc_err_set_ (e, BITCOINRPCE_OK, NULL);
 
 
 
-BITCOINRPCEcode
-bitcoinrpc_cget_getconnectioncount (bitcoinrpc_cl_t *cl, unsigned int *c,
-                                    bitcoinrpc_err_t *e)
+unsigned int
+bitcoinrpc_getconnectioncount (bitcoinrpc_cl_t *cl, bitcoinrpc_err_t *e)
 {
-  json_t *ctmp;
 
   bitcoinrpc_convenience_init_MACRO_ (BITCOINRPC_METHOD_GETCONNECTIONCOUNT);
   bitcoinrpc_convenience_call_MACRO_;
+  bitcoinrpc_convenience_errcheck_MACRO_;
 
-  // fprintf (stderr, "%s\n", json_dumps (j, JSON_INDENT(2)));
-  ctmp =   json_object_get (j, "result");
-  if (NULL == ctmp)
-  {
-    bitcoinrpc_RETURN (e, BITCOINRPCE_JSON, "cannot parse the result");
-  }
-  *c = json_integer_value(ctmp);
-  json_decref(ctmp);
+  unsigned int c = json_integer_value(jresp);
 
   bitcoinrpc_convenience_free_MACRO_;
-  bitcoinrpc_RETURN_OK;
+
+  return c;
 }

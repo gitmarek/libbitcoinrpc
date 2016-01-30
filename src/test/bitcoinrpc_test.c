@@ -292,9 +292,15 @@ main (int argc, char **argv)
   fprintf (stderr,
     " * Test convenience functions:\n");
 
-  unsigned int c;
-  bitcoinrpc_cget_getconnectioncount(cl, &c, &e);
-  fprintf (stderr, "getconnectioncount = %d\n", c);
+  unsigned int c = bitcoinrpc_getconnectioncount(cl, &e);
+  if (e.code == BITCOINRPCE_OK)
+  {
+    fprintf (stderr, "getconnectioncount = %d\n", c);
+  }
+  else
+  {
+    fprintf (stderr, "error(%d): %s\n", e.code, e.msg);
+  }
 
 
 

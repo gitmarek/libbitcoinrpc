@@ -66,6 +66,7 @@ typedef enum {
   BITCOINRPCE_CURLE,              /* libcurl returned some error */
   BITCOINRPCE_ERR,                /* unspecific error */
   BITCOINRPCE_JSON,               /* error parsing json data */
+  BITCOINRPCE_SERV                /* Bitcoin server returned error */
 
 } BITCOINRPCEcode;
 
@@ -171,7 +172,7 @@ typedef enum {
   BITCOINRPC_METHOD_SIGNMESSAGE,               /* signmessage */
   BITCOINRPC_METHOD_WALLETLOCK,                /* walletlock */
   BITCOINRPC_METHOD_WALLETPASSPHRASE,          /* walletpassphrase */
-  BITCOINRPC_METHOD_WALLETPASSPHRASECHANGE,    /* walletpassphrasechange */
+  BITCOINRPC_METHOD_WALLETPASSPHRASECHANGE     /* walletpassphrasechange */
 
 } BITCOINRPC_METHOD;
 
@@ -362,8 +363,7 @@ If e == NULL below, then it is ignored
 Get the total number of connections (both inbound and outbound)
 via 'getconnectioncount' method and save it in c.
 */
-BITCOINRPCEcode
-bitcoinrpc_cget_getconnectioncount (bitcoinrpc_cl_t *cl, unsigned int *c,
-                                    bitcoinrpc_err_t *e);
+unsigned int
+bitcoinrpc_getconnectioncount (bitcoinrpc_cl_t *cl, bitcoinrpc_err_t *e);
 
 #endif  /* BITCOINRPC_H_51fe7847_aafe_4e78_9823_eff094a30775 */
