@@ -28,7 +28,7 @@ The major version 0 denotes beta stage. *Except for major version 0*, only
 major version updates could (and usually do) break backwards compatibility.
 In the beta stage also minor version updates could break ABI, whereas in the
 usual case they are reserved for extensions and major bug fixes.  
-See `Changelog.md` for the detailed history and changes introduces by each
+See `Changelog.md` for the detailed history and changes introduced by each
 version.
 
 ### Soname bumps
@@ -101,6 +101,23 @@ The following is the list of constants defined in `bitcoinrpc.h` header.
 * `BITCOINRPC_ERRMSG_MAXLEN`
 
   Maximal length of error message reported via `bitcoinrpc_err_t`
+
+
+### bitcoinrpc_satoshi_t
+
+To handle bitcoin amounts correctly, it is advisable to operate internally
+only on satoshi units (one hunder millionth of a bitcoin), and avoid floating
+point arithmetic completely.  Therefore, many functions in this library
+take an argument that is of the type: `satoshi_t`, defined as
+
+```
+    typedef unsigned long long int bitcoinrpc_satoshi_t;
+```
+
+Please, see:
+[Proper Money Handling](https://en.bitcoin.it/wiki/Proper_Money_Handling_\(JSON-RPC\))
+article at Bitcoin wiki.
+
 
 
 ### Error codes and bitcoinrpc_err
@@ -495,7 +512,7 @@ as its error code.
   *Return*: Return the number of connected nodes.
 
 
-* `char*``
+* `char*`
   **bitcoinrpc_getnewaddress**
       `(bitcoinrpc_cl_t *cl, bitcoinrpc_err_t *e, const char* account)`
 

@@ -217,7 +217,7 @@ main (int argc, char **argv)
   bitcoinrpc_resp_t   *r       = NULL;
   bitcoinrpc_method_t *m       = NULL;
   bitcoinrpc_method_t *m_settx = NULL;
-  json_t *j      = NULL,
+  json_t *j      = NULL;
   json_t *params = NULL;
 
   /* initialise client */

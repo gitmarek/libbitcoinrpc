@@ -54,6 +54,9 @@ Maximal length of the server url:
 /* Maximal length of an error message */
 #define BITCOINRPC_ERRMSG_MAXLEN 1000
 
+/* satoshi typedef: one hundred millionth of a bitcoin */
+typedef unsigned long long int bitcoinrpc_satoshi_t;
+
 /* Error codes */
 typedef enum {
 
@@ -355,13 +358,8 @@ bitcoinrpc_call (bitcoinrpc_cl_t * cl, bitcoinrpc_method_t * method,
 
 /* ------------- Convenience functions --------------- */
 
-/*
-If e == NULL below, then it is ignored
-*/
+/* See: doc/reference.md */
 
-/*
-Get the total number of connections (both inbound and outbound).
-*/
 unsigned int
 bitcoinrpc_getconnectioncount (bitcoinrpc_cl_t *cl, bitcoinrpc_err_t *e);
 
