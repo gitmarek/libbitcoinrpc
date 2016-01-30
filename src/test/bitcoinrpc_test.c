@@ -303,6 +303,18 @@ main (int argc, char **argv)
   }
 
 
+  char *a = bitcoinrpc_getnewaddress(cl, &e, NULL);
+  if (e.code == BITCOINRPCE_OK)
+  {
+    fprintf (stderr, "getnewaddress = %s\n", a);
+    free (a);
+  }
+  else
+  {
+    fprintf (stderr, "error(%d): %s\n", e.code, e.msg);
+  }
+
+
 
   fprintf (stderr, "Free the resources... ");
   bitcoinrpc_cl_free (cl);

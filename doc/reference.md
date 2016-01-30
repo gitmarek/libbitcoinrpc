@@ -453,16 +453,28 @@ Store JSON responses from the server.
 
 ### Convenience functions
 
-Routines to conveniently get data from the server.
+Routines to conveniently interact with the server.
 If `e == NULL` below, then it is ignored and only standard error codes are
-returned.  Arguments are in the order: *client*, *error handle*.
+returned.  Arguments are in the order: *client*, *error handle*, and
+optionally: *parameters*.
 Returned values are meaningful only if a function gives BITCOINRPCE_OK
 as its error code.
 
-
 * `unsigned int`
   **bitcoinrpc_getconnectioncount**
-      `(bitcoinrpc_cl_t *cl, unsigned int *c, bitcoinrpc_err_t *e)`
+      `(bitcoinrpc_cl_t *cl, bitcoinrpc_err_t *e)`
 
   Get the total number of connections (both inbound and outbound) <br>
   *Return*: Return the number of connected nodes.
+
+
+* `char*``
+  **bitcoinrpc_getnewaddress**
+      `(bitcoinrpc_cl_t *cl, bitcoinrpc_err_t *e, const char* account)`
+
+  Get a new address from the keypool.
+  See: [getnewaddress](https://bitcoin.org/en/developer-reference#getnewaddress)
+  Bitcoin RPC API reference.
+  The account can be `NULL`; in that case, it is ignored. <br>
+  *Return*: Pointer to a newly allocated string or `NULL` in case of error.
+  It is the obligation of the user to free the memory later with `free()`.

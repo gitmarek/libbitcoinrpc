@@ -360,10 +360,14 @@ If e == NULL below, then it is ignored
 */
 
 /*
-Get the total number of connections (both inbound and outbound)
-via 'getconnectioncount' method and save it in c.
+Get the total number of connections (both inbound and outbound).
 */
 unsigned int
 bitcoinrpc_getconnectioncount (bitcoinrpc_cl_t *cl, bitcoinrpc_err_t *e);
+
+char*
+bitcoinrpc_getnewaddress (bitcoinrpc_cl_t *cl, bitcoinrpc_err_t *e,
+                          const char* account);
+
 
 #endif  /* BITCOINRPC_H_51fe7847_aafe_4e78_9823_eff094a30775 */

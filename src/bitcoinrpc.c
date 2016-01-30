@@ -141,38 +141,49 @@ bitcoinrpc_call (bitcoinrpc_cl_t * cl, bitcoinrpc_method_t * method,
 Convenience functions
 */
 
-#define bitcoinrpc_convenience_init_MACRO_(method) \
-  json_t *jresp; \
-  json_t *jerr; \
+#define bitcoinrpc_convenience_init_MACRO_(method_id9e43, params_id83a2c1, err_return) \
+  json_t *jresp = NULL; \
+  json_t *jerr = NULL; \
   bitcoinrpc_method_t *m = NULL; \
   bitcoinrpc_resp_t *r = NULL; \
   json_t *j = NULL; \
   \
-  m = bitcoinrpc_method_init(method); \
+  m = bitcoinrpc_method_init(method_id9e43); \
   if (NULL == m) \
   { \
-    bitcoinrpc_RETURN (e, BITCOINRPCE_ALLOC, "cannot initialise a new method"); \
+    bitcoinrpc_err_set_ (e, BITCOINRPCE_ALLOC, "cannot initialise a new method"); \
+    return err_return;\
   } \
+  if (NULL != params_id83a2c1) \
+  { \
+    BITCOINRPCEcode ecode = bitcoinrpc_method_set_params(m, params_id83a2c1); \
+    if (ecode != BITCOINRPCE_OK) \
+    { \
+      bitcoinrpc_err_set_ (e, ecode, "cannot set parameters"); \
+      return err_return;\
+    } \
+  }\
   r = bitcoinrpc_resp_init(); \
   if (NULL == r) \
   { \
     bitcoinrpc_method_free (m); \
-    bitcoinrpc_RETURN (e, BITCOINRPCE_ALLOC, "cannot initialise a new response object"); \
+    bitcoinrpc_err_set_ (e, BITCOINRPCE_ALLOC, "cannot initialise a new response object"); \
+    return err_return;\
   }
 
 
-#define bitcoinrpc_convenience_call_MACRO_\
+#define bitcoinrpc_convenience_call_MACRO_(err_return) \
   bitcoinrpc_call (cl, m, r, e);\
   if (e->code != BITCOINRPCE_OK)\
   {\
     bitcoinrpc_method_free (m);\
     bitcoinrpc_resp_free (r);\
-    return e->code;  /* pass error further */\
+    return err_return;  /* pass error further */\
   } \
   j = bitcoinrpc_resp_get (r);
 
 
-#define bitcoinrpc_convenience_errcheck_MACRO_ \
+#define bitcoinrpc_convenience_errcheck_MACRO_(err_return) \
   jerr  = json_object_get (j, "error"); \
   if (jerr != json_null()) \
   { \
@@ -180,11 +191,10 @@ Convenience functions
     char *server_errmsg; \
     server_errmsg = json_dumps(jerr, JSON_COMPACT); \
     snprintf(errmsg, BITCOINRPC_ERRMSG_MAXLEN, \
-             "server returned error: %s", \
-             server_errmsg); \
+             "%s", server_errmsg); \
     free(server_errmsg); \
     bitcoinrpc_err_set_ (e, BITCOINRPCE_SERV, errmsg); \
-    return -1; \
+    return err_return;\
   } \
   else \
   { \
@@ -192,12 +202,12 @@ Convenience functions
     if (NULL == jresp) \
     { \
       bitcoinrpc_err_set_ (e, BITCOINRPCE_JSON, "cannot parse the result"); \
-      return -1; \
+      return err_return;\
     } \
   }
 
 
-#define bitcoinrpc_convenience_free_MACRO_ \
+#define bitcoinrpc_convenience_free_MACRO_(err_return) \
   json_decref(j); \
   json_decref(jerr); \
   json_decref(jresp); \
@@ -210,14 +220,55 @@ Convenience functions
 unsigned int
 bitcoinrpc_getconnectioncount (bitcoinrpc_cl_t *cl, bitcoinrpc_err_t *e)
 {
-
-  bitcoinrpc_convenience_init_MACRO_ (BITCOINRPC_METHOD_GETCONNECTIONCOUNT);
-  bitcoinrpc_convenience_call_MACRO_;
-  bitcoinrpc_convenience_errcheck_MACRO_;
+  bitcoinrpc_convenience_init_MACRO_ (BITCOINRPC_METHOD_GETCONNECTIONCOUNT, NULL, -1);
+  bitcoinrpc_convenience_call_MACRO_ (-1);
+  bitcoinrpc_convenience_errcheck_MACRO_ (-1);
 
   unsigned int c = json_integer_value(jresp);
-
-  bitcoinrpc_convenience_free_MACRO_;
+  bitcoinrpc_convenience_free_MACRO_ (-1);
 
   return c;
+}
+
+
+char*
+bitcoinrpc_getnewaddress (bitcoinrpc_cl_t *cl, bitcoinrpc_err_t *e,
+                          const char* account)
+{
+
+  json_t *params = json_array();
+  if (NULL == params)
+  {
+    bitcoinrpc_err_set_ (e, BITCOINRPCE_JSON, "libjansson cannot initialise a new object");
+    return NULL;
+  }
+  if (NULL != account)
+  {
+    if (json_array_append_new (params, json_string (account)) != 0)
+    {
+      bitcoinrpc_err_set_ (e, BITCOINRPCE_JSON, "cannot parse account string");
+      return NULL;
+    }
+  }
+
+  bitcoinrpc_convenience_init_MACRO_ (BITCOINRPC_METHOD_GETNEWADDRESS, params, NULL);
+  bitcoinrpc_convenience_call_MACRO_ (NULL);
+  bitcoinrpc_convenience_errcheck_MACRO_ (NULL);
+
+  json_decref(params);
+
+  /* body of the function: use jresp */
+  // fprintf (stderr, "%s\n", json_dumps(j, JSON_INDENT(2)));
+  size_t n = strlen (json_string_value (jresp)) + 1;
+  char *a = malloc (n);
+  if (NULL == a)
+  {
+    bitcoinrpc_err_set_ (e, BITCOINRPCE_ALLOC, "cannot allocate more memory");
+    return NULL;
+  }
+  strncpy (a, json_string_value(jresp), n);
+
+  bitcoinrpc_convenience_free_MACRO_ (NULL);
+
+  return a; /* return value of BITCOINRPC_METHOD_GETNEWADDRESS*/
 }
