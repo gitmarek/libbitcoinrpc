@@ -60,15 +60,15 @@ bitcoinrpc_call (bitcoinrpc_cl_t * cl, bitcoinrpc_method_t * method,
                  bitcoinrpc_resp_t *resp, bitcoinrpc_err_t *e)
 {
 
-  json_t *j;
-  char *data;
+  json_t *j = NULL;
+  char *data = NULL;
   char url[BITCOINRPC_URL_MAXLEN];
   char user[BITCOINRPC_PARAM_MAXLEN];
   char pass[BITCOINRPC_PARAM_MAXLEN];
   char credentials[2 * BITCOINRPC_PARAM_MAXLEN + 1];
   struct bitcoinrpc_call_json_resp_ jresp;
   BITCOINRPCEcode ecode;
-  CURL * curl;
+  CURL *curl = NULL;
   CURLcode curl_err;
   char curl_errbuf[CURL_ERROR_SIZE];
 

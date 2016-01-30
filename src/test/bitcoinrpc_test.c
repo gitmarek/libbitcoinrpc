@@ -213,10 +213,12 @@ main (int argc, char **argv)
 
 
   bitcoinrpc_err_t e;
-  char *data;
-  bitcoinrpc_resp_t *r;
-  bitcoinrpc_method_t *m, *m_settx;
-  json_t *j, *params;
+  char *data = NULL;
+  bitcoinrpc_resp_t   *r       = NULL;
+  bitcoinrpc_method_t *m       = NULL;
+  bitcoinrpc_method_t *m_settx = NULL;
+  json_t *j      = NULL,
+  json_t *params = NULL;
 
   /* initialise client */
   fprintf (stderr, "Initialising the RPC client and connecting to: "

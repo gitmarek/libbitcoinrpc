@@ -103,7 +103,7 @@ The following is the list of constants defined in `bitcoinrpc.h` header.
   Maximal length of error message reported via `bitcoinrpc_err_t`
 
 
-### Error codes
+### Error codes and bitcoinrpc_err
 
 The error codes are defined as enum type `BITCOINRPCEcode`:
 
@@ -124,6 +124,33 @@ The error codes are defined as enum type `BITCOINRPCEcode`:
 
     } BITCOINRPCEcode;
 ```
+
+The data structure handling custom error messages has typedef:
+`bitcoinrpc_err_t` and its internals are visible to the user:
+
+
+```
+
+    struct bitcoinrpc_err
+    {
+      BITCOINRPCEcode code;
+      char msg[BITCOINRPC_ERRMSG_MAXLEN];
+    };
+
+    typedef
+      struct bitcoinrpc_err
+    bitcoinrpc_err_t;
+```
+
+If `code == BITCOINRPCE_OK` after calling a function that takes pointer to
+`bitcoinrpc_err_t` as an argument, then the error message `msg` is irrelevant
+(usually set to `NULL`).  On the other hand, if `code != BITCOINRPCE_OK`,
+then `msg` contains some custom error message of length at most
+`BITCOINRPC_ERRMSG_MAXLEN`.  If `code == BITCOINRPCE_SERV` then the error
+message is a string containing the error message returned by the server,
+i.e. the call was successful, but the server could not process the call,
+(e.g. due to wrong parameters or the wallet being locked).
+
 
 ### bitcoinrpc_global
 
