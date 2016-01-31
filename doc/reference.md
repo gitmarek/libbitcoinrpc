@@ -108,7 +108,7 @@ The following is the list of constants defined in `bitcoinrpc.h` header.
 To handle bitcoin amounts correctly, it is advisable to operate internally
 only on satoshi units (one hunder millionth of a bitcoin), and avoid floating
 point arithmetic completely.  Therefore, many functions in this library
-take an argument that is of the type: `satoshi_t`, defined as
+take an argument that is of the type: `bitcoinrpc_satoshi_t`, defined as
 
 ```
     typedef unsigned long long int bitcoinrpc_satoshi_t;
