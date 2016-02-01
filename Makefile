@@ -113,6 +113,7 @@ install:
 	$(INSTALL) $(LIBDIR)/lib$(NAME).so.$(VERSION) $(INSTALL_LIBPATH)
 	ldconfig  -n $(INSTALL_LIBPATH)
 	ln -fs lib$(NAME).so.$(MAJOR) $(INSTALL_LIBPATH)/lib$(NAME).so
+	ldconfig
 	$(INSTALL_DATA) $(SRCDIR)/$(NAME).h $(INSTALL_HEADERPATH)
 	@echo "Installing docs to $(INSTALL_DOCSPATH)/$(NAME)"
 	mkdir -p $(INSTALL_DOCSPATH)/$(NAME)
