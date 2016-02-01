@@ -212,13 +212,23 @@ Convenience functions
   } \
   else \
   { \
-    jresp =   json_object_get (j, "result"); \
+    jresp = json_object_get (j, "result"); \
     if (NULL == jresp) \
     { \
       bitcoinrpc_err_set_ (e, BITCOINRPCE_JSON, "cannot parse the result"); \
       return err_return;\
     } \
   }
+
+#define bitcoinrpc_convenience_copy_resp_string_MACRO_(err_return) \
+  size_t n = strlen (json_string_value (jresp)) + 1; \
+  char *resp_string = malloc (n); \
+  if (NULL == resp_string) \
+  { \
+    bitcoinrpc_err_set_ (e, BITCOINRPCE_ALLOC, "cannot allocate more memory"); \
+    return NULL; \
+  } \
+  strncpy (resp_string, json_string_value(jresp), n); \
 
 
 #define bitcoinrpc_convenience_free_MACRO_(err_return) \
@@ -229,6 +239,20 @@ Convenience functions
   bitcoinrpc_resp_free (r); \
   bitcoinrpc_err_set_ (e, BITCOINRPCE_OK, NULL);
 
+
+
+char*
+bitcoinrpc_getbestblockhash (bitcoinrpc_cl_t *cl, bitcoinrpc_err_t *e)
+{
+  bitcoinrpc_convenience_init_MACRO_ (BITCOINRPC_METHOD_GETBESTBLOCKHASH, NULL, NULL);
+  bitcoinrpc_convenience_call_MACRO_ (NULL);
+  bitcoinrpc_convenience_errcheck_MACRO_ (NULL);
+
+  /* body of the function: use jresp */
+  bitcoinrpc_convenience_copy_resp_string_MACRO_ (NULL);
+  bitcoinrpc_convenience_free_MACRO_ (NULL);
+  return resp_string; /* return value of BITCOINRPC_METHOD_GETNEWADDRESS*/
+}
 
 
 unsigned int
@@ -272,17 +296,9 @@ bitcoinrpc_getnewaddress (bitcoinrpc_cl_t *cl, bitcoinrpc_err_t *e,
   json_decref(params);
 
   /* body of the function: use jresp */
-  // fprintf (stderr, "%s\n", json_dumps(j, JSON_INDENT(2)));
-  size_t n = strlen (json_string_value (jresp)) + 1;
-  char *a = malloc (n);
-  if (NULL == a)
-  {
-    bitcoinrpc_err_set_ (e, BITCOINRPCE_ALLOC, "cannot allocate more memory");
-    return NULL;
-  }
-  strncpy (a, json_string_value(jresp), n);
+  bitcoinrpc_convenience_copy_resp_string_MACRO_ (NULL);
 
   bitcoinrpc_convenience_free_MACRO_ (NULL);
 
-  return a; /* return value of BITCOINRPC_METHOD_GETNEWADDRESS*/
+  return resp_string;
 }

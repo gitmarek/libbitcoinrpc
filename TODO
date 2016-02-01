@@ -2,9 +2,6 @@
 
 Implement:
 1. `_cl_set_user/pass()` etc.;
-2. convenience functions like bitcoinrpc_cget_something(),
-bitcoinrpc_cset_something();
-3. `make install` rule for `Makefile`;
 4. documentation (including man pages);
 5. extensive testing.
 6. add to makefile library constants like BITCOINRPC_PARAM_MAXLEN

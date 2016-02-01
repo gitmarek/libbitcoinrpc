@@ -504,11 +504,21 @@ optionally: *parameters*.
 Returned values are meaningful only if a function gives BITCOINRPCE_OK
 as its error code.
 
+* `char*`
+  **bitcoinrpc_getbestblockhash** `(bitcoinrpc_cl_t *cl, bitcoinrpc_err_t *e)`
+
+  Return the header hash of the most recent block on the best block chain. <br>
+  See: [getbestblockhash](https://bitcoin.org/en/developer-reference#getbestblockhash). <br>
+  *Return*: Pointer to a newly allocated string or `NULL` in case of error.
+  It is the obligation of the user to free the memory later with `free()`.
+
+
 * `unsigned int`
   **bitcoinrpc_getconnectioncount**
       `(bitcoinrpc_cl_t *cl, bitcoinrpc_err_t *e)`
 
-  Get the total number of connections (both inbound and outbound) <br>
+  Get the total number of connections (both inbound and outbound). <br>
+  See: [getconnectioncount](https://bitcoin.org/en/developer-reference#getconnectioncount). <br>
   *Return*: Return the number of connected nodes.
 
 
@@ -516,9 +526,10 @@ as its error code.
   **bitcoinrpc_getnewaddress**
       `(bitcoinrpc_cl_t *cl, bitcoinrpc_err_t *e, const char* account)`
 
-  Get a new address from the keypool.
-  See: [getnewaddress](https://bitcoin.org/en/developer-reference#getnewaddress)
-  Bitcoin RPC API reference.
-  The account can be `NULL`; in that case, it is ignored. <br>
+  Return a new Bitcoin address for receiving payments.
+  If an *account* is specified, payments received with the address will be
+  credited to that account. <br>
+  See: [getnewaddress](https://bitcoin.org/en/developer-reference#getnewaddress). <br>
+  The *account* can be `NULL`; in that case, it is ignored. <br>
   *Return*: Pointer to a newly allocated string or `NULL` in case of error.
   It is the obligation of the user to free the memory later with `free()`.

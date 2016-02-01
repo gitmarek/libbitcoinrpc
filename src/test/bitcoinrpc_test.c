@@ -305,7 +305,8 @@ main (int argc, char **argv)
   }
 
 
-  char *a = bitcoinrpc_getnewaddress(cl, &e, NULL);
+  char *a;
+  a = bitcoinrpc_getnewaddress(cl, &e, NULL);
   if (e.code == BITCOINRPCE_OK)
   {
     fprintf (stderr, "getnewaddress = %s\n", a);
@@ -316,6 +317,17 @@ main (int argc, char **argv)
     fprintf (stderr, "error(%d): %s\n", e.code, e.msg);
   }
 
+
+  a = bitcoinrpc_getbestblockhash(cl, &e);
+  if (e.code == BITCOINRPCE_OK)
+  {
+    fprintf (stderr, "getbestblockhash = %s\n", a);
+    free (a);
+  }
+  else
+  {
+    fprintf (stderr, "error(%d): %s\n", e.code, e.msg);
+  }
 
 
   fprintf (stderr, "Free the resources... ");
