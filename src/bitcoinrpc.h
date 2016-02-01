@@ -363,6 +363,14 @@ bitcoinrpc_call (bitcoinrpc_cl_t * cl, bitcoinrpc_method_t * method,
 char*
 bitcoinrpc_getbestblockhash (bitcoinrpc_cl_t *cl, bitcoinrpc_err_t *e);
 
+char*
+bitcoinrpc_getblock (bitcoinrpc_cl_t *cl, bitcoinrpc_err_t *e,
+                      const char *header);
+
+json_t*
+bitcoinrpc_getblock_json (bitcoinrpc_cl_t *cl, bitcoinrpc_err_t *e,
+                          const char *header);
+
 unsigned int
 bitcoinrpc_getconnectioncount (bitcoinrpc_cl_t *cl, bitcoinrpc_err_t *e);
 

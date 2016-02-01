@@ -513,6 +513,27 @@ as its error code.
   It is the obligation of the user to free the memory later with `free()`.
 
 
+* `char*`
+  **bitcoinrpc_getblock** `(bitcoinrpc_cl_t *cl, bitcoinrpc_err_t *e, const char *header)`
+
+  Get a block with a particular header hash from the local block database
+  as a serialized block. <br>
+  See: [getblock](https://bitcoin.org/en/developer-reference#getblock). <br>
+  *Return*: Pointer to a newly allocated string or `NULL` in case of error.
+  It is the obligation of the user to free the memory later with `free()`.
+
+
+* `json_t*`
+  **bitcoinrpc\_getblock\_json** `(bitcoinrpc_cl_t *cl, bitcoinrpc_err_t *e, const char *header)`
+
+    Get a block with a particular header hash from the local block database
+    as a JSON object. <br>
+    See: [getblock](https://bitcoin.org/en/developer-reference#getblock). <br>
+    *Return*: Pointer to a newly allocated `json_t` or `NULL` in case of error.
+    It is the obligation of the user to free the object later with
+    `json_decref()`.
+
+
 * `unsigned int`
   **bitcoinrpc_getconnectioncount**
       `(bitcoinrpc_cl_t *cl, bitcoinrpc_err_t *e)`

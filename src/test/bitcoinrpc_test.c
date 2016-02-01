@@ -294,28 +294,8 @@ main (int argc, char **argv)
   fprintf (stderr,
     " * Test convenience functions:\n");
 
-  unsigned int c = bitcoinrpc_getconnectioncount(cl, &e);
-  if (e.code == BITCOINRPCE_OK)
-  {
-    fprintf (stderr, "getconnectioncount = %d\n", c);
-  }
-  else
-  {
-    fprintf (stderr, "error(%d): %s\n", e.code, e.msg);
-  }
-
-
-  char *a;
-  a = bitcoinrpc_getnewaddress(cl, &e, NULL);
-  if (e.code == BITCOINRPCE_OK)
-  {
-    fprintf (stderr, "getnewaddress = %s\n", a);
-    free (a);
-  }
-  else
-  {
-    fprintf (stderr, "error(%d): %s\n", e.code, e.msg);
-  }
+  unsigned int c;
+  char *a, *b;
 
 
   a = bitcoinrpc_getbestblockhash(cl, &e);
@@ -327,6 +307,58 @@ main (int argc, char **argv)
   else
   {
     fprintf (stderr, "error(%d): %s\n", e.code, e.msg);
+    abort();
+  }
+
+
+  b = bitcoinrpc_getbestblockhash (cl, &e);
+  a = bitcoinrpc_getblock (cl, &e, b);
+  if (e.code == BITCOINRPCE_OK)
+  {
+    fprintf (stderr, "getblock = %.60s etc.\n", a);
+    free (a);
+  }
+  else
+  {
+    fprintf (stderr, "error(%d): %s\n", e.code, e.msg);
+    abort();
+  }
+
+  json_t *json_block = bitcoinrpc_getblock_json (cl, &e, b);
+  if (e.code == BITCOINRPCE_OK)
+  {
+    fprintf (stderr, "getblock_json = %.60s etc.\n", json_dumps (json_block, JSON_COMPACT));
+    json_decref (json_block);
+  }
+  else
+  {
+    fprintf (stderr, "error(%d): %s\n", e.code, e.msg);
+    abort();
+  }
+  free(b);
+
+  c = bitcoinrpc_getconnectioncount(cl, &e);
+  if (e.code == BITCOINRPCE_OK)
+  {
+    fprintf (stderr, "getconnectioncount = %d\n", c);
+  }
+  else
+  {
+    fprintf (stderr, "error(%d): %s\n", e.code, e.msg);
+    abort();
+  }
+
+
+  a = bitcoinrpc_getnewaddress(cl, &e, "myacc");
+  if (e.code == BITCOINRPCE_OK)
+  {
+    fprintf (stderr, "getnewaddress = %s\n", a);
+    free (a);
+  }
+  else
+  {
+    fprintf (stderr, "error(%d): %s\n", e.code, e.msg);
+    abort();
   }
 
 

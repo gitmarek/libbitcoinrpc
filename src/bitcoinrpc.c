@@ -95,6 +95,7 @@ bitcoinrpc_call (bitcoinrpc_cl_t * cl, bitcoinrpc_method_t * method,
   data = json_dumps(j, JSON_COMPACT);
   if (NULL == data)
     bitcoinrpc_RETURN (e, BITCOINRPCE_JSON, "JSON error while writing POST data");
+  //fprintf (stderr, "%s\n", data);
 
   curl = bitcoinrpc_cl_get_curl_ (cl);
 
@@ -156,11 +157,11 @@ Convenience functions
 */
 
 #define bitcoinrpc_convenience_init_MACRO_(method_id9e43, params_id83a2c1, err_return) \
+  json_t *j = NULL; \
   json_t *jresp = NULL; \
   json_t *jerr = NULL; \
   bitcoinrpc_method_t *m = NULL; \
   bitcoinrpc_resp_t *r = NULL; \
-  json_t *j = NULL; \
   \
   m = bitcoinrpc_method_init(method_id9e43); \
   if (NULL == m) \
@@ -221,14 +222,32 @@ Convenience functions
   }
 
 #define bitcoinrpc_convenience_copy_resp_string_MACRO_(err_return) \
-  size_t n = strlen (json_string_value (jresp)) + 1; \
-  char *resp_string = malloc (n); \
-  if (NULL == resp_string) \
+  size_t n;\
+  char* resp_string;\
+  if (json_is_string (jresp)) { \
+    n = strlen (json_string_value (jresp)) + 1; \
+    resp_string = malloc (n); \
+    if (NULL == resp_string) \
+    { \
+      bitcoinrpc_err_set_ (e, BITCOINRPCE_ALLOC, "cannot allocate more memory"); \
+      return err_return; \
+    } \
+    strncpy (resp_string, json_string_value(jresp), n); \
+  }\
+  else if (json_is_object (jresp)) /* jresp is a json object */ \
   { \
-    bitcoinrpc_err_set_ (e, BITCOINRPCE_ALLOC, "cannot allocate more memory"); \
-    return NULL; \
+    resp_string = json_dumps (jresp, JSON_COMPACT); \
+    if (NULL == resp_string) \
+    { \
+      bitcoinrpc_err_set_ (e, BITCOINRPCE_JSON, "cannot dump a json object"); \
+      return err_return; \
+    } \
   } \
-  strncpy (resp_string, json_string_value(jresp), n); \
+  else /* this should not happen */ \
+  { \
+      bitcoinrpc_err_set_ (e, BITCOINRPCE_BUG, "this should not have happened. Please report a bug"); \
+      return err_return; \
+  }
 
 
 #define bitcoinrpc_convenience_free_MACRO_(err_return) \
@@ -251,7 +270,80 @@ bitcoinrpc_getbestblockhash (bitcoinrpc_cl_t *cl, bitcoinrpc_err_t *e)
   /* body of the function: use jresp */
   bitcoinrpc_convenience_copy_resp_string_MACRO_ (NULL);
   bitcoinrpc_convenience_free_MACRO_ (NULL);
-  return resp_string; /* return value of BITCOINRPC_METHOD_GETNEWADDRESS*/
+  return resp_string;
+}
+
+
+char*
+bitcoinrpc_getblock (bitcoinrpc_cl_t *cl, bitcoinrpc_err_t *e,
+                      const char *header)
+{
+  json_t *params = json_array();
+  if (NULL == params)
+  {
+    bitcoinrpc_err_set_ (e, BITCOINRPCE_JSON, "libjansson cannot initialise a new object");
+    return NULL;
+  }
+  if (NULL != header)
+  {
+    if (json_array_append_new (params, json_string (header)) != 0)
+    {
+      bitcoinrpc_err_set_ (e, BITCOINRPCE_JSON, "cannot parse account string");
+      return NULL;
+    }
+  }
+
+  json_array_append_new (params, json_false()); /* serialized block */
+
+  bitcoinrpc_convenience_init_MACRO_ (BITCOINRPC_METHOD_GETBLOCK, params, NULL);
+  bitcoinrpc_convenience_call_MACRO_ (NULL);
+  bitcoinrpc_convenience_errcheck_MACRO_ (NULL);
+
+  /* body of the function: use jresp */
+  bitcoinrpc_convenience_copy_resp_string_MACRO_ (NULL);
+  bitcoinrpc_convenience_free_MACRO_ (NULL);
+  return resp_string;
+}
+
+
+json_t*
+bitcoinrpc_getblock_json (bitcoinrpc_cl_t *cl, bitcoinrpc_err_t *e,
+                          const char *header)
+{
+  json_t *params = json_array();
+  if (NULL == params)
+  {
+    bitcoinrpc_err_set_ (e, BITCOINRPCE_JSON, "libjansson cannot initialise a new object");
+    return NULL;
+  }
+  if (NULL != header)
+  {
+    if (json_array_append_new (params, json_string (header)) != 0)
+    {
+      bitcoinrpc_err_set_ (e, BITCOINRPCE_JSON, "cannot parse account string");
+      return NULL;
+    }
+  }
+
+  json_array_append_new (params, json_true()); /* block in json format */
+
+  bitcoinrpc_convenience_init_MACRO_ (BITCOINRPC_METHOD_GETBLOCK, params, NULL);
+  bitcoinrpc_convenience_call_MACRO_ (NULL);
+  bitcoinrpc_convenience_errcheck_MACRO_ (NULL);
+
+  /* body of the function: use jresp */
+  bitcoinrpc_convenience_copy_resp_string_MACRO_ (NULL);
+  json_error_t error;
+  json_t *json_block = json_loads (resp_string, JSON_DECODE_ANY, &error);
+  if (NULL == json_block)
+  {
+    bitcoinrpc_err_set_ (e, BITCOINRPCE_JSON, "error could not decode data");
+    return NULL;
+  }
+  free (resp_string);
+
+  bitcoinrpc_convenience_free_MACRO_ (NULL);
+  return json_block;
 }
 
 
