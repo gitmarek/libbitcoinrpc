@@ -81,22 +81,21 @@ $(LIBDIR)/lib$(NAME).so.$(VERSION): $(OBJFILES)
 	-o $@ \
 	-Wl,--copy-dt-needed-entries $(LDFLAGS)
 
-$(OBJFILES):
-	$(CC) $(CFLAGS) -c $(@:.o=.c) \
-	-o $@
+$(SRCDIR)/%.o: $(SRCDIR)/%.c
+	$(CC) $(CFLAGS) -o $@ -c $<
 
 
 # --------- test -----------------
 .PHONY: test
-test: lib $(TESTNAME)
+test: lib $(BINDIR)/$(TESTNAME)
 
-$(TESTNAME): $(TESTSRCDIR)/$(TESTNAME).o
+$(BINDIR)/$(TESTNAME): $(TESTSRCDIR)/$(TESTNAME).o
 	@echo
-	$(CC) $(CFLAGS) $(TESTSRCDIR)/$(TESTNAME).c -o $(BINDIR)/$@ \
+	$(CC) $(CFLAGS) $(TESTSRCDIR)/$(TESTNAME).o -o $@ \
 		-l$(NAME) $(TESTLDFLAGS) -L$(LIBDIR) -I $(SRCDIR) -Wl,-rpath=$(LIBDIR)
 
-$(TESTSRCDIR)/$(TESTNAME).o:
-	$(CC) $(CFLAGS) $(TESTSRCDIR)/$(TESTNAME).c -c -o $@ \
+$(TESTSRCDIR)/$(TESTNAME).o: $(TESTSRCDIR)/$(TESTNAME).c
+	$(CC) $(CFLAGS) -c $< -o $@ \
 		-l$(NAME) -L$(LIBDIR) -I $(SRCDIR) -Wl,-rpath=$(LIBDIR)
 
 
