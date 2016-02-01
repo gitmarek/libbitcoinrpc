@@ -42,6 +42,7 @@ struct bitcoinrpc_call_json_resp_
 {
    json_t *json;
    json_error_t err;
+   bitcoinrpc_err_t e;
 };
 
 
@@ -50,7 +51,15 @@ bitcoinrpc_call_write_callback_ (char *ptr, size_t size, size_t nmemb, void *use
 {
   size_t n = size * nmemb;
   struct bitcoinrpc_call_json_resp_ *j = (struct bitcoinrpc_call_json_resp_ *) userdata;
+  j->e.code = BITCOINRPCE_OK;
   j->json = json_loads (ptr, JSON_REJECT_DUPLICATES, &(j->err));
+  if (j->json == NULL)
+  {
+    // cannot load json; report an erro
+    j->e.code = BITCOINRPCE_CON;
+    snprintf(j->e.msg, BITCOINRPC_ERRMSG_MAXLEN,
+             "connection error; server response:\n%s", ptr);
+  }
   return n;
 }
 
@@ -70,6 +79,7 @@ bitcoinrpc_call (bitcoinrpc_cl_t * cl, bitcoinrpc_method_t * method,
   BITCOINRPCEcode ecode;
   CURL *curl = NULL;
   CURLcode curl_err;
+  char errbuf[BITCOINRPC_ERRMSG_MAXLEN];
   char curl_errbuf[CURL_ERROR_SIZE];
 
   if (NULL == cl || NULL == method || NULL == resp )
@@ -117,15 +127,19 @@ bitcoinrpc_call (bitcoinrpc_cl_t * cl, bitcoinrpc_method_t * method,
 
   if (curl_err != CURLE_OK)
   {
-    char errbuf[BITCOINRPC_ERRMSG_MAXLEN];
     snprintf (errbuf, BITCOINRPC_ERRMSG_MAXLEN, "curl error: %s", curl_errbuf);
     bitcoinrpc_RETURN (e, BITCOINRPCE_CURLE, errbuf);
   }
 
-  /*
-  fprintf(stderr, "%s\n", json_dumps(bitcoinrpc_method_get_postjson_ (method), JSON_INDENT(2)));
-  fprintf(stderr, "%s\n", json_dumps(jresp.json, JSON_INDENT(2)));
-  */
+  /* Check if server returned valid json object */
+  if (jresp.e.code != BITCOINRPCE_OK)
+  {
+    bitcoinrpc_RETURN (e, BITCOINRPCE_CON, jresp.e.msg);
+  }
+
+  // fprintf(stderr, "%s\n", json_dumps(bitcoinrpc_method_get_postjson_ (method), JSON_INDENT(2)));
+  // fprintf(stderr, "%s\n", json_dumps(jresp.json, JSON_INDENT(2)));
+
   bitcoinrpc_resp_set_json_ (resp, jresp.json);
   json_decref(jresp.json); /* no longer needed, since we have deep copy in resp */
 
