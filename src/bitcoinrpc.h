@@ -371,6 +371,10 @@ json_t*
 bitcoinrpc_getblock_json (bitcoinrpc_cl_t *cl, bitcoinrpc_err_t *e,
                           const char *header);
 
+json_t*
+bitcoinrpc_getblockchaininfo (bitcoinrpc_cl_t *cl, bitcoinrpc_err_t *e);
+
+
 unsigned int
 bitcoinrpc_getconnectioncount (bitcoinrpc_cl_t *cl, bitcoinrpc_err_t *e);
 

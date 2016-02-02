@@ -534,13 +534,23 @@ as its error code.
     `json_decref()`.
 
 
+* `json_t*`
+  **bitcoinrpc_getblockchaininfo** `(bitcoinrpc_cl_t *cl, bitcoinrpc_err_t *e)`
+
+  Provide information about the current state of the block chain. <br>
+  See: [getblock](https://bitcoin.org/en/developer-reference#getblockchaininfo). <br>
+	*Return*: Pointer to a newly allocated `json_t` or `NULL` in case of error.
+	It is the obligation of the user to free the object later with
+	`json_decref()`.
+
+
 * `unsigned int`
   **bitcoinrpc_getconnectioncount**
       `(bitcoinrpc_cl_t *cl, bitcoinrpc_err_t *e)`
 
   Get the total number of connections (both inbound and outbound). <br>
   See: [getconnectioncount](https://bitcoin.org/en/developer-reference#getconnectioncount). <br>
-  *Return*: Return the number of connected nodes.
+  *Return*: The number of connected nodes.
 
 
 * `char*`

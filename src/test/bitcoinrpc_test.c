@@ -315,7 +315,7 @@ main (int argc, char **argv)
   a = bitcoinrpc_getblock (cl, &e, b);
   if (e.code == BITCOINRPCE_OK)
   {
-    fprintf (stderr, "getblock = %.60s etc.\n", a);
+    fprintf (stderr, "getblock = %.60s, etc.\n", a);
     free (a);
   }
   else
@@ -324,11 +324,13 @@ main (int argc, char **argv)
     abort();
   }
 
-  json_t *json_block = bitcoinrpc_getblock_json (cl, &e, b);
+
+  json_t *resp_json;
+  resp_json = bitcoinrpc_getblock_json (cl, &e, b);
   if (e.code == BITCOINRPCE_OK)
   {
-    fprintf (stderr, "getblock_json = %.60s etc.\n", json_dumps (json_block, JSON_COMPACT));
-    json_decref (json_block);
+    fprintf (stderr, "getblock_json = %.60s, etc.\n", json_dumps (resp_json, JSON_COMPACT));
+    json_decref (resp_json);
   }
   else
   {
@@ -336,6 +338,20 @@ main (int argc, char **argv)
     abort();
   }
   free(b);
+
+
+  resp_json = bitcoinrpc_getblockchaininfo (cl, &e);
+  if (e.code == BITCOINRPCE_OK)
+  {
+    fprintf (stderr, "getblockchaininfo = %.60s, etc.\n", json_dumps (resp_json, JSON_COMPACT));
+    json_decref (resp_json);
+  }
+  else
+  {
+    fprintf (stderr, "error(%d): %s\n", e.code, e.msg);
+    abort();
+  }
+
 
   c = bitcoinrpc_getconnectioncount(cl, &e);
   if (e.code == BITCOINRPCE_OK)
