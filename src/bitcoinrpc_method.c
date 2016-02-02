@@ -299,6 +299,9 @@ bitcoinrpc_method_free (bitcoinrpc_method_t *method)
   json_decref(method->post_json);
   json_decref(method->params_json);
 
+  bitcoinrpc_global_freefunc (method);
+  method = NULL;
+
   return BITCOINRPCE_OK;
 }
 

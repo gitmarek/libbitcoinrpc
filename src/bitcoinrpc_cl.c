@@ -146,8 +146,9 @@ bitcoinrpc_cl_free (bitcoinrpc_cl_t *cl)
 
   curl_slist_free_all(cl->curl_headers);
   curl_easy_cleanup (cl->curl);
-  bitcoinrpc_global_freefunc(cl);
   cl->curl = NULL;
+  bitcoinrpc_global_freefunc(cl);
+  cl = NULL;
 
   return BITCOINRPCE_OK;
 }

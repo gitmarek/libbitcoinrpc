@@ -242,7 +242,7 @@ Routines to handle RPC client.
 * `BITCOINRPCEcode`
   **bitcoinrpc_cl_free** `(bitcoinrpc_cl_t *cl)`
 
-  Free the handle. <br>
+  Free the handle. The pointer `cl` is set to `NULL` after the function call.<br>
   *Return*: `BITCOINRPCE_OK`.
 
 
@@ -422,7 +422,7 @@ the original pointer by decreasing its reference count:
 * `BITCOINRPCEcode`
   **bitcoinrpc_method_free** `(bitcoinrpc_method_t *method)`
 
-  Destroy the method.
+  Destroy the method and set the pointer `method` to `NULL`.
   *Return*: `BITCOINRPCE_OK`.
 
 
@@ -464,7 +464,7 @@ Store JSON responses from the server.
 * `BITCOINRPCEcode`
   **bitcoinrpc_resp_free** `(bitcoinrpc_resp_t *resp)`
 
-  Destroy the response `resp`. <br>
+  Destroy the response `resp` and set the pointer to `NULL`. <br>
   *Return*: `BITCOINRPCE_OK`.
 
 

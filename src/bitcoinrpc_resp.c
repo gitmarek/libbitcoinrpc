@@ -109,6 +109,7 @@ bitcoinrpc_resp_free (bitcoinrpc_resp_t *resp)
 
   json_decref (resp->json);
   bitcoinrpc_global_freefunc (resp);
+  resp = NULL;
 
   return BITCOINRPCE_OK;
 }
