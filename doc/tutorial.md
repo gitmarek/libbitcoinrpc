@@ -216,3 +216,6 @@ the 'low-level' `bitcoinrpc_call()` just passes the JSON data it got from the
 server and reports errors pertaining only to the call itself.  Hence you have
 freedom to call any valid method with any parameters, but on the other hand,
 it is your task to extract data from a JSON object you receive.
+
+
+*last updated: 2016-02-02*

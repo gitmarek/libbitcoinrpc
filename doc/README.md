@@ -26,7 +26,9 @@ Instructions how to build and install the library can be found in
 After you have installed the software, you should be able to locally
 browse its man pages, describing the library data structures and routines,
 which are basically the above reference document adjusted to the man pages
-format. Just type: `man 3 bitcoinrpc`. *(not implemented yet!)*
+format. Just type:
+
+    man 3 bitcoinrpc  *(not implemented yet!)*
 
 
 ### Final note
@@ -37,4 +39,4 @@ suggestions of how to improve this text in terms of spelling, grammar, syntax
 etc.  Please send proposals as github pull requests.  Any commit message
 regarding documentation should bear: `[doc]` prefix.
 
-*last updated: 2016-01-28*
+*last updated: 2016-02-02*

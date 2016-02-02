@@ -574,3 +574,6 @@ as its error code.
   The *account* can be `NULL`; in that case, it is ignored. <br>
   *Return*: Pointer to a newly allocated string or `NULL` in case of error.
   It is the obligation of the user to free the memory later with `free()`.
+
+
+*last updated: 2016-02-02*

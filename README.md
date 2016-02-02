@@ -36,9 +36,9 @@ These dependencies are required, if you want to use the code:
 
  Library     | Purpose             | Description
  ------------|---------------------|-----------------------------------------
-  curl       | send data over HTTP | tested with libcurl-7.35.0       
-  jansson    | JSON parsing        | tested with >=libjansson-2.5
-  libuuid    | generate UUIDs      |
+  curl       | send data over HTTP | tested with >=libcurl-7.14.0
+  jansson    | JSON parsing        | tested with >=libjansson-2.2.1
+  uuid       | generate UUIDs      | tested with >=libuuid-2.20.1
 
 To install the build dependencies on Ubuntu, please type the following
 command:
@@ -106,4 +106,4 @@ The source code is released under the terms of the MIT license.  Please, see
 [LICENSE](./LICENSE) for more information.
 
 
-*last updated: 2016-01-28*
+*last updated: 2016-02-02*
