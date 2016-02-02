@@ -1,0 +1,9 @@
+language: c
+compiler:
+  - gcc
+install:
+  - sudo apt-get update -qq
+  - sudo apt-get install -qq libcurl4-openssl-dev libjansson-dev uuid-dev
+  - dpkg -s libcurl4-openssl-dev libjansson-dev uuid-dev
+script:
+  - make
