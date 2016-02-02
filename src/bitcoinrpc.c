@@ -253,7 +253,7 @@ Convenience functions
 #define bitcoinrpc_convenience_copy_resp_json_MACRO_(err_return) \
   bitcoinrpc_convenience_copy_resp_string_MACRO_ (err_return); \
   json_error_t error; \
-  json_t *resp_json = json_loads (resp_string, JSON_DECODE_ANY, &error); \
+  json_t *resp_json = json_loads (resp_string, 0, &error); \
   if (NULL == resp_json) \
   { \
     bitcoinrpc_err_set_ (e, BITCOINRPCE_JSON, "error could not decode data"); \
