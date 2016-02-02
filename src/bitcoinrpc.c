@@ -369,6 +369,20 @@ bitcoinrpc_getblockchaininfo (bitcoinrpc_cl_t *cl, bitcoinrpc_err_t *e)
 
 
 unsigned int
+bitcoinrpc_getblockcount (bitcoinrpc_cl_t *cl, bitcoinrpc_err_t *e)
+{
+  bitcoinrpc_convenience_init_MACRO_ (BITCOINRPC_METHOD_GETBLOCKCOUNT, NULL, -1);
+  bitcoinrpc_convenience_call_MACRO_ (-1);
+  bitcoinrpc_convenience_errcheck_MACRO_ (-1);
+
+  unsigned int c = json_integer_value(jresp);
+  bitcoinrpc_convenience_free_MACRO_ (-1);
+
+  return c;
+}
+
+
+unsigned int
 bitcoinrpc_getconnectioncount (bitcoinrpc_cl_t *cl, bitcoinrpc_err_t *e)
 {
   bitcoinrpc_convenience_init_MACRO_ (BITCOINRPC_METHOD_GETCONNECTIONCOUNT, NULL, -1);

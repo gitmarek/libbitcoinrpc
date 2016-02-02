@@ -353,6 +353,18 @@ main (int argc, char **argv)
   }
 
 
+  c = bitcoinrpc_getblockcount(cl, &e);
+  if (e.code == BITCOINRPCE_OK)
+  {
+    fprintf (stderr, "getblockcount = %d\n", c);
+  }
+  else
+  {
+    fprintf (stderr, "error(%d): %s\n", e.code, e.msg);
+    abort();
+  }
+
+
   c = bitcoinrpc_getconnectioncount(cl, &e);
   if (e.code == BITCOINRPCE_OK)
   {

@@ -47,9 +47,9 @@ Maximal length of a string that holds a client's parameter
 
 /*
 Maximal length of the server url:
-"http://%s:%d" = 2*BITCOINRPC_PARAM_MAXLEN + 15
+"http://%s:%d" = 2*BITCOINRPC_PARAM_MAXLEN + 13
 */
-#define BITCOINRPC_URL_MAXLEN 81
+#define BITCOINRPC_URL_MAXLEN 79
 
 /* Maximal length of an error message */
 #define BITCOINRPC_ERRMSG_MAXLEN 1000
@@ -374,6 +374,8 @@ bitcoinrpc_getblock_json (bitcoinrpc_cl_t *cl, bitcoinrpc_err_t *e,
 json_t*
 bitcoinrpc_getblockchaininfo (bitcoinrpc_cl_t *cl, bitcoinrpc_err_t *e);
 
+unsigned int
+bitcoinrpc_getblockcount (bitcoinrpc_cl_t *cl, bitcoinrpc_err_t *e);
 
 unsigned int
 bitcoinrpc_getconnectioncount (bitcoinrpc_cl_t *cl, bitcoinrpc_err_t *e);

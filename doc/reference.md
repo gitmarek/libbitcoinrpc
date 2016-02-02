@@ -90,12 +90,13 @@ The following is the list of constants defined in `bitcoinrpc.h` header.
 
   Maximal length of a string that holds a client's parameter
   (user name, password or address), including the terminating `'\0'` character.
+  The default value: 32 bytes, holds any SHA256 hash, so it is more than enough.
 
 
 * `BITCOINRPC_URL_MAXLEN`
 
   Maximal length of the server url:
-  `"http://%s:%d" = 2*BITCOINRPC_PARAM_MAXLEN + 15`
+  `"http://%s:%d" = 2*BITCOINRPC_PARAM_MAXLEN + 13`
 
 
 * `BITCOINRPC_ERRMSG_MAXLEN`
@@ -538,10 +539,19 @@ as its error code.
   **bitcoinrpc_getblockchaininfo** `(bitcoinrpc_cl_t *cl, bitcoinrpc_err_t *e)`
 
   Provide information about the current state of the block chain. <br>
-  See: [getblock](https://bitcoin.org/en/developer-reference#getblockchaininfo). <br>
+  See: [getblockchaininfo](https://bitcoin.org/en/developer-reference#getblockchaininfo). <br>
 	*Return*: Pointer to a newly allocated `json_t` or `NULL` in case of error.
 	It is the obligation of the user to free the object later with
 	`json_decref()`.
+
+
+* `unsigned int`
+  **bitcoinrpc_getblockcount**
+      `(bitcoinrpc_cl_t *cl, bitcoinrpc_err_t *e)`
+
+  Get the number of blocks in the local best block chain. <br>
+  See: [getblockcount](https://bitcoin.org/en/developer-reference#getblockcount). <br>
+  *Return*: The number of blocks.
 
 
 * `unsigned int`
