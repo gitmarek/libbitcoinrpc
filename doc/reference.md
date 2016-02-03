@@ -554,6 +554,16 @@ as its error code.
   *Return*: The number of blocks.
 
 
+* `char*``
+  **bitcoinrpc_getblockhash** `(bitcoinrpc_cl_t *cl, bitcoinrpc_err_t *e, unsigned long int height)`
+
+  Return the header hash of a block at the given height in the local
+  best block chain. <br>
+  See: [getblockhash](https://bitcoin.org/en/developer-reference#getblockhash). <br>
+  *Return*: Pointer to a newly allocated string or `NULL` in case of error.
+  It is the obligation of the user to free the memory later with `free()`.
+
+
 * `unsigned int`
   **bitcoinrpc_getconnectioncount**
       `(bitcoinrpc_cl_t *cl, bitcoinrpc_err_t *e)`

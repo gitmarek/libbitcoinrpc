@@ -370,10 +370,24 @@ main (int argc, char **argv)
 
 
   fprintf (stderr, "getblockcount = ");
-  c = bitcoinrpc_getblockcount(cl, &e);
+  c = bitcoinrpc_getblockcount (cl, &e);
   if (e.code == BITCOINRPCE_OK)
   {
     fprintf (stderr, "%d\n", c);
+  }
+  else
+  {
+    fprintf (stderr, "error(%d): %s\n", e.code, e.msg);
+    abort();
+  }
+
+  /* if you test on regtest, remember to produce at least 10 blocks */
+  fprintf (stderr, "getblockhash(10) = ");
+  a = bitcoinrpc_getblockhash (cl, &e, 10);
+  if (e.code == BITCOINRPCE_OK)
+  {
+    fprintf (stderr, "%s\n", a);
+    free (a);
   }
   else
   {

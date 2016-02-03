@@ -377,6 +377,10 @@ bitcoinrpc_getblockchaininfo (bitcoinrpc_cl_t *cl, bitcoinrpc_err_t *e);
 unsigned int
 bitcoinrpc_getblockcount (bitcoinrpc_cl_t *cl, bitcoinrpc_err_t *e);
 
+char*
+bitcoinrpc_getblockhash (bitcoinrpc_cl_t *cl, bitcoinrpc_err_t *e,
+                         unsigned long int height);
+
 unsigned int
 bitcoinrpc_getconnectioncount (bitcoinrpc_cl_t *cl, bitcoinrpc_err_t *e);
 

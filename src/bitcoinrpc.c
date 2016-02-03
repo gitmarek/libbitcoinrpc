@@ -252,6 +252,20 @@ json_t *params = json_array(); \
   }
 
 
+#define bitcoinrpc_convenience_set_params_int_MACRO_(parint_id234a11, err_return) \
+json_t *params = json_array(); \
+  if (NULL == params) \
+  { \
+    bitcoinrpc_err_set_ (e, BITCOINRPCE_JSON, "libjansson cannot initialise a new object"); \
+    return err_return; \
+  } \
+  if (json_array_append_new (params, json_integer (parint_id234a11)) != 0) \
+  { \
+    bitcoinrpc_err_set_ (e, BITCOINRPCE_JSON, "cannot parse account string"); \
+    return err_return; \
+  }
+
+
 #define bitcoinrpc_convenience_call_MACRO_(err_return) \
   bitcoinrpc_call (cl, m, r, e);\
   if (e->code != BITCOINRPCE_OK)\
@@ -418,6 +432,23 @@ bitcoinrpc_getblockcount (bitcoinrpc_cl_t *cl, bitcoinrpc_err_t *e)
   bitcoinrpc_convenience_free_MACRO_ (-1);
 
   return c;
+}
+
+
+char*
+bitcoinrpc_getblockhash (bitcoinrpc_cl_t *cl, bitcoinrpc_err_t *e,
+                         unsigned long int height)
+{
+
+  bitcoinrpc_convenience_set_params_int_MACRO_ (height, NULL);
+  bitcoinrpc_convenience_init_MACRO_ (BITCOINRPC_METHOD_GETBLOCKHASH, params, NULL);
+  bitcoinrpc_convenience_call_MACRO_ (NULL);
+  bitcoinrpc_convenience_errcheck_MACRO_ (NULL);
+
+  /* body of the function: use jresp */
+  bitcoinrpc_convenience_copy_resp_string_MACRO_ (NULL);
+  bitcoinrpc_convenience_free_MACRO_ (NULL);
+  return resp_string;
 }
 
 
