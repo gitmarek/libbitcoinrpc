@@ -49,7 +49,7 @@ Maximal length of a string that holds a client's parameter
 Maximal length of the server url:
 "http://%s:%d" = 2*BITCOINRPC_PARAM_MAXLEN + 13
 */
-#define BITCOINRPC_URL_MAXLEN 79
+#define BITCOINRPC_URL_MAXLEN 143
 
 /* Maximal length of an error message */
 #define BITCOINRPC_ERRMSG_MAXLEN 1000

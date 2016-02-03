@@ -125,7 +125,7 @@ int parse_command_options (int argc, char **argv, options_t *o)
           {
             if (strlen(optarg) > BITCOINRPC_PARAM_MAXLEN)
             {
-              fprintf(stderr, "error: The argument to --rpc-password is lnger than %d characters.\n Either specify a shorter password, or change the source code.\n", BITCOINRPC_PARAM_MAXLEN);
+              fprintf(stderr, "error: The argument to --rpc-password is longer than %d characters.\n Either specify a shorter password, or change the source code.\n", BITCOINRPC_PARAM_MAXLEN);
               return 1;
             }
             strncpy(o->pass, optarg, BITCOINRPC_PARAM_MAXLEN);
@@ -230,7 +230,7 @@ main (int argc, char **argv)
   if (NULL == cl)
   {
     fprintf (stderr, "error: cannot initialise a new client.\n");
-    exit (EXIT_FAILURE);
+    abort();
   }
 
   /* initialise method  */
@@ -238,7 +238,7 @@ main (int argc, char **argv)
   if (NULL == m)
   {
     fprintf (stderr, "error: cannot initialise a new method.\n");
-    exit (EXIT_FAILURE);
+    abort();
   }
 
   /* initialise response */
@@ -246,13 +246,17 @@ main (int argc, char **argv)
   if (NULL == r)
   {
     fprintf (stderr, "error: cannot initialise a new responce holder.\n");
-    exit (EXIT_FAILURE);
+    abort();
   }
 
-  fprintf (stderr, "getinfo: \n");
+  fprintf (stderr, "calling getinfo: \n");
   bitcoinrpc_call (cl, m, r, &e);
   if (e.code != BITCOINRPCE_OK)
+  {
     fprintf (stderr, "error: %s\n", e.msg);
+    abort();
+  }
+
 
   j = bitcoinrpc_resp_get (r);
   data = json_dumps (j, JSON_INDENT(2));
@@ -265,7 +269,7 @@ main (int argc, char **argv)
   if (NULL == m_settx)
   {
     fprintf (stderr, "error: cannot initialise a new method.\n");
-    exit(EXIT_FAILURE);
+    abort();
   }
 
   double x = (double) rand() / RAND_MAX;
@@ -274,18 +278,28 @@ main (int argc, char **argv)
   params = json_array();
   json_array_append_new (params, json_real(x));
   if ( bitcoinrpc_method_set_params (m_settx, params) != BITCOINRPCE_OK)
+  {
     fprintf (stderr, "error: cannot set params\n");
+    abort();
+  }
   json_decref (params);
 
   bitcoinrpc_call(cl, m_settx, r, &e);
   if (e.code != BITCOINRPCE_OK)
+  {
     fprintf(stderr, "%s\n", e.msg);
+    abort();
+  }
+
   fprintf (stderr, "new tx fee: ");
 
   /* call getinfo one more time */
   bitcoinrpc_call (cl, m, r, &e);
   if (e.code != BITCOINRPCE_OK)
+  {
     fprintf(stderr, "%s\n", e.msg);
+    abort();
+  }
 
   j = bitcoinrpc_resp_get (r);
   fprintf (stderr, "%.8f\n", json_real_value ( json_object_get ( json_object_get (j, "result"), "paytxfee")));
@@ -297,11 +311,11 @@ main (int argc, char **argv)
   unsigned int c;
   char *a, *b;
 
-
+  fprintf (stderr, "getbestblockhash = ");
   a = bitcoinrpc_getbestblockhash(cl, &e);
   if (e.code == BITCOINRPCE_OK)
   {
-    fprintf (stderr, "getbestblockhash = %s\n", a);
+    fprintf (stderr, "%s\n", a);
     free (a);
   }
   else
@@ -310,12 +324,12 @@ main (int argc, char **argv)
     abort();
   }
 
-
+  fprintf (stderr, "getblock = ");
   b = bitcoinrpc_getbestblockhash (cl, &e);
   a = bitcoinrpc_getblock (cl, &e, b);
   if (e.code == BITCOINRPCE_OK)
   {
-    fprintf (stderr, "getblock = %.60s, etc.\n", a);
+    fprintf (stderr, "%.60s, etc.\n", a);
     free (a);
   }
   else
@@ -325,11 +339,12 @@ main (int argc, char **argv)
   }
 
 
+  fprintf (stderr, "getblock_json = ");
   json_t *resp_json;
   resp_json = bitcoinrpc_getblock_json (cl, &e, b);
   if (e.code == BITCOINRPCE_OK)
   {
-    fprintf (stderr, "getblock_json = %.60s, etc.\n", json_dumps (resp_json, JSON_COMPACT));
+    fprintf (stderr, "%.60s, etc.\n", json_dumps (resp_json, JSON_COMPACT));
     json_decref (resp_json);
   }
   else
@@ -340,10 +355,11 @@ main (int argc, char **argv)
   free(b);
 
 
+  fprintf (stderr, "getblockchaininfo = ");
   resp_json = bitcoinrpc_getblockchaininfo (cl, &e);
   if (e.code == BITCOINRPCE_OK)
   {
-    fprintf (stderr, "getblockchaininfo = %.60s, etc.\n", json_dumps (resp_json, JSON_COMPACT));
+    fprintf (stderr, "%.60s, etc.\n", json_dumps (resp_json, JSON_COMPACT));
     json_decref (resp_json);
   }
   else
@@ -353,10 +369,11 @@ main (int argc, char **argv)
   }
 
 
+  fprintf (stderr, "getblockcount = ");
   c = bitcoinrpc_getblockcount(cl, &e);
   if (e.code == BITCOINRPCE_OK)
   {
-    fprintf (stderr, "getblockcount = %d\n", c);
+    fprintf (stderr, "%d\n", c);
   }
   else
   {
@@ -365,10 +382,11 @@ main (int argc, char **argv)
   }
 
 
+  fprintf (stderr, "getconnectioncount = ");
   c = bitcoinrpc_getconnectioncount(cl, &e);
   if (e.code == BITCOINRPCE_OK)
   {
-    fprintf (stderr, "getconnectioncount = %d\n", c);
+    fprintf (stderr, "%d\n", c);
   }
   else
   {
@@ -377,10 +395,11 @@ main (int argc, char **argv)
   }
 
 
+  fprintf (stderr, "getnewaddress = ");
   a = bitcoinrpc_getnewaddress(cl, &e, "myacc");
   if (e.code == BITCOINRPCE_OK)
   {
-    fprintf (stderr, "getnewaddress = %s\n", a);
+    fprintf (stderr, "%s\n", a);
     free (a);
   }
   else

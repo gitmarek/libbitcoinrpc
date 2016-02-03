@@ -38,10 +38,11 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 
 
-struct bitcoinrpc_call_json_resp_
+struct bitcoinrpc_call_curl_resp_
 {
-   json_t *json;
-   json_error_t err;
+   char* data;
+   unsigned long long int data_len;
+   int called_before;
    bitcoinrpc_err_t e;
 };
 
@@ -50,16 +51,55 @@ size_t
 bitcoinrpc_call_write_callback_ (char *ptr, size_t size, size_t nmemb, void *userdata)
 {
   size_t n = size * nmemb;
-  struct bitcoinrpc_call_json_resp_ *j = (struct bitcoinrpc_call_json_resp_ *) userdata;
-  j->e.code = BITCOINRPCE_OK;
-  j->json = json_loads (ptr, JSON_REJECT_DUPLICATES, &(j->err));
-  if (j->json == NULL)
+  struct bitcoinrpc_call_curl_resp_ *curl_resp = (struct bitcoinrpc_call_curl_resp_ *) userdata;
+
+  if ( ! curl_resp->called_before )
   {
-    // cannot load json; report an erro
-    j->e.code = BITCOINRPCE_CON;
-    snprintf(j->e.msg, BITCOINRPC_ERRMSG_MAXLEN,
-             "connection error; server response:\n%s", ptr);
+    /* initialise the data structure */
+    curl_resp->called_before = 1;
+    curl_resp->data_len = 0;
+    curl_resp->data = NULL;
+    curl_resp->e.code = BITCOINRPCE_OK;
   }
+
+  char * data = NULL;
+  unsigned long long int data_len = curl_resp->data_len + n;
+  data = bitcoinrpc_global_allocfunc (data_len);
+  if (NULL == data)
+  {
+    curl_resp->e.code = BITCOINRPCE_ALLOC;
+    snprintf(curl_resp->e.msg, BITCOINRPC_ERRMSG_MAXLEN,
+             "cannot allocate more memory");
+    return n;
+  }
+  /* concatenate old and new data */
+  if (NULL != curl_resp->data)
+  {
+    /* do not copy last '\0' */
+    strncpy (data, curl_resp->data, curl_resp->data_len);
+  }
+
+  /* break at '\n' */
+  size_t i;
+  for (i = 0; i < n; i++)
+  {
+    if (ptr[i] == '\n')
+    {
+      data[curl_resp->data_len + i] = '\0';
+      break;
+    }
+    data[curl_resp->data_len + i] = ptr[i];
+  }
+
+
+  if (NULL != curl_resp->data)
+  {
+    bitcoinrpc_global_freefunc(curl_resp->data);
+  }
+
+  curl_resp->data = data;
+  curl_resp->data_len += i;
+
   return n;
 }
 
@@ -75,7 +115,7 @@ bitcoinrpc_call (bitcoinrpc_cl_t * cl, bitcoinrpc_method_t * method,
   char user[BITCOINRPC_PARAM_MAXLEN];
   char pass[BITCOINRPC_PARAM_MAXLEN];
   char credentials[2 * BITCOINRPC_PARAM_MAXLEN + 1];
-  struct bitcoinrpc_call_json_resp_ jresp;
+  struct bitcoinrpc_call_curl_resp_ curl_resp;
   BITCOINRPCEcode ecode;
   CURL *curl = NULL;
   CURLcode curl_err;
@@ -105,7 +145,8 @@ bitcoinrpc_call (bitcoinrpc_cl_t * cl, bitcoinrpc_method_t * method,
   curl_easy_setopt(curl, CURLOPT_POSTFIELDSIZE, (long) strlen (data));
   curl_easy_setopt(curl, CURLOPT_POSTFIELDS, data);
   curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, bitcoinrpc_call_write_callback_);
-  curl_easy_setopt(curl, CURLOPT_WRITEDATA, &jresp);
+  curl_resp.called_before = 0;
+  curl_easy_setopt(curl, CURLOPT_WRITEDATA, &curl_resp);
 
   ecode = bitcoinrpc_cl_get_url (cl, url);
 
@@ -133,16 +174,23 @@ bitcoinrpc_call (bitcoinrpc_cl_t * cl, bitcoinrpc_method_t * method,
   }
 
   /* Check if server returned valid json object */
-  if (jresp.e.code != BITCOINRPCE_OK)
+  if (curl_resp.e.code != BITCOINRPCE_OK)
   {
-    bitcoinrpc_RETURN (e, BITCOINRPCE_CON, jresp.e.msg);
+    bitcoinrpc_RETURN (e, BITCOINRPCE_CON, curl_resp.e.msg);
   }
 
-  // fprintf(stderr, "%s\n", json_dumps(bitcoinrpc_method_get_postjson_ (method), JSON_INDENT(2)));
-  // fprintf(stderr, "%s\n", json_dumps(jresp.json, JSON_INDENT(2)));
+  // fprintf (stderr, "curl_resp.data =  %s\n", curl_resp.data);
+  // fprintf (stderr, "\nbytes written: %d\n", (int) curl_resp.data_len);
 
-  bitcoinrpc_resp_set_json_ (resp, jresp.json);
-  json_decref(jresp.json); /* no longer needed, since we have deep copy in resp */
+  /* parse read data into json */
+  json_error_t jerr;
+  json_t *jtmp = json_loads (curl_resp.data, 0, &jerr);
+  if (NULL == jtmp)
+  {
+    bitcoinrpc_RETURN (e, BITCOINRPCE_JSON, "cannot parse data from server");
+  }
+  bitcoinrpc_resp_set_json_ (resp, jtmp);
+  json_decref(jtmp);
 
   if (bitcoinrpc_resp_check (resp, method) != BITCOINRPCE_OK)
     bitcoinrpc_RETURN (e, BITCOINRPCE_CHECK, "response id does not match post id");
