@@ -59,7 +59,7 @@ SRCFILES = $(shell find $(SRCDIR) -maxdepth 1 -iname '*.c')
 OBJFILES = $(shell echo $(SRCFILES) | sed 's/\.c/\.o/g')
 
 .PHONY: all
-all: prep lib test
+all: prep lib build-test
 
 .PHONY: prep
 prep:
@@ -86,8 +86,8 @@ $(SRCDIR)/%.o: $(SRCDIR)/%.c
 
 
 # --------- test -----------------
-.PHONY: test
-test: lib $(BINDIR)/$(TESTNAME)
+.PHONY: build-test
+build-test: lib $(BINDIR)/$(TESTNAME)
 
 $(BINDIR)/$(TESTNAME): $(TESTSRCDIR)/$(TESTNAME).o
 	@echo
@@ -97,6 +97,32 @@ $(BINDIR)/$(TESTNAME): $(TESTSRCDIR)/$(TESTNAME).o
 $(TESTSRCDIR)/$(TESTNAME).o: $(TESTSRCDIR)/$(TESTNAME).c
 	$(CC) $(CFLAGS) -c $< -o $@ \
 		-l$(NAME) -L$(LIBDIR) -I $(SRCDIR) -Wl,-rpath=$(LIBDIR)
+
+
+
+BITCOINDATADIR := bitcoin-test
+BITCOINPARAMS   = -regtest -datadir=$(BITCOINDATADIR)
+
+.PHONY: test
+test: all
+	@echo "Testing library routines in regtest mode (bitcoind and bitcoin-cli needed!)"
+	@if ! which bitcoind ; then echo "Can't find bitcoind executable." ; exit 1; fi
+	@if ! which bitcoin-cli ; then echo "Can't find bitcoin-cli executable." ; exit 1; fi
+	@echo "Prepare regtest blockchain"
+	@mkdir -p $(BITCOINDATADIR)
+	echo 'rpcpassword=test' > $(BITCOINDATADIR)/bitcoin.conf
+	bitcoind -daemon $(BITCOINPARAMS)
+	sleep 10s;
+	@echo "Generate 50 blocks"
+	bitcoin-cli $(BITCOINPARAMS) generate 50
+	sleep 10s;
+	@echo "Start $(TESTNAME)"
+	$(BINDIR)/$(TESTNAME) --rpc-password=test --rpc-port=18332
+	bitcoin-cli $(BITCOINPARAMS) stop
+	sleep 10s;
+	@echo "Bitcoin Core logs":
+	cat $(BITCOINDATADIR)/regtest/debug.log
+
 
 
 # ---------- clean ----------------

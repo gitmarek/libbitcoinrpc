@@ -3,6 +3,7 @@ bin
 build
 tmp
 .lib
+bitcoin-test
 
 *.orig
 
