@@ -86,11 +86,11 @@ The following is the list of constants defined in `bitcoinrpc.h` header.
   Defalut parameters of a RPC client.
 
 
-* `BITCOINRPC_PARAM_MAXLEN` = 33 (32 bytes + `'\0'`)
+* `BITCOINRPC_PARAM_MAXLEN` = 65 (64 bytes + `'\0'`)
 
   Maximal length of a string that holds a client's parameter
   (user name, password or address), including the terminating `'\0'` character.
-  The default value: 32 bytes, holds any SHA256 hash, so it is more than enough.
+  The default value: 64 bytes, holds any SHA256 hash, so it is more than enough.
 
 
 * `BITCOINRPC_URL_MAXLEN`

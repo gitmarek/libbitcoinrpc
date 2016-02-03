@@ -43,7 +43,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 Maximal length of a string that holds a client's parameter
 (user name, password or address), including the terminating '\0' character.
 */
-#define BITCOINRPC_PARAM_MAXLEN 33
+#define BITCOINRPC_PARAM_MAXLEN 65
 
 /*
 Maximal length of the server url:
