@@ -300,6 +300,7 @@ json_t *params = json_array(); \
     } \
   }
 
+
 #define bitcoinrpc_convenience_copy_resp_string_MACRO_(err_return) \
   size_t n;\
   char* resp_string;\
@@ -330,16 +331,12 @@ json_t *params = json_array(); \
 
 
 #define bitcoinrpc_convenience_copy_resp_json_MACRO_(err_return) \
-  bitcoinrpc_convenience_copy_resp_string_MACRO_ (err_return); \
-  json_error_t error; \
-  json_t *resp_json = json_loads (resp_string, 0, &error); \
+  json_t *resp_json = json_deep_copy (jresp); \
   if (NULL == resp_json) \
   { \
     bitcoinrpc_err_set_ (e, BITCOINRPCE_JSON, "error could not decode data"); \
     return err_return; \
-  } \
-  free (resp_string);
-
+  }
 
 
 #define bitcoinrpc_convenience_free_MACRO_(err_return) \
@@ -449,6 +446,22 @@ bitcoinrpc_getblockhash (bitcoinrpc_cl_t *cl, bitcoinrpc_err_t *e,
   bitcoinrpc_convenience_copy_resp_string_MACRO_ (NULL);
   bitcoinrpc_convenience_free_MACRO_ (NULL);
   return resp_string;
+}
+
+
+json_t*
+bitcoinrpc_getchaintips (bitcoinrpc_cl_t *cl, bitcoinrpc_err_t *e)
+{
+
+  bitcoinrpc_convenience_init_MACRO_ (BITCOINRPC_METHOD_GETCHAINTIPS, NULL, NULL);
+  bitcoinrpc_convenience_call_MACRO_ (NULL);
+  bitcoinrpc_convenience_errcheck_MACRO_ (NULL);
+
+  /* body of the function: use jresp */
+  bitcoinrpc_convenience_copy_resp_json_MACRO_(NULL);
+
+  bitcoinrpc_convenience_free_MACRO_ (NULL);
+  return resp_json;
 }
 
 

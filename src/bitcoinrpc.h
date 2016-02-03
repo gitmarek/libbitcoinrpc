@@ -381,6 +381,9 @@ char*
 bitcoinrpc_getblockhash (bitcoinrpc_cl_t *cl, bitcoinrpc_err_t *e,
                          unsigned long int height);
 
+json_t*
+bitcoinrpc_getchaintips (bitcoinrpc_cl_t *cl, bitcoinrpc_err_t *e);
+
 unsigned int
 bitcoinrpc_getconnectioncount (bitcoinrpc_cl_t *cl, bitcoinrpc_err_t *e);
 
