@@ -66,6 +66,7 @@ prep:
 	@echo
 	@mkdir -p $(LIBDIR) $(BINDIR)
 
+
 .PHONY: lib
 lib: $(LIBDIR)/lib$(NAME).so
 
@@ -100,29 +101,45 @@ $(TESTSRCDIR)/$(TESTNAME).o: $(TESTSRCDIR)/$(TESTNAME).c
 
 
 
-BITCOINDATADIR := bitcoin-test
+BITCOINDATADIR := $(shell mktemp -d)
 BITCOINPARAMS   = -regtest -datadir=$(BITCOINDATADIR)
 
-.PHONY: test
-test: all
+.PHONY: prep-test
+prep-test:
+	@echo
 	@echo "Testing library routines in regtest mode (bitcoind and bitcoin-cli needed!)"
 	@if ! which bitcoind ; then echo "Can't find bitcoind executable." ; exit 1; fi
 	@if ! which bitcoin-cli ; then echo "Can't find bitcoin-cli executable." ; exit 1; fi
 	@echo "Prepare regtest blockchain"
+	@echo "datadir: $(BITCOINDATADIR)"
 	@mkdir -p $(BITCOINDATADIR)
 	echo 'rpcpassword=test' > $(BITCOINDATADIR)/bitcoin.conf
 	bitcoind -daemon $(BITCOINPARAMS)
-	sleep 10s;
+	@sleep 3s;	
 	@echo "Generate 50 blocks"
-	bitcoin-cli $(BITCOINPARAMS) generate 50
-	sleep 10s;
+  # Wait for the server to start
+	while ! bitcoin-cli $(BITCOINPARAMS) generate 50 > /dev/null; do sleep 3s; done
+
+
+.PHONY: preform-test
+perform-test:
+	@echo
 	@echo "Start $(TESTNAME)"
 	$(BINDIR)/$(TESTNAME) --rpc-password=test --rpc-port=18332
 	bitcoin-cli $(BITCOINPARAMS) stop
-	sleep 10s;
-	@echo "Bitcoin Core logs":
-	cat $(BITCOINDATADIR)/regtest/debug.log
+	sleep 5s;
 
+.PHONY: clean-test
+clean-test:
+	@echo
+	@echo "Bitcoin Core logs:"
+	cat $(BITCOINDATADIR)/regtest/debug.log
+	@echo "Remove datadir"
+	rm -rf $(BITCOINDATADIR)
+
+
+.PHONY: test
+test: prep-test perform-test clean-test
 
 
 # ---------- clean ----------------
