@@ -387,6 +387,9 @@ bitcoinrpc_getchaintips (bitcoinrpc_cl_t *cl, bitcoinrpc_err_t *e);
 unsigned int
 bitcoinrpc_getconnectioncount (bitcoinrpc_cl_t *cl, bitcoinrpc_err_t *e);
 
+double
+bitcoinrpc_getdifficulty (bitcoinrpc_cl_t *cl, bitcoinrpc_err_t *e);
+
 char*
 bitcoinrpc_getnewaddress (bitcoinrpc_cl_t *cl, bitcoinrpc_err_t *e,
                           const char* account);

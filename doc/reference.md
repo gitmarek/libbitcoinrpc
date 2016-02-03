@@ -584,6 +584,14 @@ as its error code.
   *Return*: The number of connected nodes.
 
 
+* `double`
+  **bitcoinrpc_getdifficulty**  `(bitcoinrpc_cl_t *cl, bitcoinrpc_err_t *e)`
+
+  Get difficulty. <br>
+  See [getdifficulty](https://bitcoin.org/en/developer-reference#getdifficulty). <br>
+  *Return*: number of type `double`.
+
+
 * `char*`
   **bitcoinrpc_getnewaddress**
       `(bitcoinrpc_cl_t *cl, bitcoinrpc_err_t *e, const char* account)`

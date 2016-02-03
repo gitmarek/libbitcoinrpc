@@ -479,6 +479,20 @@ bitcoinrpc_getconnectioncount (bitcoinrpc_cl_t *cl, bitcoinrpc_err_t *e)
 }
 
 
+double
+bitcoinrpc_getdifficulty (bitcoinrpc_cl_t *cl, bitcoinrpc_err_t *e)
+{
+  bitcoinrpc_convenience_init_MACRO_ (BITCOINRPC_METHOD_GETDIFFICULTY, NULL, -1);
+  bitcoinrpc_convenience_call_MACRO_ (-1);
+  bitcoinrpc_convenience_errcheck_MACRO_ (-1);
+
+  double d = json_real_value(jresp);
+  bitcoinrpc_convenience_free_MACRO_ (-1);
+
+  return d;
+}
+
+
 char*
 bitcoinrpc_getnewaddress (bitcoinrpc_cl_t *cl, bitcoinrpc_err_t *e,
                           const char* account)

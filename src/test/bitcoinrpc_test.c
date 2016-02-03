@@ -308,8 +308,10 @@ main (int argc, char **argv)
   fprintf (stderr,
     " * Test convenience functions:\n");
 
-  unsigned int c;
   char *a, *b;
+  unsigned int c;
+  // unsigned long long int l;
+  double d;
 
   fprintf (stderr, "getbestblockhash = ");
   a = bitcoinrpc_getbestblockhash(cl, &e);
@@ -402,6 +404,19 @@ main (int argc, char **argv)
   {
     fprintf (stderr, "%.60s, etc.\n", json_dumps (resp_json, JSON_COMPACT));
     json_decref (resp_json);
+  }
+  else
+  {
+    fprintf (stderr, "error(%d): %s\n", e.code, e.msg);
+    abort();
+  }
+
+
+  fprintf (stderr, "getdifficulty = ");
+  d = bitcoinrpc_getdifficulty(cl, &e);
+  if (e.code == BITCOINRPCE_OK)
+  {
+    fprintf (stderr, "%f\n", d);
   }
   else
   {
