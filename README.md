@@ -13,6 +13,8 @@ without reallocating resources.
 * Proper error handling.
 * Convenience functions to perform simple one-time tasks in an efficient way.
 
+Currently, the code is tested against stable Bitcoin Core v0.11.2.0-g7e27892.
+
 
 ## To build the shared library
 
@@ -28,6 +30,13 @@ If you want to clean the directory of compiled files and start from scratch,
 use:
 
     make clean  
+
+You can also perform some testing with bitcoin daemon in regtest mode:
+
+    make test
+
+this assumes that you have `bitcoind` and `bitcoin-cli` executables
+installed on your system.
 
 
 ### Build dependencies
