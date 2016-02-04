@@ -62,7 +62,7 @@ BITCOINRPC_METHOD_names_[BITCOINRPC_METHOD_names_len_] =
   { BITCOINRPC_METHOD_VERIFYTXOUTPROOF,          "verifytxoutproof"     /**/ },
 
   /* Control RPCs */
-  { BITCOINRPC_METHOD_GETINFO,                   "getinfo"              /**/ },
+  { BITCOINRPC_METHOD_GETINFO,                   "getinfo"                   },
   { BITCOINRPC_METHOD_HELP,                      "help"                 /**/ },
   { BITCOINRPC_METHOD_STOP,                      "stop"                      },
 

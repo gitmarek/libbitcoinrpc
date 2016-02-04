@@ -508,6 +508,22 @@ bitcoinrpc_getdifficulty (bitcoinrpc_cl_t *cl, bitcoinrpc_err_t *e)
 
 
 json_t*
+bitcoinrpc_getinfo (bitcoinrpc_cl_t *cl, bitcoinrpc_err_t *e)
+{
+
+  bitcoinrpc_convenience_init_MACRO_ (BITCOINRPC_METHOD_GETINFO, NULL, NULL);
+  bitcoinrpc_convenience_call_MACRO_ (NULL);
+  bitcoinrpc_convenience_errcheck_MACRO_ (NULL);
+
+  /* body of the function: use jresp */
+  bitcoinrpc_convenience_copy_resp_json_MACRO_(NULL);
+
+  bitcoinrpc_convenience_free_MACRO_ (NULL);
+  return resp_json;
+}
+
+
+json_t*
 bitcoinrpc_getmempoolinfo (bitcoinrpc_cl_t *cl, bitcoinrpc_err_t *e)
 {
 

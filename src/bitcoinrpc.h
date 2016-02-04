@@ -391,6 +391,9 @@ double
 bitcoinrpc_getdifficulty (bitcoinrpc_cl_t *cl, bitcoinrpc_err_t *e);
 
 json_t*
+bitcoinrpc_getinfo (bitcoinrpc_cl_t *cl, bitcoinrpc_err_t *e);
+
+json_t*
 bitcoinrpc_getmempoolinfo (bitcoinrpc_cl_t *cl, bitcoinrpc_err_t *e);
 
 char*

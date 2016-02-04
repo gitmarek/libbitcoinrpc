@@ -438,6 +438,20 @@ main (int argc, char **argv)
   }
 
 
+  fprintf (stderr, "getinfo = ");
+  resp_json = bitcoinrpc_getinfo (cl, &e);
+  if (e.code == BITCOINRPCE_OK)
+  {
+    fprintf (stderr, "%.60s, etc.\n", json_dumps (resp_json, JSON_COMPACT));
+    json_decref (resp_json);
+  }
+  else
+  {
+    fprintf (stderr, "error(%d): %s\n", e.code, e.msg);
+    abort();
+  }
+
+
   fprintf (stderr, "getmempoolinfo = ");
   resp_json = bitcoinrpc_getmempoolinfo (cl, &e);
   if (e.code == BITCOINRPCE_OK)

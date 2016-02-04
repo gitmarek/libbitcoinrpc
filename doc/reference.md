@@ -593,6 +593,17 @@ as its error code.
 
 
 * `json_t*`
+  **bitcoinrpc_getinfo** `(bitcoinrpc_cl_t *cl, bitcoinrpc_err_t *e)`
+
+  Print various information about the node and the network. <br>
+  See: [getblockinfo](https://bitcoin.org/en/developer-reference#getinfo). <br>
+  Warning: This RPC method is deprecated.
+	*Return*: Pointer to a newly allocated `json_t` or `NULL` in case of error.
+	It is the obligation of the user to free the object later with
+	`json_decref()`.
+
+
+* `json_t*`
   **bitcoinrpc_getmempoolinfo** `(bitcoinrpc_cl_t *cl, bitcoinrpc_err_t *e)`
 
   Return information about the node’s current transaction memory pool. <br>
@@ -634,4 +645,4 @@ as its error code.
   *Return*: None.
 
 
-*last updated: 2016-02-02*
+*last updated: 2016-02-04*
