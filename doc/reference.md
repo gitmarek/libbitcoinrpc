@@ -444,6 +444,17 @@ the original pointer by decreasing its reference count:
   be copied by libjansson.
 
 
+* `BITCOINRPCEcode`
+  **bitcoinrpc_method_setname** `(bitcoinrpc_method_t *method, char *name)`
+
+  Set a custom name for the method.
+  Works only if method is initialised with BITCOINRPC_METHOD_NONSTANDARD,
+  otherwise returns BITCOINRPCE_ERR.
+  The pointer to str is copied, not the string itself. It is the obligation of
+  the user, to keep the str available and free it, when no longer needed.
+  *Return*: `BITCOINRPCE_OK` or `BITCOINRPCE_ERR`.
+
+
 ### bitcoinrpc_resp
 
 Store JSON responses from the server.

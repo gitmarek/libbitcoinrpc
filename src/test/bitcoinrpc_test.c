@@ -217,6 +217,7 @@ main (int argc, char **argv)
   bitcoinrpc_resp_t   *r       = NULL;
   bitcoinrpc_method_t *m       = NULL;
   bitcoinrpc_method_t *m_settx = NULL;
+  bitcoinrpc_method_t *m_nonstd= NULL;
   json_t *j         = NULL;
   json_t *params    = NULL;
   json_t *resp_json = NULL;
@@ -283,7 +284,6 @@ main (int argc, char **argv)
     fprintf (stderr, "error: cannot set params\n");
     abort();
   }
-  json_decref (params);
 
   bitcoinrpc_call(cl, m_settx, r, &e);
   if (e.code != BITCOINRPCE_OK)
@@ -305,6 +305,32 @@ main (int argc, char **argv)
   j = bitcoinrpc_resp_get (r);
   fprintf (stderr, "%.8f\n", json_real_value ( json_object_get ( json_object_get (j, "result"), "paytxfee")));
   json_decref (j);
+
+
+
+  fprintf (stderr, " Test nonstandard methods\n");
+  m_nonstd = bitcoinrpc_method_init (BITCOINRPC_METHOD_NONSTANDARD);
+  if (NULL == m_nonstd)
+  {
+    fprintf (stderr, "error: cannot initialise a new method.\n");
+    abort();
+  }
+
+  bitcoinrpc_method_set_nonstandard (m, "hereandnow");
+  bitcoinrpc_method_set_params (m, params);
+  bitcoinrpc_call (cl, m_nonstd, r, &e);
+  if (e.code != BITCOINRPCE_OK)
+  {
+    fprintf(stderr, "%s\n", e.msg);
+    abort();
+  }
+  json_decref (params);
+  j = bitcoinrpc_resp_get (r);
+  data = json_dumps (j, JSON_INDENT(2));
+  fprintf (stderr, "%s\n", data);
+  json_decref (j);
+  free (data);
+
 
   fprintf (stderr,
     " * Test convenience functions:\n");
