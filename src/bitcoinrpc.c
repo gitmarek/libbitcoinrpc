@@ -563,3 +563,16 @@ bitcoinrpc_getrawmempool (bitcoinrpc_cl_t *cl, bitcoinrpc_err_t *e, int verbose)
   bitcoinrpc_convenience_free_MACRO_ (NULL);
   return resp_json;
 }
+
+
+void
+bitcoinrpc_stop (bitcoinrpc_cl_t *cl, bitcoinrpc_err_t *e)
+{
+  bitcoinrpc_convenience_init_MACRO_ (BITCOINRPC_METHOD_STOP, NULL, );
+  bitcoinrpc_convenience_call_MACRO_ ();
+  bitcoinrpc_convenience_errcheck_MACRO_ ();
+
+  /* body of the function: use jresp */
+  bitcoinrpc_convenience_free_MACRO_ ();
+  return;
+}

@@ -494,6 +494,16 @@ main (int argc, char **argv)
   }
 
 
+  /*
+  fprintf (stderr, "stop = ");
+  bitcoinrpc_stop(cl, &e);
+  if (e.code != BITCOINRPCE_OK)
+  {
+    fprintf (stderr, "error(%d): %s\n", e.code, e.msg);
+    abort();
+  }
+  */
+
   fprintf (stderr, "Free the resources... ");
   bitcoinrpc_cl_free (cl);
   bitcoinrpc_method_free (m);

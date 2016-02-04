@@ -115,7 +115,7 @@ prep-test:
 	@mkdir -p $(BITCOINDATADIR)
 	echo 'rpcpassword=test' > $(BITCOINDATADIR)/bitcoin.conf
 	bitcoind -daemon $(BITCOINPARAMS)
-	@sleep 3s;	
+	@sleep 3s;
 	@echo "Generate 50 blocks"
   # Wait for the server to start
 	while ! bitcoin-cli $(BITCOINPARAMS) generate 50 > /dev/null; do sleep 3s; done
@@ -126,7 +126,7 @@ perform-test:
 	@echo
 	@echo "Start $(TESTNAME)"
 	$(BINDIR)/$(TESTNAME) --rpc-password=test --rpc-port=18332
-	bitcoin-cli $(BITCOINPARAMS) stop
+	@bitcoin-cli $(BITCOINPARAMS) stop 2> /dev/null || true # server is probably alredy stoped by test programm
 	sleep 5s;
 
 .PHONY: clean-test

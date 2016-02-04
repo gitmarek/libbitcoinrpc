@@ -400,5 +400,8 @@ bitcoinrpc_getnewaddress (bitcoinrpc_cl_t *cl, bitcoinrpc_err_t *e,
 json_t*
 bitcoinrpc_getrawmempool (bitcoinrpc_cl_t *cl, bitcoinrpc_err_t *e, int verbose);
 
+void
+bitcoinrpc_stop (bitcoinrpc_cl_t *cl, bitcoinrpc_err_t *e);
+
 
 #endif  /* BITCOINRPC_H_51fe7847_aafe_4e78_9823_eff094a30775 */

@@ -627,4 +627,11 @@ as its error code.
 	`json_decref()`.
 
 
+* `void`
+  **bitcoinrpc_stop** `(bitcoinrpc_cl_t *cl, bitcoinrpc_err_t *e)`
+
+  Safely shuts down the Bitcoin Core server.
+  *Return*: None.
+
+
 *last updated: 2016-02-02*
