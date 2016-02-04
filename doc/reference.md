@@ -592,6 +592,17 @@ as its error code.
   *Return*: number of type `double`.
 
 
+* `json_t*`
+  **bitcoinrpc_getmempoolinfo** `(bitcoinrpc_cl_t *cl, bitcoinrpc_err_t *e)`
+
+  Return information about the node’s current transaction memory pool. <br>
+  See [getmempoolinfo](https://bitcoin.org/en/developer-reference#getmempoolinfo). <br>
+  *Return*: Pointer to a newly allocated `json_t` or `NULL` in case of error.
+	It is the obligation of the user to free the object later with
+	`json_decref()`.
+
+
+
 * `char*`
   **bitcoinrpc_getnewaddress**
       `(bitcoinrpc_cl_t *cl, bitcoinrpc_err_t *e, const char* account)`

@@ -412,6 +412,19 @@ main (int argc, char **argv)
   }
 
 
+  fprintf (stderr, "getconnectioncount = ");
+  c = bitcoinrpc_getconnectioncount(cl, &e);
+  if (e.code == BITCOINRPCE_OK)
+  {
+    fprintf (stderr, "%d\n", c);
+  }
+  else
+  {
+    fprintf (stderr, "error(%d): %s\n", e.code, e.msg);
+    abort();
+  }
+
+
   fprintf (stderr, "getdifficulty = ");
   d = bitcoinrpc_getdifficulty(cl, &e);
   if (e.code == BITCOINRPCE_OK)
@@ -425,11 +438,12 @@ main (int argc, char **argv)
   }
 
 
-  fprintf (stderr, "getconnectioncount = ");
-  c = bitcoinrpc_getconnectioncount(cl, &e);
+  fprintf (stderr, "getmempoolinfo = ");
+  resp_json = bitcoinrpc_getmempoolinfo (cl, &e);
   if (e.code == BITCOINRPCE_OK)
   {
-    fprintf (stderr, "%d\n", c);
+    fprintf (stderr, "%.60s, etc.\n", json_dumps (resp_json, JSON_COMPACT));
+    json_decref (resp_json);
   }
   else
   {
