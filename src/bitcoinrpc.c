@@ -625,6 +625,32 @@ bitcoinrpc_getrawmempool (bitcoinrpc_cl_t *cl, bitcoinrpc_err_t *e, int verbose)
 }
 
 
+char*
+bitcoinrpc_help (bitcoinrpc_cl_t *cl, bitcoinrpc_err_t *e, bitcoinrpc_method_t *method)
+{
+
+  if (NULL == method)
+    return NULL;
+
+  char* const mstr = bitcoinrpc_method_get_mstr_ (method);
+
+  bitcoinrpc_convenience_set_params_char_MACRO_ (mstr, NULL);
+
+  bitcoinrpc_convenience_init_MACRO_ (BITCOINRPC_METHOD_HELP, params, NULL);
+  bitcoinrpc_convenience_call_MACRO_ (NULL);
+  bitcoinrpc_convenience_errcheck_MACRO_ (NULL);
+
+  json_decref(params);
+
+  /* body of the function: use jresp */
+  bitcoinrpc_convenience_copy_resp_string_MACRO_ (NULL);
+
+  bitcoinrpc_convenience_free_MACRO_ (NULL);
+
+  return resp_string;
+}
+
+
 void
 bitcoinrpc_stop (bitcoinrpc_cl_t *cl, bitcoinrpc_err_t *e)
 {

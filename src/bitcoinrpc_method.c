@@ -64,7 +64,7 @@ BITCOINRPC_METHOD_names_[BITCOINRPC_METHOD_names_len_] =
 
   /* Control RPCs */
   { BITCOINRPC_METHOD_GETINFO,                   "getinfo"                   },
-  { BITCOINRPC_METHOD_HELP,                      "help"                 /**/ },
+  { BITCOINRPC_METHOD_HELP,                      "help"                      },
   { BITCOINRPC_METHOD_STOP,                      "stop"                      },
 
   /* Generating RPCs */
@@ -364,4 +364,14 @@ bitcoinrpc_method_set_nonstandard (bitcoinrpc_method_t *method, char *name)
   method->mstr = name;
 
   return BITCOINRPCE_OK;
+}
+
+
+char *
+bitcoinrpc_method_get_mstr_ (bitcoinrpc_method_t *method)
+{
+  if (method == NULL)
+    return NULL;
+
+  return method->mstr;
 }

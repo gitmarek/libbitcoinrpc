@@ -667,6 +667,18 @@ as its error code.
 	`json_decref()`.
 
 
+* `char*`
+  **bitcoinrpc_help**
+      `(bitcoinrpc_cl_t *cl, bitcoinrpc_err_t *e, bitcoinrpc_method_t *method)`
+
+  Lists all available public RPC commands (if `method == NULL`), or gets help
+  for the specified RPC.  Commands which are unavailable will not be listed,
+  such as wallet RPCs if wallet support is disabled. <br>
+  See [help](https://bitcoin.org/en/developer-reference#help). <br>
+  *Return*: Pointer to a newly allocated string or `NULL` in case of error.
+  It is the obligation of the user to free the memory later with `free()`.
+
+
 * `void`
   **bitcoinrpc_stop** `(bitcoinrpc_cl_t *cl, bitcoinrpc_err_t *e)`
 

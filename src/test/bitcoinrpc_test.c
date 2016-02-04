@@ -562,6 +562,20 @@ main (int argc, char **argv)
   }
 
 
+  fprintf (stderr, "help = ");
+  a = bitcoinrpc_help(cl, &e, NULL);
+  if (e.code == BITCOINRPCE_OK)
+  {
+    fprintf (stderr, "ok\n");
+    free (a);
+  }
+  else
+  {
+    fprintf (stderr, "error(%d): %s\n", e.code, e.msg);
+    abort();
+  }
+
+
   /*
   fprintf (stderr, "stop = ");
   bitcoinrpc_stop(cl, &e);
