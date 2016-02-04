@@ -217,8 +217,9 @@ main (int argc, char **argv)
   bitcoinrpc_resp_t   *r       = NULL;
   bitcoinrpc_method_t *m       = NULL;
   bitcoinrpc_method_t *m_settx = NULL;
-  json_t *j      = NULL;
-  json_t *params = NULL;
+  json_t *j         = NULL;
+  json_t *params    = NULL;
+  json_t *resp_json = NULL;
 
   /* initialise client */
   fprintf (stderr, "Initialising the RPC client and connecting to: "
@@ -342,7 +343,6 @@ main (int argc, char **argv)
 
 
   fprintf (stderr, "getblock_json = ");
-  json_t *resp_json;
   resp_json = bitcoinrpc_getblock_json (cl, &e, b);
   if (e.code == BITCOINRPCE_OK)
   {
@@ -458,6 +458,34 @@ main (int argc, char **argv)
   {
     fprintf (stderr, "%s\n", a);
     free (a);
+  }
+  else
+  {
+    fprintf (stderr, "error(%d): %s\n", e.code, e.msg);
+    abort();
+  }
+
+
+  fprintf (stderr, "getrawmempool = ");
+  resp_json = bitcoinrpc_getrawmempool (cl, &e, 0);
+  if (e.code == BITCOINRPCE_OK)
+  {
+    fprintf (stderr, "%s, etc.\n", json_dumps (resp_json, JSON_COMPACT));
+    json_decref (resp_json);
+  }
+  else
+  {
+    fprintf (stderr, "error(%d): %s\n", e.code, e.msg);
+    abort();
+  }
+
+
+  fprintf (stderr, "getrawmempool (verbose) = ");
+  resp_json = bitcoinrpc_getrawmempool (cl, &e, 1);
+  if (e.code == BITCOINRPCE_OK)
+  {
+    fprintf (stderr, "%s, etc.\n", json_dumps (resp_json, JSON_COMPACT));
+    json_decref (resp_json);
   }
   else
   {

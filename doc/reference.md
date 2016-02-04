@@ -602,7 +602,6 @@ as its error code.
 	`json_decref()`.
 
 
-
 * `char*`
   **bitcoinrpc_getnewaddress**
       `(bitcoinrpc_cl_t *cl, bitcoinrpc_err_t *e, const char* account)`
@@ -614,6 +613,18 @@ as its error code.
   The *account* can be `NULL`; in that case, it is ignored. <br>
   *Return*: Pointer to a newly allocated string or `NULL` in case of error.
   It is the obligation of the user to free the memory later with `free()`.
+
+
+* `json_t*`
+  **bitcoinrpc_getrawmempool** `(bitcoinrpc_cl_t *cl, bitcoinrpc_err_t *e, int verbose)`
+
+  Returns all transaction identifiers (TXIDs) in the memory pool as a
+  JSON array (`verbose = 0`), or detailed information about each transaction
+  in the memory pool as a JSON object (`verbose = 1`). <br>
+  See [getrawmempool](https://bitcoin.org/en/developer-reference#getrawmempool) <br>
+  *Return*: Pointer to a newly allocated `json_t` or `NULL` in case of error.
+	It is the obligation of the user to free the object later with
+	`json_decref()`.
 
 
 *last updated: 2016-02-02*
