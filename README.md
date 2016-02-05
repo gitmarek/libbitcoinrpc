@@ -1,6 +1,6 @@
 # bitcoinrpc
 
-[![Build Status](https://travis-ci.org/bitcoinrpc/bitcoinrpc.svg?branch=master)](https://travis-ci.org/bitcoinrpc/bitcoinrpc)
+[![Build Status](https://travis-ci.org/bitcoinrpc/libbitcoinrpc.svg?branch=master)](https://travis-ci.org/bitcoinrpc/libbitcoinrpc)
 
 C language interface to JSON-RPC Bitcoin API.
 
