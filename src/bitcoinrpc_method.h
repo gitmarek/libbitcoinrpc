@@ -38,9 +38,6 @@ bitcoinrpc_method_compare_uuid_ (bitcoinrpc_method_t *method, uuid_t u);
 BITCOINRPCEcode
 bitcoinrpc_method_update_uuid_ (bitcoinrpc_method_t *method);
 
-char*
-bitcoinrpc_method_get_uuidstr_ (bitcoinrpc_method_t *method);
-
 json_t *
 bitcoinrpc_method_get_postjson_ (bitcoinrpc_method_t *method);
 

@@ -117,7 +117,7 @@ bitcoinrpc_call (bitcoinrpc_cl_t * cl, bitcoinrpc_method_t * method,
   char credentials[2 * BITCOINRPC_PARAM_MAXLEN + 1];
   struct bitcoinrpc_call_curl_resp_ curl_resp;
   BITCOINRPCEcode ecode;
-  CURL *curl = NULL;
+  CURL * const curl = bitcoinrpc_cl_get_curl_ (cl);
   CURLcode curl_err;
   char errbuf[BITCOINRPC_ERRMSG_MAXLEN];
   char curl_errbuf[CURL_ERROR_SIZE];
@@ -139,8 +139,6 @@ bitcoinrpc_call (bitcoinrpc_cl_t * cl, bitcoinrpc_method_t * method,
   if (NULL == data)
     bitcoinrpc_RETURN (e, BITCOINRPCE_JSON, "JSON error while writing POST data");
   //fprintf (stderr, "%s\n", data);
-
-  curl = bitcoinrpc_cl_get_curl_ (cl);
 
   if (NULL == curl)
     bitcoinrpc_RETURN (e, BITCOINRPCE_BUG, "this should not happen; please report a bug");

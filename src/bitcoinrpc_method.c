@@ -238,11 +238,6 @@ bitcoinrpc_method_update_uuid_ (bitcoinrpc_method_t *method)
 }
 
 
-char*
-bitcoinrpc_method_get_uuidstr_ (bitcoinrpc_method_t *method)
-{
-  return method->uuid_str;
-}
 /* ------------------------------------------------------------------------  */
 
 bitcoinrpc_method_t *
