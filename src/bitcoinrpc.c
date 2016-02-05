@@ -206,6 +206,11 @@ Convenience functions
 */
 
 #define bitcoinrpc_convenience_init_MACRO_(method_id9e43, params_id83a2c1, err_return) \
+  if (NULL == cl) \
+  {\
+    bitcoinrpc_err_set_ (e, BITCOINRPCE_ARG, "cl argument is NULL"); \
+    return err_return; \
+  }\
   json_t *j = NULL; \
   json_t *jresp = NULL; \
   json_t *jerr = NULL; \
