@@ -67,8 +67,8 @@ BITCOINRPC_METHOD_names_[BITCOINRPC_METHOD_names_len_] =
   { BITCOINRPC_METHOD_STOP,                      "stop"                      },
 
   /* Generating RPCs */
-  { BITCOINRPC_METHOD_GENERATE,                  "generate"             /**/ },
-  { BITCOINRPC_METHOD_GETGENERATE,               "getgenerate"          /**/ },
+  { BITCOINRPC_METHOD_GENERATE,                  "generate"                  },
+  { BITCOINRPC_METHOD_GETGENERATE,               "getgenerate"               },
   { BITCOINRPC_METHOD_SETGENERATE,               "setgenerate"          /**/ },
 
   /* Mining RPCs */

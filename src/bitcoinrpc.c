@@ -526,6 +526,25 @@ bitcoinrpc_getdifficulty (bitcoinrpc_cl_t *cl, bitcoinrpc_err_t *e)
 }
 
 
+int
+bitcoinrpc_getgenerate (bitcoinrpc_cl_t *cl, bitcoinrpc_err_t *e)
+{
+
+  bitcoinrpc_convenience_init_MACRO_ (BITCOINRPC_METHOD_GETGENERATE, NULL, -1);
+  bitcoinrpc_convenience_call_MACRO_ (-1);
+  bitcoinrpc_convenience_errcheck_MACRO_ (-1);
+
+  /* body of the function: use jresp */
+  bitcoinrpc_convenience_copy_resp_json_MACRO_(-1);
+
+  bitcoinrpc_convenience_free_MACRO_ (-1);
+
+  int i = json_is_true (resp_json) ? 1 : 0;
+  json_decref (resp_json);
+  return i;
+}
+
+
 json_t*
 bitcoinrpc_getinfo (bitcoinrpc_cl_t *cl, bitcoinrpc_err_t *e)
 {

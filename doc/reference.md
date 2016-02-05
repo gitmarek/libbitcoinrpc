@@ -603,6 +603,13 @@ as its error code.
   *Return*: number of type `double`.
 
 
+* `int`
+  **bitcoinrpc_getgenerate** `(bitcoinrpc_cl_t *cl, bitcoinrpc_err_t *e)`
+
+  Returns true if the node is set to generate blocks using its CPU. <br>
+  See [getgenerate](https://bitcoin.org/en/developer-reference#getgenerate). <br>
+  *Return*: 1 if true, 0 otherwise.
+
 * `json_t*`
   **bitcoinrpc_getinfo** `(bitcoinrpc_cl_t *cl, bitcoinrpc_err_t *e)`
 

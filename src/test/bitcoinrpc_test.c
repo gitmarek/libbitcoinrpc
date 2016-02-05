@@ -453,6 +453,19 @@ main (int argc, char **argv)
   }
 
 
+  fprintf (stderr, "getgenerate = ");
+  c = bitcoinrpc_getgenerate (cl, &e);
+  if (e.code == BITCOINRPCE_OK)
+  {
+    fprintf (stderr, "%d\n", c);
+  }
+  else
+  {
+    fprintf (stderr, "error(%d): %s\n", e.code, e.msg);
+    abort();
+  }
+
+
   fprintf (stderr, "getinfo = ");
   resp_json = bitcoinrpc_getinfo (cl, &e);
   if (e.code == BITCOINRPCE_OK)
@@ -499,7 +512,7 @@ main (int argc, char **argv)
   resp_json = bitcoinrpc_getrawmempool (cl, &e, 0);
   if (e.code == BITCOINRPCE_OK)
   {
-    fprintf (stderr, "%s, etc.\n", json_dumps (resp_json, JSON_COMPACT));
+    fprintf (stderr, "%.60s, etc.\n", json_dumps (resp_json, JSON_COMPACT));
     json_decref (resp_json);
   }
   else
@@ -513,7 +526,7 @@ main (int argc, char **argv)
   resp_json = bitcoinrpc_getrawmempool (cl, &e, 1);
   if (e.code == BITCOINRPCE_OK)
   {
-    fprintf (stderr, "%s, etc.\n", json_dumps (resp_json, JSON_COMPACT));
+    fprintf (stderr, "%.60s, etc.\n", json_dumps (resp_json, JSON_COMPACT));
     json_decref (resp_json);
   }
   else

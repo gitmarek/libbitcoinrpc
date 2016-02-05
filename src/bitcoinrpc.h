@@ -394,6 +394,9 @@ bitcoinrpc_getconnectioncount (bitcoinrpc_cl_t *cl, bitcoinrpc_err_t *e);
 double
 bitcoinrpc_getdifficulty (bitcoinrpc_cl_t *cl, bitcoinrpc_err_t *e);
 
+int
+bitcoinrpc_getgenerate (bitcoinrpc_cl_t *cl, bitcoinrpc_err_t *e);
+
 json_t*
 bitcoinrpc_getinfo (bitcoinrpc_cl_t *cl, bitcoinrpc_err_t *e);
 
