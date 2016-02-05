@@ -174,6 +174,18 @@ and we set its parameters, i.e. the new fee, to 0.0001:
       json_decref (params);  /* we no longer need it, the value is copied */
 ```
 
+We also have to initialise a new response holder:
+
+```
+
+      r = bitcoinrpc_resp_init();
+      if (NULL == r)
+      {
+        fprintf (stderr, "error: cannot initialise a new resp object.\n");
+        exit(EXIT_FAILURE);
+      }
+```
+
 Now it's time to make a call and check for errors:
 
 ```
