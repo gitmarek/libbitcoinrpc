@@ -360,6 +360,10 @@ bitcoinrpc_call (bitcoinrpc_cl_t * cl, bitcoinrpc_method_t * method,
 
 /* See: doc/reference.md */
 
+json_t*
+bitcoinrpc_generate (bitcoinrpc_cl_t *cl, bitcoinrpc_err_t *e,
+                          const unsigned int blocks);
+
 char*
 bitcoinrpc_getbestblockhash (bitcoinrpc_cl_t *cl, bitcoinrpc_err_t *e);
 

@@ -314,6 +314,21 @@ main (int argc, char **argv)
   // unsigned long long int l;
   double d;
 
+
+  fprintf (stderr, "generate = ");
+  resp_json = bitcoinrpc_generate (cl, &e, 10);
+  if (e.code == BITCOINRPCE_OK)
+  {
+    fprintf (stderr, "%.60s, etc.\n", json_dumps (resp_json, JSON_COMPACT));
+    json_decref (resp_json);
+  }
+  else
+  {
+    fprintf (stderr, "error(%d): %s\n", e.code, e.msg);
+    /* Do not abort on error (this method can be used only in regtest mode) */
+  }
+
+
   fprintf (stderr, "getbestblockhash = ");
   a = bitcoinrpc_getbestblockhash(cl, &e);
   if (e.code == BITCOINRPCE_OK)

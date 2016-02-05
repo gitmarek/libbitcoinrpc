@@ -505,6 +505,17 @@ optionally: *parameters*.
 Returned values are meaningful only if a function gives BITCOINRPCE_OK
 as its error code.
 
+* `json_t*`
+  **bitcoinrpc_generate** `(bitcoinrpc_cl_t *cl, bitcoinrpc_err_t *e,
+                          const unsigned int blocks)`
+
+  Generate new blocks (in *regtest* mode only). <br>
+  See [generate](https://bitcoin.org/en/developer-reference#generate).<br>
+  *Return*: Pointer to a newly allocated `json_t` or `NULL` in case of error.
+  It is the obligation of the user to free the object later with
+  `json_decref()`.
+
+
 * `char*`
   **bitcoinrpc_getbestblockhash** `(bitcoinrpc_cl_t *cl, bitcoinrpc_err_t *e)`
 
