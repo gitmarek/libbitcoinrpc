@@ -122,6 +122,9 @@ bitcoinrpc_call (bitcoinrpc_cl_t * cl, bitcoinrpc_method_t * method,
   char errbuf[BITCOINRPC_ERRMSG_MAXLEN];
   char curl_errbuf[CURL_ERROR_SIZE];
 
+  /* make sure the error message will not be trash */
+  memset (e->msg, 0, 1);
+
   if (NULL == cl || NULL == method || NULL == resp )
     return BITCOINRPCE_ARG;
 
