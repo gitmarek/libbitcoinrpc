@@ -255,6 +255,10 @@ json_t *params = json_array(); \
       bitcoinrpc_err_set_ (e, BITCOINRPCE_JSON, "cannot parse account string"); \
       return err_return; \
     } \
+  } \
+  else \
+  { \
+    json_array_append_new (params, json_string ("")); \
   }
 
 
@@ -385,6 +389,31 @@ bitcoinrpc_generate (bitcoinrpc_cl_t *cl, bitcoinrpc_err_t *e,
 
   bitcoinrpc_convenience_free_MACRO_ (NULL);
   return resp_json;
+}
+
+
+bitcoinrpc_satoshi_t
+bitcoinrpc_getbalance (bitcoinrpc_cl_t *cl, bitcoinrpc_err_t *e,
+                       char* account, unsigned int conf, int inc_watch_only)
+{
+
+  /* empty string is the default account */
+  bitcoinrpc_convenience_set_params_char_MACRO_ (account, -1);
+  json_array_append_new (params, json_integer(conf));
+  json_array_append_new (params, inc_watch_only? json_true() : json_false());
+
+  bitcoinrpc_convenience_init_MACRO_ (BITCOINRPC_METHOD_GETBALANCE, params, -1);
+  bitcoinrpc_convenience_call_MACRO_ (-1);
+  bitcoinrpc_convenience_errcheck_MACRO_ (-1);
+
+  json_decref(params);
+
+  /* body of the function: use jresp */
+  double d = json_real_value(jresp);
+
+  bitcoinrpc_convenience_free_MACRO_ (-1);
+
+  return BITCOINRPC_DOUBLE_TO_SATOSHI(d);
 }
 
 

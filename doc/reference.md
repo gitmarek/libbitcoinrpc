@@ -505,6 +505,7 @@ optionally: *parameters*.
 Returned values are meaningful only if a function gives BITCOINRPCE_OK
 as its error code.
 
+
 * `json_t*`
   **bitcoinrpc_generate** `(bitcoinrpc_cl_t *cl, bitcoinrpc_err_t *e,
                           const unsigned int blocks)`
@@ -514,6 +515,20 @@ as its error code.
   *Return*: Pointer to a newly allocated `json_t` or `NULL` in case of error.
   It is the obligation of the user to free the object later with
   `json_decref()`.
+
+
+* `bitcoinrpc_satoshi_t`
+  **bitcoinrpc_getbalance** `(bitcoinrpc_cl_t *cl, bitcoinrpc_err_t *e,
+                       char* account, unsigned int conf, int inc_watch_only)`
+
+  Get the balance in satoshi across all accounts (`account == NULL`) or
+  for a particular account. <br>
+  The argument `conf` determines the minimum number of confirmations
+  an externally-generated transaction must have before it is counted towards
+  the balance. If `inc_watch_only` it set to 1 (true), then include
+  watch only addresses as well; the value 0 means false. <br>
+  See [getbalance](https://bitcoin.org/en/developer-reference#getbalance) <br>
+  *Return*: The balance in satoshi.
 
 
 * `char*`

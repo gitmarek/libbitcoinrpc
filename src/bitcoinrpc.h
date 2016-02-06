@@ -57,6 +57,11 @@ Maximal length of the server url:
 /* satoshi typedef: one hundred millionth of a bitcoin */
 typedef unsigned long long int bitcoinrpc_satoshi_t;
 
+/* How many satoshi is in one bitcoin */
+#define BITCOINRPC_SATOSHI_BTC 1000000
+#define BITCOINRPC_DOUBLE_TO_SATOSHI(d) (bitcoinrpc_satoshi_t) d * BITCOINRPC_SATOSHI_BTC
+#define BITCOINRPC_SATOSHI_TO_DOUBLE(n) (double) n/BITCOINRPC_SATOSHI_BTC
+
 /* Error codes */
 typedef enum {
 
@@ -363,6 +368,10 @@ bitcoinrpc_call (bitcoinrpc_cl_t * cl, bitcoinrpc_method_t * method,
 json_t*
 bitcoinrpc_generate (bitcoinrpc_cl_t *cl, bitcoinrpc_err_t *e,
                           const unsigned int blocks);
+
+bitcoinrpc_satoshi_t
+bitcoinrpc_getbalance (bitcoinrpc_cl_t *cl, bitcoinrpc_err_t *e,
+                       char* account, unsigned int conf, int inc_watch_only);
 
 char*
 bitcoinrpc_getbestblockhash (bitcoinrpc_cl_t *cl, bitcoinrpc_err_t *e);

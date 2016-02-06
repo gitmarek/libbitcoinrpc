@@ -311,12 +311,12 @@ main (int argc, char **argv)
 
   char *a, *b;
   unsigned int c;
-  // unsigned long long int l;
   double d;
+  bitcoinrpc_satoshi_t s;
 
 
   fprintf (stderr, "generate = ");
-  resp_json = bitcoinrpc_generate (cl, &e, 10);
+  resp_json = bitcoinrpc_generate (cl, &e, 100);
   if (e.code == BITCOINRPCE_OK)
   {
     fprintf (stderr, "%.60s, etc.\n", json_dumps (resp_json, JSON_COMPACT));
@@ -326,6 +326,19 @@ main (int argc, char **argv)
   {
     fprintf (stderr, "error(%d): %s\n", e.code, e.msg);
     /* Do not abort on error (this method can be used only in regtest mode) */
+  }
+
+
+  fprintf (stderr, "getbalance = ");
+  s = bitcoinrpc_getbalance(cl, &e, NULL, 0, 1);
+  if (e.code == BITCOINRPCE_OK)
+  {
+    fprintf (stderr, "%lld\n", s);
+  }
+  else
+  {
+    fprintf (stderr, "error(%d): %s\n", e.code, e.msg);
+    abort();
   }
 
 
@@ -495,7 +508,7 @@ main (int argc, char **argv)
 
 
   fprintf (stderr, "getnewaddress = ");
-  a = bitcoinrpc_getnewaddress(cl, &e, "myacc");
+  a = bitcoinrpc_getnewaddress(cl, &e, NULL);
   if (e.code == BITCOINRPCE_OK)
   {
     fprintf (stderr, "%s\n", a);
