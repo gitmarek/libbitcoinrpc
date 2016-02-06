@@ -164,6 +164,7 @@ install:
 	$(INSTALL_DATA) LICENSE $(INSTALL_DOCSPATH)/$(NAME)
 	$(INSTALL_DATA) Changelog.md $(INSTALL_DOCSPATH)/$(NAME)
 	@echo "Installing man pages"
+	@mkdir -p $(INSTALL_MANPATH)/man3
 	$(INSTALL_DATA) $(DOCDIR)/man3/$(NAME)*.gz $(INSTALL_MANPATH)/man3
 
 .PHONY: uninstall
