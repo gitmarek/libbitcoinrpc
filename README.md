@@ -5,14 +5,7 @@
 C language interface to JSON-RPC Bitcoin API.
 
 The library provides basic routines to send RPC queries to a listening
-Bitcoin node, fetch responses and analyse errors. Its main features include:
-
-* Reusable components, allowing to perform many queries through one open
-connection, as well as to query many listening servers with the same method
-without reallocating resources.
-* Proper error handling.
-* Convenience functions to perform simple one-time tasks in an efficient way.
-
+Bitcoin node, fetch responses and analyse errors.
 Currently, the code is tested against stable Bitcoin Core v0.11.2.0-g7e27892.
 
 

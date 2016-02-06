@@ -66,68 +66,9 @@ it when needed:
     bitcoinrpc_err_t e;
 ```
 
-## Convenience functions
+## The API
 
-The simplest way to make a RPC call to the server is to use one of the
-'convenience' functions provided by the library.  These functions make actual
-call for you by allocating and later destroying all necessary structures
-(to store RPC post data and response), check for errors and return to you
-only the data you asked for.  For example, let's check how many nodes our
-server is connected to:
-
-```
-    unsigned int c = bitcoinrpc_getconnectioncount (cl, &e);
-```
-
-The function makes `getconnectioncount` RPC call.  If the error code returned
-by it is equal to `BITCOINRPCE_OK` then the variable `c` should have the
-number we are interested in, otherwise some error has occurred and we can read
-the error message:
-
-```
-
-    if (e.code == BITCOINRPCE_OK)
-    {
-      fprintf (stdout, "getconnectioncount = %d\n", c);
-    }
-    else
-    {
-      fprintf (stderr, "error(%d): %s\n", e.code, e.msg);
-    }
-```
-
-Similarly, we can get a new wallet address without specifying an *account* name
-(hence `NULL` as the third argument):
-
-```
-
-    char *a = bitcoinrpc_getnewaddress(cl, &e, NULL);
-    if (e.code == BITCOINRPCE_OK)
-    {
-      fprintf (stdout, "getnewaddress = %s\n", a);
-      free (a);
-    }
-    else
-    {
-      fprintf (stderr, "error(%d): %s\n", e.code, e.msg);
-    }
-```
-
-After you finished using this particular client, you should free the previously
-allocated space by:
-
-```
-    bitcoinrpc_cl_free (cl);
-```
-
-And that's basically it!  You can check other convenience functions in
-the [Reference](./reference.md).
-
-
-## Low-level interface
-
-The low-level interface for the bitcoinrpc library consist of the following
-data structures:
+The API of the bitcoinrpc library consist of the following data structures:
 
   * `bitcoinrpc_cl`
   * `bircoinrpc_method`
@@ -137,8 +78,7 @@ data structures:
 together with the function `bitcoinrpc_call()` that takes as arguments pointers
 to each of them, performs the call and saves a response from the server.
 
-Since we have still the pointer `cl` to an active client, we can reuse it to
-make a next call.  Let's define:
+Let's define:
 
 ```
 
@@ -222,12 +162,10 @@ for some unique `id`.
 Please see the documentation of the **jansson** library, to check how to handle
 data stored in a `json_t` type.
 
-It is important to say that whereas the convenience functions usually check
-for errors in the response when they try to extract relevant data,
-the 'low-level' `bitcoinrpc_call()` just passes the JSON data it got from the
-server and reports errors pertaining only to the call itself.  Hence you have
-freedom to call any valid method with any parameters, but on the other hand,
-it is your task to extract data from a JSON object you receive.
+It is important to say that the 'low-level' `bitcoinrpc_call()` just passes
+the JSON data it got from the server and reports errors pertaining only to the
+call itself.  Hence you have freedom to call any valid method with any
+parameters, but on the other hand, it is your task to extract data from a JSON
+object you receive.
 
-
-*last updated: 2016-02-02*
+*last updated: 2016-02-06*

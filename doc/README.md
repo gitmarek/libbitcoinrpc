@@ -1,6 +1,6 @@
 # Documentation
 
-This is the main documentation file of **bitcoinrpc**, a C language interface
+This is the main documentation file of **bitcoinrpc**, a standard C library
 to JSON-RPC Bitcoin Core API.
 
 The library provides basic routines to send RPC queries to a listening
@@ -11,7 +11,6 @@ Its main features include:
   connection, as well as to query many listening servers with the same method
   without reallocating resources.
 * Proper error handling.
-* Convenience functions to perform simple one-time tasks in an efficient way.
 
 To quickly get a grasp of how to use the library in your code, please see
 the [tutorial](./tutorial.md) and [examples](./examples.md).  Besides, the

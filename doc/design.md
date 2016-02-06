@@ -36,9 +36,7 @@ between the user and Bitcoin server, allowing him to sent *almost any* request
 (i.e. to specify any parameters for a valid RPC method) and report errors
 relevant only to this process of communication and not to check, if the request
 would be interpreted by the Bitcoin node as meaningful.  This is indeed
-the default behaviour of the low-level bitcoinrpc routines. The higher level
-'convenience functions' do check for errors and return to the user only
-the data he was *supposed* to ask for.
+the default behaviour of the low-level bitcoinrpc routines.
 See the library [reference](./reference.md) for more details.
 
 
@@ -67,24 +65,13 @@ The library is designed around four independent data structures:
 * `bitcoinrpc_resp`   -- a JSON response from the server
 * `bitcoinrpc_err`    -- error handling
 
-In addition, there is the function `bitcoinrpc_call()` that performs the call
-and a handful of 'convenience functions', allowing the user to skip the process
-of initiating and later destroying all necessary objects, and instead to
-make a quick and simple call to obtain information of interest.
-The advantage of using convenience functions, beside the mere simplicity,
-is that they usually check for errors in the response, when they try to extract
-relevant data, whereas the 'low-level' `bitcoinrpc_call()` just passes
-the JSON data it got from the server and reports errors pertaining only to the
-call itself.  The disadvantage is that they are probably a little bit less
-efficient, because each time the structures representing a RPC method and
-response are initialised and destroyed, instead of allowing the user
-to recycle them.
-
-The low-level interface, on the other hand, allows to call the server many
-times using the same `bitcoinrpc_method`, thus saving time and memory.
-It is also possible to use the same method to call many servers, collecting
-responses either to separate structures or to the same `bitcoinrpc_resp`
-in sequence.
+In addition, there is the function `bitcoinrpc_call()` that performs the call.
+This 'low-level' function just passes the JSON data it got from the server
+and reports errors pertaining only to the call itself.  
+It allows to call the server many times using the same `bitcoinrpc_method`,
+thus saving time and memory. It is also possible to use the same method to
+call many servers, collecting responses either to separate structures or
+to the same `bitcoinrpc_resp` in sequence.
 
 The data structures are independent as they do not share memory and have
 only very limited read-only access to each other's internals.  That probably
@@ -98,10 +85,9 @@ Most of the functions within the library perform trivial task such as
 allocating memory etc., and they do not need to return extensive error messages.
 Instead, they return error codes of enum type `BITCOINRPCEcode`.
 The list of all error codes can be found in the [reference](./reference.md).
-The function `bitcoinrpc_call()` and the convenience functions accept an
-additional pointer `bitcoinrcp_err_t*` where error messages are stored.
-If the pointer is passed as `NULL`, the error reporting, beside the omnipresent
-error codes, is omitted.
+The function `bitcoinrpc_call()` accepts an additional pointer:
+`bitcoinrcp_err_t*` where error messages are stored. If the pointer is passed
+as `NULL`, the error reporting, beside the omnipresent error codes, is omitted.
 
 
 ## Usage of bitcoinrpc
@@ -121,15 +107,6 @@ a successful RPC call should therefore look as follows:
    method).
 8. Free the initialised structures via appropriate `bitcointpc_*_free()`.
 9. Clean up the library's internal state: `bitcoinrpc_global_cleanup()`.
-
-Or you can use convenience functions in the following way:
-
-1. Initialise the library once by calling `bitcoinrpc_global_init()`.
-2. Initialise the client: `bitcoinrpc_cl_init()` and specify parameters like
-   user name, password, IP address and port.
-3. Use a function, e.g.: `unsigned int bitcoinrpc_cget_getconnectioncount()`.
-4. Perform step 3. as many times as needed.
-5. Clean up the library's internal state: `bitcoinrpc_global_cleanup()`.
 
 For more specific explanation of how to you the library, please refer to
 the [tutorial](./tutorial.md) and [examples](./examples.md).
