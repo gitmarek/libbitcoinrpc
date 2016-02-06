@@ -22,6 +22,7 @@ OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
+#include <string.h>
 #include <jansson.h>
 #include <uuid/uuid.h>
 
@@ -43,7 +44,7 @@ struct BITCOINRPC_METHOD_struct_
 const struct BITCOINRPC_METHOD_struct_
 BITCOINRPC_METHOD_names_[BITCOINRPC_METHOD_names_len_] =
 {
-  { BITCOINRPC_METHOD_NOTIMPLEMENTED,            NULL                   /**/ },
+  { BITCOINRPC_METHOD_NONSTANDARD,               ""                     /**/ },
 
   /* Blockchain RPCs */
   { BITCOINRPC_METHOD_GETBESTBLOCKHASH,          "getbestblockhash"          },
@@ -63,7 +64,7 @@ BITCOINRPC_METHOD_names_[BITCOINRPC_METHOD_names_len_] =
 
   /* Control RPCs */
   { BITCOINRPC_METHOD_GETINFO,                   "getinfo"                   },
-  { BITCOINRPC_METHOD_HELP,                      "help"                 /**/ },
+  { BITCOINRPC_METHOD_HELP,                      "help"                      },
   { BITCOINRPC_METHOD_STOP,                      "stop"                      },
 
   /* Generating RPCs */
@@ -162,6 +163,7 @@ struct bitcoinrpc_method
 {
 
   BITCOINRPC_METHOD   m;
+  char*               mstr;
 
   uuid_t  uuid;
   char    uuid_str[37];   /* why 37? see: man 3 uuid_unparse */
@@ -194,9 +196,7 @@ bitcoinrpc_method_make_postjson_ (bitcoinrpc_method_t *method)
       return BITCOINRPCE_JSON;
   }
 
-  const struct BITCOINRPC_METHOD_struct_ * ms = bitcoinrpc_method_st_(method->m);
-  json_object_set_new (method->post_json, "method", json_string(ms->str));
-
+  json_object_set_new (method->post_json, "method", json_string(method->mstr));
   json_object_set_new (method->post_json, "id", json_string (method->uuid_str));
 
   if (NULL == method->params_json)
@@ -257,6 +257,8 @@ bitcoinrpc_method_init_params (const BITCOINRPC_METHOD m,
     return NULL;
 
   method->m = m;
+  const struct BITCOINRPC_METHOD_struct_ * ms = bitcoinrpc_method_st_(method->m);
+  method->mstr = ms->str;
   method->post_json = NULL;
 
   json_t *jp;
@@ -350,4 +352,26 @@ bitcoinrpc_method_get_params (bitcoinrpc_method_t *method, json_t **params)
   *params = jp;
 
   return BITCOINRPCE_OK;
+}
+
+
+BITCOINRPCEcode
+bitcoinrpc_method_set_nonstandard (bitcoinrpc_method_t *method, char *name)
+{
+  if (method->m != BITCOINRPC_METHOD_NONSTANDARD)
+    return BITCOINRPCE_ERR;
+
+  method->mstr = name;
+
+  return BITCOINRPCE_OK;
+}
+
+
+char *
+bitcoinrpc_method_get_mstr_ (bitcoinrpc_method_t *method)
+{
+  if (method == NULL)
+    return NULL;
+
+  return method->mstr;
 }

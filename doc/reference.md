@@ -444,6 +444,17 @@ the original pointer by decreasing its reference count:
   be copied by libjansson.
 
 
+* `BITCOINRPCEcode`
+  **bitcoinrpc_method_setname** `(bitcoinrpc_method_t *method, char *name)`
+
+  Set a custom name for the method.
+  Works only if method is initialised with BITCOINRPC_METHOD_NONSTANDARD,
+  otherwise returns BITCOINRPCE_ERR.
+  The pointer to str is copied, not the string itself. It is the obligation of
+  the user, to keep the str available and free it, when no longer needed.
+  *Return*: `BITCOINRPCE_OK` or `BITCOINRPCE_ERR`.
+
+
 ### bitcoinrpc_resp
 
 Store JSON responses from the server.
@@ -669,6 +680,18 @@ as its error code.
   *Return*: Pointer to a newly allocated `json_t` or `NULL` in case of error.
 	It is the obligation of the user to free the object later with
 	`json_decref()`.
+
+
+* `char*`
+  **bitcoinrpc_help**
+      `(bitcoinrpc_cl_t *cl, bitcoinrpc_err_t *e, bitcoinrpc_method_t *method)`
+
+  Lists all available public RPC commands (if `method == NULL`), or gets help
+  for the specified RPC.  Commands which are unavailable will not be listed,
+  such as wallet RPCs if wallet support is disabled. <br>
+  See [help](https://bitcoin.org/en/developer-reference#help). <br>
+  *Return*: Pointer to a newly allocated string or `NULL` in case of error.
+  It is the obligation of the user to free the memory later with `free()`.
 
 
 * `void`

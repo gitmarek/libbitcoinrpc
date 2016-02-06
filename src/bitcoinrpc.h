@@ -51,6 +51,9 @@ Maximal length of the server url:
 */
 #define BITCOINRPC_URL_MAXLEN 143
 
+/* Maximal length of the name of a RPC method */
+#define BITCOINRPC_METHOD_STR_MAXLEN 65
+
 /* Maximal length of an error message */
 #define BITCOINRPC_ERRMSG_MAXLEN 1000
 
@@ -82,7 +85,7 @@ typedef enum {
 /* RPC methods */
 typedef enum {
 
-  BITCOINRPC_METHOD_NOTIMPLEMENTED,            /* reserved for possible */
+  BITCOINRPC_METHOD_NONSTANDARD,               /* reserved for possible */
                                                /* user extensions       */
 
   BITCOINRPC_METHOD_GETBESTBLOCKHASH,          /* getbestblockhash */
@@ -319,6 +322,15 @@ bitcoinrpc_method_set_params (bitcoinrpc_method_t *method, json_t *params);
 BITCOINRPCEcode
 bitcoinrpc_method_get_params (bitcoinrpc_method_t *method, json_t **params);
 
+/*
+Set a custom name for the method
+Works only if method is set to BITCOINRPC_METHOD_NONSTANDARD,
+otherwise returns BITCOINRPCE_ERR.
+The pointer to str is copied, not the string itself. It is the obligation of
+the user, to keep the str available and free it, when no longer needed.
+*/
+BITCOINRPCEcode
+bitcoinrpc_method_set_nonstandard (bitcoinrpc_method_t *method, char *name);
 
 /* ------------- bitcoinrpc_resp --------------------- */
 struct bitcoinrpc_resp;
@@ -418,6 +430,9 @@ bitcoinrpc_getnewaddress (bitcoinrpc_cl_t *cl, bitcoinrpc_err_t *e,
 
 json_t*
 bitcoinrpc_getrawmempool (bitcoinrpc_cl_t *cl, bitcoinrpc_err_t *e, int verbose);
+
+char*
+bitcoinrpc_help (bitcoinrpc_cl_t *cl, bitcoinrpc_err_t *e, bitcoinrpc_method_t *method);
 
 void
 bitcoinrpc_stop (bitcoinrpc_cl_t *cl, bitcoinrpc_err_t *e);
