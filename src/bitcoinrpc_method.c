@@ -146,7 +146,7 @@ BITCOINRPC_METHOD_names_[BITCOINRPC_METHOD_names_len_] =
 };
 
 
-const struct BITCOINRPC_METHOD_struct_ *
+static const struct BITCOINRPC_METHOD_struct_ *
 bitcoinrpc_method_st_ (const BITCOINRPC_METHOD m)
 {
   for (int i = 0; i < BITCOINRPC_METHOD_names_len_; i++)
@@ -182,7 +182,7 @@ struct bitcoinrpc_method
 Internal methods
 */
 
-BITCOINRPCEcode
+static BITCOINRPCEcode
 bitcoinrpc_method_make_postjson_ (bitcoinrpc_method_t *method)
 {
 
@@ -228,7 +228,7 @@ bitcoinrpc_method_compare_uuid_ (bitcoinrpc_method_t *method, uuid_t u)
 }
 
 
-BITCOINRPCEcode
+static BITCOINRPCEcode
 bitcoinrpc_method_update_uuid_ (bitcoinrpc_method_t *method)
 {
   uuid_generate_random (method->uuid);

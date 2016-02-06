@@ -61,7 +61,7 @@ bitcoinrpc_resp_set_json_ (bitcoinrpc_resp_t *resp, json_t *json)
 }
 
 
-BITCOINRPCEcode
+static BITCOINRPCEcode
 bitcoinrpc_resp_update_uuid_ (bitcoinrpc_resp_t *resp)
 {
 
