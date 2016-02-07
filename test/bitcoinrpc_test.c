@@ -178,6 +178,8 @@ int parse_command_options(int argc, char **argv, cmdline_options_t *o)
 }
 
 
+
+
 /* include all tests and parameters */
 static char * all_tests(cmdline_options_t o)
 {
@@ -185,8 +187,8 @@ static char * all_tests(cmdline_options_t o)
   return 0;
 }
 
-
 int tests_run = 0;
+
 
 int
 main(int argc, char **argv)
@@ -217,161 +219,22 @@ main(int argc, char **argv)
 
 
   /* Testing suites here */
+  fprintf(stderr, ">>> JSON data starts here:\n");
   fprintf(stderr, "[");
   fprintf(stderr, "{\"test\": \"_internal_\",  \"result\": true, \"id\": %d}", tests_run++);
+
   char *result = all_tests(o);
+
   fprintf(stderr, "]\n");
+  fprintf(stderr, "<<< JSON data ends here.\n");
 
-  return result != 0;
-
-
-  fprintf (stdout, "Free the resources... \n");
+  fprintf(stdout, "Free the resources... \n");
   if (bitcoinrpc_global_cleanup() != BITCOINRPCE_OK)
     {
       fprintf(stderr, "failure.\n");
       abort();
     }
   fprintf(stdout, "done.\n");
-  return 0;
 
-
-
-
-
-  if (bitcoinrpc_global_init() != BITCOINRPCE_OK)
-    abort();
-
-
-
-  bitcoinrpc_err_t e;
-  char *data = NULL;
-  bitcoinrpc_resp_t   *r = NULL;
-  bitcoinrpc_method_t *m = NULL;
-  bitcoinrpc_method_t *m_settx = NULL;
-  bitcoinrpc_method_t *m_nonstd = NULL;
-  json_t *j = NULL;
-  json_t *params = NULL;
-
-  /* initialise client */
-  fprintf(stderr, "Initialising the RPC client and connecting to: "
-          "http://%s:%s@%s:%d\n", o.user, o.pass, o.addr, o.port);
-
-  bitcoinrpc_cl_t *cl = bitcoinrpc_cl_init_params(o.user, o.pass,
-                                                  o.addr, o.port);
-
-  if (NULL == cl)
-    {
-      fprintf(stderr, "error: cannot initialise a new client.\n");
-      abort();
-    }
-
-  /* initialise method  */
-  m = bitcoinrpc_method_init(BITCOINRPC_METHOD_GETINFO);
-  if (NULL == m)
-    {
-      fprintf(stderr, "error: cannot initialise a new method.\n");
-      abort();
-    }
-
-  /* initialise response */
-  r = bitcoinrpc_resp_init();
-  if (NULL == r)
-    {
-      fprintf(stderr, "error: cannot initialise a new responce holder.\n");
-      abort();
-    }
-
-  fprintf(stderr, "calling getinfo: \n");
-  bitcoinrpc_call(cl, m, r, &e);
-  if (e.code != BITCOINRPCE_OK)
-    {
-      fprintf(stderr, "error: %s\n", e.msg);
-      abort();
-    }
-
-
-  j = bitcoinrpc_resp_get(r);
-  data = json_dumps(j, JSON_INDENT(2));
-  fprintf(stderr, "%s\n", data);
-  json_decref(j);
-  free(data);
-
-  /* new method: settxfee */
-  m_settx = bitcoinrpc_method_init(BITCOINRPC_METHOD_SETTXFEE);
-  if (NULL == m_settx)
-    {
-      fprintf(stderr, "error: cannot initialise a new method.\n");
-      abort();
-    }
-
-  double x = (double)rand() / RAND_MAX;
-  fprintf(stderr, "Setting tx fee to %.8f\n", x);
-
-  params = json_array();
-  json_array_append_new(params, json_real(x));
-  if (bitcoinrpc_method_set_params(m_settx, params) != BITCOINRPCE_OK)
-    {
-      fprintf(stderr, "error: cannot set params\n");
-      abort();
-    }
-
-  bitcoinrpc_call(cl, m_settx, r, &e);
-  if (e.code != BITCOINRPCE_OK)
-    {
-      fprintf(stderr, "%s\n", e.msg);
-      abort();
-    }
-
-  fprintf(stderr, "new tx fee: ");
-
-  /* call getinfo one more time */
-  bitcoinrpc_call(cl, m, r, &e);
-  if (e.code != BITCOINRPCE_OK)
-    {
-      fprintf(stderr, "%s\n", e.msg);
-      abort();
-    }
-
-  j = bitcoinrpc_resp_get(r);
-  fprintf(stderr, "%.8f\n", json_real_value(json_object_get(json_object_get(j, "result"), "paytxfee")));
-  json_decref(j);
-
-
-
-  fprintf(stderr, " Test nonstandard methods\n");
-  m_nonstd = bitcoinrpc_method_init(BITCOINRPC_METHOD_NONSTANDARD);
-  if (NULL == m_nonstd)
-    {
-      fprintf(stderr, "error: cannot initialise a new method.\n");
-      abort();
-    }
-
-  bitcoinrpc_method_set_nonstandard(m, "hereandnow");
-  bitcoinrpc_method_set_params(m, params);
-  bitcoinrpc_call(cl, m_nonstd, r, &e);
-  if (e.code != BITCOINRPCE_OK)
-    {
-      fprintf(stderr, "%s\n", e.msg);
-      abort();
-    }
-  json_decref(params);
-  j = bitcoinrpc_resp_get(r);
-  data = json_dumps(j, JSON_INDENT(2));
-  fprintf(stderr, "%s\n", data);
-  json_decref(j);
-  free(data);
-
-
-  fprintf(stderr, "Free the resources... ");
-  bitcoinrpc_cl_free(cl);
-  bitcoinrpc_method_free(m);
-  bitcoinrpc_resp_free(r);
-  if (bitcoinrpc_global_cleanup() != BITCOINRPCE_OK)
-    {
-      fprintf(stderr, "failure.\n");
-      abort();
-    }
-
-  fprintf(stderr, "done.\n");
-  exit(EXIT_SUCCESS);
+  return result != 0;
 }

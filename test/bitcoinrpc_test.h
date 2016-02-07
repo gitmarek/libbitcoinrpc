@@ -46,7 +46,8 @@ typedef struct cmdline_options cmdline_options_t;
    Test units HAVE TO call BITCOINRPC_TESTU_INIT at the beginning
    and return with BITCOINRPC_TESTU_RETURN(0) at the end.
    Besides they assert with: BITCOINRPC_ASSERT.
-   They take two parameters: cmdline_options_t and a pointer to some data.
+   They take two parameters: cmdline_options_t and a pointer to some data
+   passed to it by a unit test above.
    Test units can be nested to form test suites.
    Each test unit should be a separate program, initialising and destroying
    everything for itself, EXCEPT the library's global state.
