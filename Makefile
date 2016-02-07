@@ -59,7 +59,7 @@ SRCFILES = $(shell find $(SRCDIR) -maxdepth 1 -iname '*.c')
 OBJFILES = $(shell echo $(SRCFILES) | sed 's/\.c/\.o/g')
 
 .PHONY: all
-all: prep lib build-test
+all: prep lib
 
 .PHONY: prep
 prep:
@@ -71,12 +71,10 @@ prep:
 lib: $(LIBDIR)/lib$(NAME).so
 
 $(LIBDIR)/lib$(NAME).so: $(LIBDIR)/lib$(NAME).so.$(VERSION)
-	@echo
 	ldconfig -v -n $(LIBDIR)
 	ln -fs lib$(NAME).so.$(MAJOR) $(LIBDIR)/lib$(NAME).so
 
 $(LIBDIR)/lib$(NAME).so.$(VERSION): $(OBJFILES)
-	@echo
 	$(CC) $(CFLAGS) -shared -Wl,-soname,lib$(NAME).so.$(MAJOR) \
 	$(OBJFILES) \
 	-o $@ \
@@ -87,26 +85,26 @@ $(SRCDIR)/%.o: $(SRCDIR)/%.c
 
 
 # --------- test -----------------
+BITCOINDATADIR := $(shell mktemp -d)
+BITCOINPARAMS   = -regtest -datadir=$(BITCOINDATADIR)
+
+TESTSRCFILES = $(shell find $(TESTDIR) -maxdepth 1 -iname '*.c')
+TESTOBJFILES = $(shell echo $(TESTSRCFILES) | sed 's/\.c/\.o/g')
+
 .PHONY: build-test
-build-test: lib $(TESTDIR)/$(TESTNAME)
+build-test: $(TESTDIR)/$(TESTNAME)
 
-$(TESTDIR)/$(TESTNAME): $(TESTDIR)/$(TESTNAME).o
-	@echo
-	$(CC) $(CFLAGS) $(TESTDIR)/$(TESTNAME).o -o $@ \
-		-l$(NAME) $(TESTLDFLAGS) -L$(LIBDIR) -I $(SRCDIR) -Wl,-rpath=$(LIBDIR)
+$(TESTDIR)/$(TESTNAME): $(TESTOBJFILES)
+	$(CC) $(CFLAGS) $(TESTOBJFILES) -o $@ \
+		-l$(NAME) $(TESTLDFLAGS) -L$(LIBDIR) -Wl,-rpath=$(LIBDIR)
 
-$(TESTDIR)/$(TESTNAME).o: $(TESTDIR)/$(TESTNAME).c
+$(TESTDIR)/%.o: $(TESTDIR)/%.c
 	$(CC) $(CFLAGS) -c $< -o $@ \
 		-l$(NAME) -L$(LIBDIR) -I $(SRCDIR) -Wl,-rpath=$(LIBDIR)
 
 
-
-BITCOINDATADIR := $(shell mktemp -d)
-BITCOINPARAMS   = -regtest -datadir=$(BITCOINDATADIR)
-
 .PHONY: prep-test
 prep-test:
-	@echo
 	@echo "Testing library routines in regtest mode (bitcoind and bitcoin-cli needed!)"
 	@if ! which bitcoind ; then echo "Can't find bitcoind executable." ; exit 1; fi
 	@if ! which bitcoin-cli ; then echo "Can't find bitcoin-cli executable." ; exit 1; fi
@@ -120,10 +118,8 @@ prep-test:
   # Wait for the server to start
 	while ! bitcoin-cli $(BITCOINPARAMS) generate 50 > /dev/null; do sleep 3s; done
 
-
 .PHONY: preform-test
 perform-test:
-	@echo
 	@echo "Start $(TESTNAME)"
 	$(TESTDIR)/$(TESTNAME) --rpc-password=test --rpc-port=18332
 	@bitcoin-cli $(BITCOINPARAMS) stop 2> /dev/null || true # server is probably alredy stoped by test programm
@@ -131,15 +127,13 @@ perform-test:
 
 .PHONY: clean-test
 clean-test:
-	@echo
-	@echo "Bitcoin Core logs:"
-	cat $(BITCOINDATADIR)/regtest/debug.log
+	@ #echo "Bitcoin Core logs:"
+	@ #cat $(BITCOINDATADIR)/regtest/debug.log
 	@echo "Remove datadir"
 	rm -rf $(BITCOINDATADIR)
 
-
 .PHONY: test
-test: prep-test perform-test clean-test
+test: all build-test prep-test perform-test clean-test
 
 
 # ---------- clean ----------------
@@ -148,8 +142,9 @@ clean:
 	$(RM) ./*.o $(SRCDIR)/*.o $(TESTDIR)/*.o
 	$(RM) ./*.gch $(SRCDIR)/*.gch $(TESTDIR)/*.gch
 	$(RM) $(TESTDIR)/$(TESTNAME)
-	$(RM) $(LIBDIR)/*.so* $(BINDIR)/$(NAME)_test
+	$(RM) $(LIBDIR)/*.so*
 	$(RM) -d $(LIBDIR) $(BINDIR)
+
 
 # ---------- install --------------
 .PHONY: install

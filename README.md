@@ -16,19 +16,19 @@ Then type in the project folder:
 
     make
 
-to compile a dynamically linked library and put it in `.lib/`. It should
-also produce the executable `bin/bitcoinprc_test`.
+to compile a dynamically linked library and put it in `.lib/`.
 
 If you want to clean the directory of compiled files and start from scratch,
 use:
 
     make clean  
 
-You can also perform some testing with bitcoin daemon in regtest mode:
+You can also build and perform some testing with bitcoin daemon in regtest
+mode:
 
     make test
 
-this assumes that you have `bitcoind` and `bitcoin-cli` executables
+This assumes that you have `bitcoind` and `bitcoin-cli` executables
 installed on your system.
 
 
