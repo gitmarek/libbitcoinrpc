@@ -30,9 +30,8 @@
 #include <jansson.h>
 
 #include "../src/bitcoinrpc.h"
+#include "bitcoinrpc_test.h"
 
-
-#define PROGNAME "bitcoinrpc_test"
 
 void
 print_help_page(void)
@@ -60,15 +59,9 @@ print_help_page(void)
          );
 }
 
-struct options {
-  char user[BITCOINRPC_PARAM_MAXLEN];
-  char pass[BITCOINRPC_PARAM_MAXLEN];
-  char addr[BITCOINRPC_PARAM_MAXLEN];
-  unsigned int port;
-};
-typedef struct options options_t;
 
-int parse_command_options(int argc, char **argv, options_t *o)
+
+int parse_command_options(int argc, char **argv, cmdline_options_t *o)
 {
   int c;
 
@@ -185,11 +178,21 @@ int parse_command_options(int argc, char **argv, options_t *o)
 }
 
 
+/* include all tests and parameters */
+static char * all_tests(cmdline_options_t o)
+{
+  BITCOINRPC_RUN_TEST(global, o, NULL);
+  return 0;
+}
+
+
+int tests_run = 0;
+
 int
 main(int argc, char **argv)
 {
   /* Parse command line options */
-  options_t o;
+  cmdline_options_t o;
 
   /* defaults */
   strncpy(o.user, BITCOINRPC_USER_DEFAULT, BITCOINRPC_PARAM_MAXLEN);
@@ -204,7 +207,36 @@ main(int argc, char **argv)
       exit(EXIT_FAILURE);
     }
 
-  fprintf(stderr, "%s-%s starting...\n", PROGNAME, BITCOINRPC_VERSION);
+  fprintf(stdout, "%s-%s starting...\n", PROGNAME, BITCOINRPC_VERSION);
+
+  if (bitcoinrpc_global_init() != BITCOINRPCE_OK)
+    {
+      fprintf(stderr, "error: cannot initialise the global state of the library\n");
+      abort();
+    }
+
+
+  /* Testing suites here */
+  fprintf(stderr, "[");
+  fprintf(stderr, "{\"test\": \"_internal_\",  \"result\": true, \"id\": %d}", tests_run++);
+  char *result = all_tests(o);
+  fprintf(stderr, "]\n");
+
+  return result != 0;
+
+
+  fprintf (stdout, "Free the resources... \n");
+  if (bitcoinrpc_global_cleanup() != BITCOINRPCE_OK)
+    {
+      fprintf(stderr, "failure.\n");
+      abort();
+    }
+  fprintf(stdout, "done.\n");
+  return 0;
+
+
+
+
 
   if (bitcoinrpc_global_init() != BITCOINRPCE_OK)
     abort();
