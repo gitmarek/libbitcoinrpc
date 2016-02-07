@@ -3,9 +3,10 @@ bin
 build
 tmp
 .lib
-bitcoin-test
+test/*_test
 
 *.orig
+
 
 # https://github.com/github/gitignore
 

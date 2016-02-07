@@ -29,7 +29,8 @@
 
 #include <jansson.h>
 
-#include "../bitcoinrpc.h"
+#include "../src/bitcoinrpc.h"
+
 
 #define PROGNAME "bitcoinrpc_test"
 

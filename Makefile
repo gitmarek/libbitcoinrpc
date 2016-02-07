@@ -28,7 +28,7 @@ NAME        := bitcoinrpc
 SRCDIR      := src
 DOCDIR      := doc
 TESTNAME    := $(NAME)_test
-TESTSRCDIR  := $(SRCDIR)/test
+TESTDIR  := test
 LIBDIR      := .lib
 BINDIR      := bin
 LDFLAGS     := -luuid -ljansson -lcurl
@@ -64,7 +64,7 @@ all: prep lib build-test
 .PHONY: prep
 prep:
 	@echo
-	@mkdir -p $(LIBDIR) $(BINDIR)
+	@mkdir -p $(LIBDIR)
 
 
 .PHONY: lib
@@ -88,14 +88,14 @@ $(SRCDIR)/%.o: $(SRCDIR)/%.c
 
 # --------- test -----------------
 .PHONY: build-test
-build-test: lib $(BINDIR)/$(TESTNAME)
+build-test: lib $(TESTDIR)/$(TESTNAME)
 
-$(BINDIR)/$(TESTNAME): $(TESTSRCDIR)/$(TESTNAME).o
+$(TESTDIR)/$(TESTNAME): $(TESTDIR)/$(TESTNAME).o
 	@echo
-	$(CC) $(CFLAGS) $(TESTSRCDIR)/$(TESTNAME).o -o $@ \
+	$(CC) $(CFLAGS) $(TESTDIR)/$(TESTNAME).o -o $@ \
 		-l$(NAME) $(TESTLDFLAGS) -L$(LIBDIR) -I $(SRCDIR) -Wl,-rpath=$(LIBDIR)
 
-$(TESTSRCDIR)/$(TESTNAME).o: $(TESTSRCDIR)/$(TESTNAME).c
+$(TESTDIR)/$(TESTNAME).o: $(TESTDIR)/$(TESTNAME).c
 	$(CC) $(CFLAGS) -c $< -o $@ \
 		-l$(NAME) -L$(LIBDIR) -I $(SRCDIR) -Wl,-rpath=$(LIBDIR)
 
@@ -125,7 +125,7 @@ prep-test:
 perform-test:
 	@echo
 	@echo "Start $(TESTNAME)"
-	$(BINDIR)/$(TESTNAME) --rpc-password=test --rpc-port=18332
+	$(TESTDIR)/$(TESTNAME) --rpc-password=test --rpc-port=18332
 	@bitcoin-cli $(BITCOINPARAMS) stop 2> /dev/null || true # server is probably alredy stoped by test programm
 	sleep 5s;
 
@@ -145,8 +145,9 @@ test: prep-test perform-test clean-test
 # ---------- clean ----------------
 .PHONY: clean
 clean:
-	$(RM) ./*.o $(SRCDIR)/*.o $(SRCDIR)/test/*.o
-	$(RM) ./*.gch $(SRCDIR)/*.gch $(SRCDIR)/test/*.gch
+	$(RM) ./*.o $(SRCDIR)/*.o $(TESTDIR)/*.o
+	$(RM) ./*.gch $(SRCDIR)/*.gch $(TESTDIR)/*.gch
+	$(RM) $(TESTDIR)/$(TESTNAME)
 	$(RM) $(LIBDIR)/*.so* $(BINDIR)/$(NAME)_test
 	$(RM) -d $(LIBDIR) $(BINDIR)
 
