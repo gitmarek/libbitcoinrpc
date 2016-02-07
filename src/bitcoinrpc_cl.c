@@ -119,6 +119,9 @@ bitcoinrpc_cl_init_params(const char* user, const char* pass,
     return NULL;
   strncpy(cl->addr, addr, BITCOINRPC_PARAM_MAXLEN - 1);
 
+  if (port <= 0 || port > 65535 )
+    return NULL;
+    
   cl->port = port;
 
   bitcoinrpc_cl_update_url_(cl);
@@ -142,6 +145,9 @@ bitcoinrpc_cl_init_params(const char* user, const char* pass,
 BITCOINRPCEcode
 bitcoinrpc_cl_free(bitcoinrpc_cl_t *cl)
 {
+  if (NULL == cl)
+    return BITCOINRPCE_ARG;
+
   curl_slist_free_all(cl->curl_headers);
   curl_easy_cleanup(cl->curl);
   cl->curl = NULL;

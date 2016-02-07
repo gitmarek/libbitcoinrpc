@@ -60,7 +60,7 @@ typedef struct cmdline_options cmdline_options_t;
   fprintf(stderr, "{\"test\": \"_internal_\",  \"result\": true, \"id\": %d}", tests_run++)
 
 
-#define BITCOINRPC_ASSERT(message, test) \
+#define BITCOINRPC_ASSERT(test, message) \
   do { \
       if (!(test)) \
         return message; \
@@ -97,6 +97,7 @@ extern int tests_run;
 
 /* test names */
 BITCOINRPC_TESTU(global);
+BITCOINRPC_TESTU(client);
 
 
 #endif /* BITCOINRPC_TEST_H_fbc8b015_1d8d_4c5c_8ec1_b4ca0a8ce138 */

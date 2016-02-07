@@ -184,6 +184,7 @@ int parse_command_options(int argc, char **argv, cmdline_options_t *o)
 static char * all_tests(cmdline_options_t o)
 {
   BITCOINRPC_RUN_TEST(global, o, NULL);
+  BITCOINRPC_RUN_TEST(client, o, NULL);
   return 0;
 }
 
