@@ -145,7 +145,9 @@ test: prep-test perform-test clean-test
 # ---------- clean ----------------
 .PHONY: clean
 clean:
-	$(RM) $(SRCDIR)/*.o $(SRCDIR)/test/*.o $(LIBDIR)/*.so* $(BINDIR)/$(NAME)_test
+	$(RM) ./*.o $(SRCDIR)/*.o $(SRCDIR)/test/*.o
+	$(RM) ./*.gch $(SRCDIR)/*.gch $(SRCDIR)/test/*.gch
+	$(RM) $(LIBDIR)/*.so* $(BINDIR)/$(NAME)_test
 	$(RM) -d $(LIBDIR) $(BINDIR)
 
 # ---------- install --------------
