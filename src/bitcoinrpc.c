@@ -51,6 +51,7 @@ bitcoinrpc_call_write_callback_(char *ptr, size_t size, size_t nmemb, void *user
   size_t n = size * nmemb;
   struct bitcoinrpc_call_curl_resp_ *curl_resp = (struct bitcoinrpc_call_curl_resp_*)userdata;
 
+  fprintf(stderr, "%s\n", ptr);
   if (!curl_resp->called_before)
     {
       /* initialise the data structure */
@@ -61,7 +62,7 @@ bitcoinrpc_call_write_callback_(char *ptr, size_t size, size_t nmemb, void *user
     }
 
   char * data = NULL;
-  unsigned long long int data_len = curl_resp->data_len + n;
+  unsigned long long int data_len = curl_resp->data_len + n + 1;
   data = bitcoinrpc_global_allocfunc(data_len);
   if (NULL == data)
     {
@@ -76,21 +77,21 @@ bitcoinrpc_call_write_callback_(char *ptr, size_t size, size_t nmemb, void *user
   if (NULL != curl_resp->data)
     {
       /* do not copy last '\0' */
-      strncpy(data, curl_resp->data, curl_resp->data_len);
-    }
-
-  /* break at '\n' */
-  size_t i;
-  for (i = 0; i < n; i++)
-    {
-      if (ptr[i] == '\n')
+      size_t i;
+      for (i = 0; i < curl_resp->data_len; i++)
         {
-          data[curl_resp->data_len + i] = '\0';
-          break;
+          data[i] = curl_resp->data[i];
         }
-      data[curl_resp->data_len + i] = ptr[i];
     }
 
+  /* do not copy '\n' */
+  size_t i, j;
+  for (i = 0, j = 0; i < n; i++)
+    {
+      if (ptr[i] != '\n')
+        data[curl_resp->data_len + j++] = ptr[i];
+    }
+  data[curl_resp->data_len + j] = '\0';
 
   if (NULL != curl_resp->data)
     {
@@ -98,7 +99,7 @@ bitcoinrpc_call_write_callback_(char *ptr, size_t size, size_t nmemb, void *user
     }
 
   curl_resp->data = data;
-  curl_resp->data_len += i;
+  curl_resp->data_len += j;
 
   return n;
 }
@@ -183,7 +184,9 @@ bitcoinrpc_call(bitcoinrpc_cl_t * cl, bitcoinrpc_method_t * method,
   json_t *jtmp = json_loads(curl_resp.data, 0, &jerr);
   if (NULL == jtmp)
     {
-      bitcoinrpc_RETURN(e, BITCOINRPCE_JSON, "cannot parse data from server");
+      snprintf(errbuf, BITCOINRPC_ERRMSG_MAXLEN,
+               "cannot parse JSON data from the server: %s", curl_resp.data);
+      bitcoinrpc_RETURN(e, BITCOINRPCE_CURLE, errbuf);
     }
   bitcoinrpc_resp_set_json_(resp, jtmp);
   bitcoinrpc_global_freefunc(curl_resp.data);

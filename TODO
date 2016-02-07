@@ -4,4 +4,4 @@ TODO
 Before initial release (0.1.0):
 
 2. Extensive testing
-6. Produce a proper error message when the connection cannot be established
+6. Merge this branch (2016/02/error-msg) after 'getblock' method have been tested.
