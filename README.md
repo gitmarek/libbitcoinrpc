@@ -23,7 +23,7 @@ use:
 
     make clean  
 
-You can also build and perform some testing with bitcoin daemon in regtest
+You can also build and perform unit testing with bitcoind daemon in regtest
 mode:
 
     make test
@@ -34,7 +34,7 @@ installed on your system.
 
 ### Build dependencies
 
-These dependencies are required, if you want to use the code:
+These dependencies are required:
 
  Library     | Purpose             | Description
  ------------|---------------------|-----------------------------------------
@@ -108,4 +108,4 @@ The source code is released under the terms of the MIT license.  Please, see
 [LICENSE](./LICENSE) for more information.
 
 
-*last updated: 2016-02-05*
+*last updated: 2016-02-08*

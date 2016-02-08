@@ -3,6 +3,5 @@ TODO
 
 Before initial release (0.1.0):
 
-1. Documentation (including man pages)
 2. Extensive testing
 6. Produce a proper error message when the connection cannot be established
