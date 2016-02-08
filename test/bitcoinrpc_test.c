@@ -185,6 +185,7 @@ static char * all_tests(cmdline_options_t o)
 {
   BITCOINRPC_RUN_TEST(global, o, NULL);
   BITCOINRPC_RUN_TEST(client, o, NULL);
+  BITCOINRPC_RUN_TEST(method, o, NULL);
   BITCOINRPC_RUN_TEST(resp, o, NULL);
   return 0;
 }
@@ -229,6 +230,16 @@ main(int argc, char **argv)
 
   fprintf(stderr, "]\n");
   fprintf(stdout, "<<< JSON data ends here.\n");
+
+  if (result != 0)
+    {
+      fprintf(stdout, "TEST FAILED\n");
+    }
+  else
+    {
+      fprintf(stdout, "ALL TESTS PASSED\n");
+    }
+  fprintf(stdout, "Tests run: %d\n", tests_run);
 
   fprintf(stdout, "Free the resources... \n");
   if (bitcoinrpc_global_cleanup() != BITCOINRPCE_OK)

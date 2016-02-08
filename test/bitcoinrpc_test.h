@@ -69,7 +69,7 @@ typedef struct cmdline_options cmdline_options_t;
 #define BITCOINRPC_RUN_TEST(test, options, data)  \
   do \
     { \
-      fprintf(stderr, ", { \"test\": \"" # test "\", \"id\": %d, \"subtests\": [", tests_run++); \
+      fprintf(stderr, ",\n{ \"test\": \"" # test "\", \"id\": %d, \"subtests\": [", tests_run++); \
       char *message = test_ ## test(options, data); \
       if (message) \
         { \
@@ -98,6 +98,7 @@ extern int tests_run;
 /* test names */
 BITCOINRPC_TESTU(global);
 BITCOINRPC_TESTU(client);
+BITCOINRPC_TESTU(method);
 BITCOINRPC_TESTU(resp);
 
 
