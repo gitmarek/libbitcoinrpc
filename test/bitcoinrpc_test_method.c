@@ -58,7 +58,7 @@ BITCOINRPC_TESTU(method_init)
   m = NULL;
 
   char invalid[1000] = "THI:S IS IN,VALI}D JS{ON DAT\"A: @@@,,@@@,,,}{{,,,";
-  j = (json_t *) invalid;
+  j = (json_t*)invalid;
   m = bitcoinrpc_method_init_params(BITCOINRPC_METHOD_HELP, j);
   BITCOINRPC_ASSERT(m == NULL,
                     "bitcoinrpc_method_init_params does not check for invalid json as params");
@@ -68,11 +68,74 @@ BITCOINRPC_TESTU(method_init)
 }
 
 
+BITCOINRPC_TESTU(method_params)
+{
+  BITCOINRPC_TESTU_INIT;
+
+  BITCOINRPCEcode ecode;
+  bitcoinrpc_method_t *m = NULL;
+
+  m = bitcoinrpc_method_init(BITCOINRPC_METHOD_HELP);
+  BITCOINRPC_ASSERT(m != NULL,
+                    "cannot initialise a new method");
+
+
+  json_t *jo = json_object();
+  json_t *ja = json_array();
+  json_t *jtmp = NULL;
+
+  ecode = bitcoinrpc_method_set_params(m, NULL);
+  BITCOINRPC_ASSERT(ecode == BITCOINRPCE_OK,
+                    "cannot set NULL as params");
+
+  jtmp = NULL;
+  ecode = bitcoinrpc_method_get_params(m, &jtmp);
+  BITCOINRPC_ASSERT(ecode == BITCOINRPCE_OK,
+                    "cannot get params (NULL)");
+
+  BITCOINRPC_ASSERT(jtmp == NULL,
+                    "bitcoinrpc_method_get_params did not returned set parameters");
+
+
+
+  ecode = bitcoinrpc_method_set_params(m, jo);
+  BITCOINRPC_ASSERT(ecode == BITCOINRPCE_OK,
+                    "cannot set empty object as params");
+
+  jtmp = NULL;
+  ecode = bitcoinrpc_method_get_params(m, &jtmp);
+  BITCOINRPC_ASSERT(ecode == BITCOINRPCE_OK,
+                    "cannot get params ({})");
+
+  BITCOINRPC_ASSERT(json_equal(jo, jtmp),
+                    "bitcoinrpc_method_get_params did not returned set parameters");
+
+
+
+  ecode = bitcoinrpc_method_set_params(m, ja);
+  BITCOINRPC_ASSERT(ecode == BITCOINRPCE_OK,
+                    "cannot set empty array as params");
+
+  jtmp = NULL;
+  ecode = bitcoinrpc_method_get_params(m, &jtmp);
+  BITCOINRPC_ASSERT(ecode == BITCOINRPCE_OK,
+                    "cannot get params ([])");
+
+  BITCOINRPC_ASSERT(json_equal(ja, jtmp),
+                    "bitcoinrpc_method_get_params did not returned set parameters");
+
+
+  bitcoinrpc_method_free(m);
+  m = NULL;
+
+  BITCOINRPC_TESTU_RETURN(0);
+}
 
 
 BITCOINRPC_TESTU(method)
 {
   BITCOINRPC_TESTU_INIT;
   BITCOINRPC_RUN_TEST(method_init, o, NULL);
+  BITCOINRPC_RUN_TEST(method_params, o, NULL);
   BITCOINRPC_TESTU_RETURN(0);
 }
