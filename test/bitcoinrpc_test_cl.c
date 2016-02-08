@@ -24,6 +24,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 #include <jansson.h>
 
@@ -81,10 +82,163 @@ BITCOINRPC_TESTU(client_init)
 
 
 
+BITCOINRPC_TESTU(client_getparams_cmdline)
+{
+  BITCOINRPC_TESTU_INIT;
+
+  bitcoinrpc_cl_t *cl = NULL;
+  BITCOINRPCEcode ecode;
+  char buf[BITCOINRPC_PARAM_MAXLEN];
+  char buf_url[BITCOINRPC_URL_MAXLEN];
+  char buf_url_cmp[BITCOINRPC_URL_MAXLEN];
+  unsigned int bufi = 0;
+
+  char user[BITCOINRPC_PARAM_MAXLEN];
+  char pass[BITCOINRPC_PARAM_MAXLEN];
+  char addr[BITCOINRPC_PARAM_MAXLEN];
+  unsigned int port;
+
+  /* set some parameter values */
+  strncpy(user, o.user, BITCOINRPC_PARAM_MAXLEN);
+  strncpy(pass, o.pass, BITCOINRPC_PARAM_MAXLEN);
+  strncpy(addr, o.addr, BITCOINRPC_PARAM_MAXLEN);
+  port = o.port;
+
+  cl = bitcoinrpc_cl_init_params(user, pass, addr, port);
+  BITCOINRPC_ASSERT(cl != NULL,
+                    "cannot initialise a new client");
+
+
+  ecode = bitcoinrpc_cl_get_user(cl, buf);
+  BITCOINRPC_ASSERT(ecode == BITCOINRPCE_OK,
+                    "cannot get user name");
+  BITCOINRPC_ASSERT(strncmp(buf, user, BITCOINRPC_PARAM_MAXLEN) == 0,
+                    "wrong user name received");
+  memset(buf, 0, BITCOINRPC_PARAM_MAXLEN);
+
+  ecode = bitcoinrpc_cl_get_pass(cl, buf);
+  BITCOINRPC_ASSERT(ecode == BITCOINRPCE_OK,
+                    "cannot get password");
+  BITCOINRPC_ASSERT(strncmp(buf, pass, BITCOINRPC_PARAM_MAXLEN) == 0,
+                    "wrong password received");
+  memset(buf, 0, BITCOINRPC_PARAM_MAXLEN);
+
+  ecode = bitcoinrpc_cl_get_addr(cl, buf);
+  BITCOINRPC_ASSERT(ecode == BITCOINRPCE_OK,
+                    "cannot get address");
+  BITCOINRPC_ASSERT(strncmp(buf, addr, BITCOINRPC_PARAM_MAXLEN) == 0,
+                    "wrong address received");
+  memset(buf, 0, BITCOINRPC_PARAM_MAXLEN);
+
+  ecode = bitcoinrpc_cl_get_port(cl, &bufi);
+  BITCOINRPC_ASSERT(ecode == BITCOINRPCE_OK,
+                    "cannot get port number");
+  BITCOINRPC_ASSERT(bufi == port,
+                    "wrong port number received");
+
+
+
+  memset(buf_url, 0, BITCOINRPC_URL_MAXLEN);
+  memset(buf_url_cmp, 0, BITCOINRPC_URL_MAXLEN);
+  ecode = bitcoinrpc_cl_get_url(cl, buf_url);
+  BITCOINRPC_ASSERT(ecode == BITCOINRPCE_OK,
+                    "cannot get url");
+
+  snprintf(buf_url_cmp, BITCOINRPC_URL_MAXLEN, "http://%s:%d", \
+           addr, port);
+  BITCOINRPC_ASSERT(strncmp(buf_url, buf_url_cmp, BITCOINRPC_PARAM_MAXLEN) == 0,
+                    "wrong url received");
+  memset(buf_url, 0, BITCOINRPC_URL_MAXLEN);
+  memset(buf_url_cmp, 0, BITCOINRPC_URL_MAXLEN);
+
+
+  bitcoinrpc_cl_free(cl);
+  cl = NULL;
+  BITCOINRPC_TESTU_RETURN(0);
+}
+
+
+
+BITCOINRPC_TESTU(client_getparams_edge)
+{
+  BITCOINRPC_TESTU_INIT;
+
+  bitcoinrpc_cl_t *cl = NULL;
+  BITCOINRPCEcode ecode;
+  char buf[BITCOINRPC_PARAM_MAXLEN];
+  char buf_url[BITCOINRPC_URL_MAXLEN];
+  char buf_url_cmp[BITCOINRPC_URL_MAXLEN];
+  unsigned int bufi = 0;
+
+  char user[BITCOINRPC_PARAM_MAXLEN];
+  char pass[BITCOINRPC_PARAM_MAXLEN];
+  char addr[BITCOINRPC_PARAM_MAXLEN];
+  unsigned int port;
+
+  /* set some parameter values */
+  user[0] = 0;
+  strncpy(pass, "\"@!#@$", BITCOINRPC_PARAM_MAXLEN);
+  strncpy(addr, "", BITCOINRPC_PARAM_MAXLEN);
+  port = 1;
+
+  cl = bitcoinrpc_cl_init_params(user, pass, addr, port);
+  BITCOINRPC_ASSERT(cl != NULL,
+                    "cannot initialise a new client");
+
+  ecode = bitcoinrpc_cl_get_user(cl, buf);
+  BITCOINRPC_ASSERT(ecode == BITCOINRPCE_OK,
+                    "cannot get user name");
+  BITCOINRPC_ASSERT(strncmp(buf, user, BITCOINRPC_PARAM_MAXLEN) == 0,
+                    "wrong user name received");
+  memset(buf, 0, BITCOINRPC_PARAM_MAXLEN);
+
+  ecode = bitcoinrpc_cl_get_pass(cl, buf);
+  BITCOINRPC_ASSERT(ecode == BITCOINRPCE_OK,
+                    "cannot get password");
+  BITCOINRPC_ASSERT(strncmp(buf, pass, BITCOINRPC_PARAM_MAXLEN) == 0,
+                    "wrong password received");
+  memset(buf, 0, BITCOINRPC_PARAM_MAXLEN);
+
+  ecode = bitcoinrpc_cl_get_addr(cl, buf);
+  BITCOINRPC_ASSERT(ecode == BITCOINRPCE_OK,
+                    "cannot get address");
+  BITCOINRPC_ASSERT(strncmp(buf, addr, BITCOINRPC_PARAM_MAXLEN) == 0,
+                    "wrong address received");
+  memset(buf, 0, BITCOINRPC_PARAM_MAXLEN);
+
+  ecode = bitcoinrpc_cl_get_port(cl, &bufi);
+  BITCOINRPC_ASSERT(ecode == BITCOINRPCE_OK,
+                    "cannot get port number");
+  BITCOINRPC_ASSERT(bufi == port,
+                    "wrong port number received");
+
+
+
+  memset(buf_url, 0, BITCOINRPC_URL_MAXLEN);
+  memset(buf_url_cmp, 0, BITCOINRPC_URL_MAXLEN);
+  ecode = bitcoinrpc_cl_get_url(cl, buf_url);
+  BITCOINRPC_ASSERT(ecode == BITCOINRPCE_OK,
+                    "cannot get url");
+
+  snprintf(buf_url_cmp, BITCOINRPC_URL_MAXLEN, "http://%s:%d", \
+           addr, port);
+  BITCOINRPC_ASSERT(strncmp(buf_url, buf_url_cmp, BITCOINRPC_PARAM_MAXLEN) == 0,
+                    "wrong url received");
+  memset(buf_url, 0, BITCOINRPC_URL_MAXLEN);
+  memset(buf_url_cmp, 0, BITCOINRPC_URL_MAXLEN);
+
+
+  bitcoinrpc_cl_free(cl);
+  cl = NULL;
+  BITCOINRPC_TESTU_RETURN(0);
+}
+
 
 BITCOINRPC_TESTU(client)
 {
   BITCOINRPC_TESTU_INIT;
   BITCOINRPC_RUN_TEST(client_init, o, NULL);
+  BITCOINRPC_RUN_TEST(client_getparams_cmdline, o, NULL);
+  BITCOINRPC_RUN_TEST(client_getparams_edge, o, NULL);
   BITCOINRPC_TESTU_RETURN(0);
 }

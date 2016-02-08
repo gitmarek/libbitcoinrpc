@@ -121,7 +121,7 @@ bitcoinrpc_cl_init_params(const char* user, const char* pass,
 
   if (port <= 0 || port > 65535 )
     return NULL;
-    
+
   cl->port = port;
 
   bitcoinrpc_cl_update_url_(cl);
