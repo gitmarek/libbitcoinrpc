@@ -16,16 +16,15 @@ To quickly get a grasp of how to use the library in your code, please see
 the [tutorial](./tutorial.md) and [examples](./examples.md).  Besides, the
 following documents provide more information:
 
-* [Design](./design.md) -- overview of the design behind the library
-* [Reference](./reference.md) -- full ABI and API reference
+* [Design](./design.md) -- Overview of the design behind the library.
+* [Reference](./reference.md) -- Full ABI and API reference.
 
 Instructions how to build and install the library can be found in
-`README.md` file, in the project source directory.
+`README.md` file, in the project main directory.
 
-After you have installed the software, you should be able to locally
-browse its man pages, describing the library data structures and routines,
-which are basically the above reference document adjusted to the man pages
-format. Just type:
+After you have installed the software, you should be able to browse its man
+pages offline, which are basically the above reference document adjusted to
+the man pages format. Just type:
 
     man 3 bitcoinrpc
 
@@ -38,4 +37,4 @@ suggestions of how to improve this text in terms of spelling, grammar, syntax
 etc.  Please send proposals as github pull requests.  Any commit message
 regarding documentation should bear: `[doc]` prefix.
 
-*last updated: 2016-02-02*
+*last updated: 2016-02-08*
