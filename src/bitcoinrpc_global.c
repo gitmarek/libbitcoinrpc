@@ -42,6 +42,7 @@ bitcoinrpc_global_data_t *bitcoinrpc_global_data_;
 
 void * (*bitcoinrpc_global_allocfunc)(size_t size) =
   bitcoinrpc_global_allocfunc_default_;
+
 void (*bitcoinrpc_global_freefunc)(void *ptr) =
   bitcoinrpc_global_freefunc_default_;
 
@@ -49,6 +50,7 @@ void (*bitcoinrpc_global_freefunc)(void *ptr) =
 BITCOINRPCEcode
 bitcoinrpc_global_init(void)
 {
+  bitcoinrpc_global_data_ = NULL;
   bitcoinrpc_global_data_ = bitcoinrpc_global_allocfunc_default_(
     sizeof *bitcoinrpc_global_data_);
 
