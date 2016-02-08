@@ -185,6 +185,7 @@ static char * all_tests(cmdline_options_t o)
 {
   BITCOINRPC_RUN_TEST(global, o, NULL);
   BITCOINRPC_RUN_TEST(client, o, NULL);
+  BITCOINRPC_RUN_TEST(resp, o, NULL);
   return 0;
 }
 
@@ -220,14 +221,14 @@ main(int argc, char **argv)
 
 
   /* Testing suites here */
-  fprintf(stderr, ">>> JSON data starts here:\n");
+  fprintf(stdout, ">>> JSON data starts here:\n");
   fprintf(stderr, "[");
   fprintf(stderr, "{\"test\": \"_internal_\",  \"result\": true, \"id\": %d}", tests_run++);
 
   char *result = all_tests(o);
 
   fprintf(stderr, "]\n");
-  fprintf(stderr, "<<< JSON data ends here.\n");
+  fprintf(stdout, "<<< JSON data ends here.\n");
 
   fprintf(stdout, "Free the resources... \n");
   if (bitcoinrpc_global_cleanup() != BITCOINRPCE_OK)

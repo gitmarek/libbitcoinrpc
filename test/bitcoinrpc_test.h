@@ -98,6 +98,7 @@ extern int tests_run;
 /* test names */
 BITCOINRPC_TESTU(global);
 BITCOINRPC_TESTU(client);
+BITCOINRPC_TESTU(resp);
 
 
 #endif /* BITCOINRPC_TEST_H_fbc8b015_1d8d_4c5c_8ec1_b4ca0a8ce138 */
