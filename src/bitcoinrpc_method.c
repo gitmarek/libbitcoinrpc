@@ -332,7 +332,7 @@ bitcoinrpc_method_get_params(bitcoinrpc_method_t *method, json_t **params)
   if (NULL == params || NULL == method)
     return BITCOINRPCE_ARG;
 
-  if (NULL == params)
+  if (NULL == method->params_json)
     {
       jp = NULL;
     }
