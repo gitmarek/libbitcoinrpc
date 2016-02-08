@@ -91,12 +91,16 @@ bitcoinrpc_cl_init_params(const char* user, const char* pass,
   if (NULL == cl)
     return NULL;
 
+  /* Initialise all the elemets of cl */
+  memset(cl->uuid_str, 0, 37);
   memset(cl->user, 0, BITCOINRPC_PARAM_MAXLEN);
   memset(cl->pass, 0, BITCOINRPC_PARAM_MAXLEN);
   memset(cl->addr, 0, BITCOINRPC_PARAM_MAXLEN);
   cl->port = 0;
-
+  memset(cl->url, 0, BITCOINRPC_URL_MAXLEN);
   cl->curl = NULL;
+  cl->curl_headers = NULL;
+  cl->legacy_ptr_4f1af859_c918_484a_b3f6_9fe51235a3a0 = NULL;
 
   uuid_generate_random(cl->uuid);
   uuid_unparse_lower(cl->uuid, cl->uuid_str);
@@ -122,16 +126,14 @@ bitcoinrpc_cl_init_params(const char* user, const char* pass,
   bitcoinrpc_cl_update_url_(cl);
 
   cl->curl = curl_easy_init();
+  if (NULL == cl->curl)
+    return NULL;
 
-  cl->curl_headers = NULL;
   cl->curl_headers = curl_slist_append(cl->curl_headers, "content-type: text/plain;");
   if (NULL == cl->curl_headers)
     return NULL;
 
   curl_easy_setopt(cl->curl, CURLOPT_HTTPHEADER, cl->curl_headers);
-
-  if (NULL == cl->curl)
-    return NULL;
 
   return cl;
 }
