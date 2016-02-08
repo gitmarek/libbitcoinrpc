@@ -13,12 +13,12 @@ RPC calls to the node, receive the responses and handle errors in a robust way.
 ## Overview of the Bitcoin JSON-RPC protocol.
 
 A Bitcoin Core node, when stated as a daemon of with `-server` option, listens
-to incoming connection requests to perform RPC commands.  The port the node
+to incoming connection requests to perform RPCs.  The port the node
 usually listens to is `8332` for mainnet and `18332` for testnet and regtest
 mode, but you can specify the port yourself via `-rcpport` option.  You should
-also give the server a user name (optionally) and password for basic
+also give the server a user name (optionally) and a password for basic
 authentication, either via command option, or in `bitcoin.conf` file.
-For more information, please refer to `bitcoind` help page.
+For more information, please refer to the `bitcoind` help page.
 
 The RPC call is performed over HTTP and the data sent and received is in JSON
 format. For the specification of the JSON-RPC protocol, see:
@@ -26,17 +26,17 @@ format. For the specification of the JSON-RPC protocol, see:
 For the specification of the PRC protocol Bitcoin Core uses, see Bitcoin Core
 [Developer Reference](https://bitcoin.org/en/developer-reference#remote-procedure-calls-rpcs).
 
-So the main task of bitcoinrpc it to initiate connection to a listing Bitcoin
+So the main task of bitcoinrpc it to initiate a connection to a listing Bitcoin
 node, compose a valid JSON-RPC request and send it over HTTP with basic
 authentication; then wait for the response, extract the JSON data of interest
 and report it to the user, together with possible error code and message.
 
 It is important to say that the purpose of bitcoinrpc is to serve as a proxy
-between the user and Bitcoin server, allowing him to sent *almost any* request
-(i.e. to specify any parameters for a valid RPC method) and report errors
-relevant only to this process of communication and not to check, if the request
-would be interpreted by the Bitcoin node as meaningful.  This is indeed
-the default behaviour of the low-level bitcoinrpc routines.
+between the user and the Bitcoin server, allowing him to sent *almost any*
+request (i.e. to specify any parameters for a valid RPC method) and report
+errors relevant only to this process of communication and not to check,
+if the request has been interpreted by the Bitcoin node as meaningful.
+This is indeed the default behaviour of the low-level bitcoinrpc routines.
 See the library [reference](./reference.md) for more details.
 
 
@@ -45,11 +45,11 @@ See the library [reference](./reference.md) for more details.
 The bitcoinrpc library is written in standard C.  It sends data over HTTP with
 the help of `libcurl_easy` interface.  Hence, the necessary dependency:
 `libcurl`.  Please see:
-,,[Easy interface overview](http://curl.haxx.se/libcurl/c/libcurl-easy.html)''
+[Easy interface overview](http://curl.haxx.se/libcurl/c/libcurl-easy.html),
 if you need more information, but keep in mind that the user of bitcoinrpc does
 not have to bother with curl routines, as they are hidden completely behind
 the interface.  Additionally, the library parses JSON data using `libjansson`
-and some aspects of this library are exposed to the user.  So it could be
+and some aspects of its API are exposed to the user.  So it could be
 helpful, if you get familiar with libjansson excellent documentation:
 [here](https://jansson.readthedocs.org/en/2.7/apiref.html).
 The last library needed to compile bitcoinrpc is standard
@@ -85,8 +85,8 @@ Most of the functions within the library perform trivial task such as
 allocating memory etc., and they do not need to return extensive error messages.
 Instead, they return error codes of enum type `BITCOINRPCEcode`.
 The list of all error codes can be found in the [reference](./reference.md).
-The function `bitcoinrpc_call()` accepts an additional pointer:
-`bitcoinrcp_err_t*` where error messages are stored. If the pointer is passed
+The function `bitcoinrpc_call()` accepts an additional pointer to
+`bitcoinrcp_err_t`, where error messages are stored. If the pointer is passed
 as `NULL`, the error reporting, beside the omnipresent error codes, is omitted.
 
 
@@ -96,8 +96,8 @@ The standard procedure of using bitcoinrpc library routines to perform
 a successful RPC call should therefore look as follows:
 
 1. Initialise the library once by calling `bitcoinrpc_global_init()`.
-2. Initialise the client: `bitcoinrpc_cl_init()` and specify parameters like
-   user name, password, IP address and port.
+2. Initialise a client: `bitcoinrpc_cl_init()` and specify parameters like
+   user name, password, IP address and port of the server.
 3. Initialise method and response structures. Also allocate on stack the error
    handling object.
 4. Perform a call: `bitcoinrpc_call()`.
@@ -111,4 +111,4 @@ a successful RPC call should therefore look as follows:
 For more specific explanation of how to you the library, please refer to
 the [tutorial](./tutorial.md) and [examples](./examples.md).
 
-*last updated: 2016-01-28*
+*last updated: 2016-02-08*
