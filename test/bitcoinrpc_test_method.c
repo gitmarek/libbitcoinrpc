@@ -24,10 +24,12 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 #include <jansson.h>
 
 #include "../src/bitcoinrpc.h"
+#include "../src/bitcoinrpc_method.h"
 #include "bitcoinrpc_test.h"
 
 
@@ -132,10 +134,61 @@ BITCOINRPC_TESTU(method_params)
 }
 
 
+
+BITCOINRPC_TESTU(method_set_nonstandard)
+{
+  BITCOINRPC_TESTU_INIT;
+
+  char* mstr = NULL;
+  BITCOINRPCEcode ecode;
+  bitcoinrpc_method_t *m = NULL;
+
+  m = bitcoinrpc_method_init(BITCOINRPC_METHOD_SETTXFEE);
+  BITCOINRPC_ASSERT(m != NULL,
+                    "cannot initialise a new method");
+
+
+  ecode = bitcoinrpc_method_set_nonstandard(m, "hereandnow");
+  BITCOINRPC_ASSERT(ecode != BITCOINRPCE_OK,
+                    "a nonstandard method name set to method other than BITCOINRPC_METHOD_NONSTANDARD");
+
+  mstr = NULL;
+  mstr = bitcoinrpc_method_get_mstr_(m);
+  BITCOINRPC_ASSERT(strncmp(mstr, "settxfee", 8) == 0,
+                    "a nonstandard method name has been set anyway");
+
+  bitcoinrpc_method_free(m);
+  m = NULL;
+
+
+
+  m = bitcoinrpc_method_init(BITCOINRPC_METHOD_NONSTANDARD);
+  BITCOINRPC_ASSERT(m != NULL,
+                    "cannot initialise a new method");
+
+
+  ecode = bitcoinrpc_method_set_nonstandard(m, "oneandonly");
+  BITCOINRPC_ASSERT(ecode == BITCOINRPCE_OK,
+                    "cannot set a nonstandard method name");
+
+  mstr = NULL;
+  mstr = bitcoinrpc_method_get_mstr_(m);
+  BITCOINRPC_ASSERT(strncmp(mstr, "oneandonly", 10) == 0,
+                    "a nonstandard method name wrongly set");
+
+  bitcoinrpc_method_free(m);
+  m = NULL;
+
+  BITCOINRPC_TESTU_RETURN(0);
+}
+
+
+
 BITCOINRPC_TESTU(method)
 {
   BITCOINRPC_TESTU_INIT;
   BITCOINRPC_RUN_TEST(method_init, o, NULL);
   BITCOINRPC_RUN_TEST(method_params, o, NULL);
+  BITCOINRPC_RUN_TEST(method_set_nonstandard, o, NULL);
   BITCOINRPC_TESTU_RETURN(0);
 }
