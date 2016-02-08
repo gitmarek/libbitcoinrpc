@@ -44,6 +44,26 @@ BITCOINRPC_TESTU(method_init)
   bitcoinrpc_method_free(m);
   m = NULL;
 
+  m = bitcoinrpc_method_init_params(BITCOINRPC_METHOD_HELP, NULL);
+  BITCOINRPC_ASSERT(m != NULL,
+                    "cannot initialise a new method with params: NULL");
+  bitcoinrpc_method_free(m);
+  m = NULL;
+
+  json_t *j = json_object();
+  m = bitcoinrpc_method_init_params(BITCOINRPC_METHOD_HELP, j);
+  BITCOINRPC_ASSERT(m != NULL,
+                    "cannot initialise a new method with params: {}");
+  bitcoinrpc_method_free(m);
+  m = NULL;
+
+  char invalid[1000] = "THI:S IS IN,VALI}D JS{ON DAT\"A: @@@,,@@@,,,}{{,,,";
+  j = (json_t *) invalid;
+  m = bitcoinrpc_method_init_params(BITCOINRPC_METHOD_HELP, j);
+  BITCOINRPC_ASSERT(m == NULL,
+                    "bitcoinrpc_method_init_params does not check for invalid json as params");
+  m = NULL;
+
   BITCOINRPC_TESTU_RETURN(0);
 }
 
