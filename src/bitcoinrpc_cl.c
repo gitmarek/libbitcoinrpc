@@ -43,9 +43,6 @@ struct bitcoinrpc_cl {
 
   char url[BITCOINRPC_URL_MAXLEN];
 
-  char tmpstr[BITCOINRPC_PARAM_MAXLEN]; /* very internal */
-  unsigned int tmpstr_len;
-
   CURL *curl;
   struct curl_slist *curl_headers;
 
@@ -93,8 +90,6 @@ bitcoinrpc_cl_init_params(const char* user, const char* pass,
 
   if (NULL == cl)
     return NULL;
-
-  memset(cl->tmpstr, 0, BITCOINRPC_PARAM_MAXLEN);
 
   memset(cl->user, 0, BITCOINRPC_PARAM_MAXLEN);
   memset(cl->pass, 0, BITCOINRPC_PARAM_MAXLEN);
