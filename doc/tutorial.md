@@ -1,9 +1,9 @@
 # Tutorial
 
 In this tutorial, I will show how to start using the **bitcoinrpc** library and
-make JSON-RPC calls over HTTP to a listeting Bitcoin Core node. For a detailed
-description of all the functions that make bitcoinrpc interface, please see the
-[Reference](./reference.md).  You may also want to check a
+make JSON-RPC calls over HTTP to a listening Bitcoin Core node. For a detailed
+description of all the functions that make the bitcoinrpc interface, please
+see the [Reference](./reference.md).  You may also want to check a
 few [examples](./examples.md) and a document outlining the general
 [design](./design.md).
 
@@ -159,8 +159,9 @@ which should look like this:
 
 for some unique `id`.
 
-Please see the documentation of the **jansson** library, to check how to handle
-data stored in a `json_t` type.
+Please see the [documentation](https://jansson.readthedocs.org/en/2.7/apiref.html)
+of the **jansson** library, to check how to handle data stored in
+a `json_t` type.
 
 It is important to say that the 'low-level' `bitcoinrpc_call()` just passes
 the JSON data it got from the server and reports errors pertaining only to the
@@ -168,4 +169,4 @@ call itself.  Hence you have freedom to call any valid method with any
 parameters, but on the other hand, it is your task to extract data from a JSON
 object you receive.
 
-*last updated: 2016-02-06*
+*last updated: 2016-02-09*
