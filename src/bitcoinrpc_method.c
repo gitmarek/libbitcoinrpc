@@ -159,7 +159,7 @@ bitcoinrpc_method_st_(const BITCOINRPC_METHOD m)
 
 struct bitcoinrpc_method {
   BITCOINRPC_METHOD m;
-  char*               mstr;
+  char* mstr;
 
   uuid_t uuid;
   char uuid_str[37];      /* why 37? see: man 3 uuid_unparse */
@@ -182,6 +182,9 @@ struct bitcoinrpc_method {
 static BITCOINRPCEcode
 bitcoinrpc_method_make_postjson_(bitcoinrpc_method_t *method)
 {
+  if (NULL == method)
+    return BITCOINRPCE_BUG;
+
   if (NULL != method->post_json)
     {
       json_decref(method->post_json);
@@ -202,7 +205,6 @@ bitcoinrpc_method_make_postjson_(bitcoinrpc_method_t *method)
       json_object_set(method->post_json, "params", method->params_json);
     }
 
-
   return BITCOINRPCE_OK;
 }
 
@@ -210,6 +212,9 @@ bitcoinrpc_method_make_postjson_(bitcoinrpc_method_t *method)
 json_t *
 bitcoinrpc_method_get_postjson_(bitcoinrpc_method_t *method)
 {
+  if (NULL == method)
+    return NULL;
+
   return method->post_json;
 }
 
@@ -217,6 +222,9 @@ bitcoinrpc_method_get_postjson_(bitcoinrpc_method_t *method)
 BITCOINRPCEcode
 bitcoinrpc_method_compare_uuid_(bitcoinrpc_method_t *method, uuid_t u)
 {
+  if (NULL == method)
+    return BITCOINRPCE_BUG;
+
   return (uuid_compare(method->uuid, u) == 0) ?
          BITCOINRPCE_OK : BITCOINRPCE_CHECK;
 }
@@ -225,6 +233,9 @@ bitcoinrpc_method_compare_uuid_(bitcoinrpc_method_t *method, uuid_t u)
 static BITCOINRPCEcode
 bitcoinrpc_method_update_uuid_(bitcoinrpc_method_t *method)
 {
+  if (NULL == method)
+    return BITCOINRPCE_BUG;
+
   uuid_generate_random(method->uuid);
   uuid_unparse_lower(method->uuid, method->uuid_str);
 
@@ -255,12 +266,8 @@ bitcoinrpc_method_init_params(const BITCOINRPC_METHOD m,
   method->mstr = ms->str;
   method->post_json = NULL;
 
-  json_t *jp;
-  if (NULL == params)
-    {
-      jp = NULL;
-    }
-  else
+  json_t *jp = NULL;
+  if (NULL != params)
     {
       jp = json_deep_copy(params);
       if (NULL == jp)
@@ -352,12 +359,15 @@ bitcoinrpc_method_get_params(bitcoinrpc_method_t *method, json_t **params)
 BITCOINRPCEcode
 bitcoinrpc_method_set_nonstandard(bitcoinrpc_method_t *method, char *name)
 {
+  if (NULL == method)
+    return BITCOINRPCE_ARG;
+
   if (method->m != BITCOINRPC_METHOD_NONSTANDARD)
     return BITCOINRPCE_ERR;
 
   method->mstr = name;
 
-  return BITCOINRPCE_OK;
+  return bitcoinrpc_method_update_uuid_(method);
 }
 
 
