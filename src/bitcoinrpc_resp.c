@@ -47,7 +47,7 @@ struct bitcoinrpc_resp {
 BITCOINRPCEcode
 bitcoinrpc_resp_set_json_(bitcoinrpc_resp_t *resp, json_t *json)
 {
-  if (NULL == resp)
+  if (NULL == resp || NULL == json)
     return BITCOINRPCE_BUG;
 
   resp->json = json_deep_copy(json);
@@ -65,8 +65,11 @@ bitcoinrpc_resp_update_uuid_(bitcoinrpc_resp_t *resp)
   const char *uuid_str = NULL;
   uuid_t uuid;
 
-  if (NULL == resp || NULL == resp->json)
-    return BITCOINRPCE_ARG;
+  if (NULL == resp)
+    return BITCOINRPCE_BUG;
+
+  if (NULL == resp->json)
+    return BITCOINRPCE_OK;
 
   json_t *jid = json_deep_copy(json_object_get(resp->json, "id"));
   if (NULL == jid)
@@ -77,7 +80,7 @@ bitcoinrpc_resp_update_uuid_(bitcoinrpc_resp_t *resp)
 
   e = uuid_parse(uuid_str, uuid);
   if (e != 0)
-    return BITCOINRPCE_ARG;
+    return BITCOINRPCE_BUG;
   uuid_copy(resp->uuid, uuid);
   json_decref(jid);
 
