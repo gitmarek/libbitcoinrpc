@@ -53,7 +53,7 @@ typedef struct cmdline_options cmdline_options_t;
    everything for itself, EXCEPT the library's global state.
  */
 
-#define BITCOINRPC_TESTU(test) char* test_ ## test(cmdline_options_t o, void *data)
+#define BITCOINRPC_TESTU(test) char* test_ ## test(cmdline_options_t o, void *testdata)
 
 /* Dummy, so far... */
 #define BITCOINRPC_TESTU_INIT \
@@ -66,11 +66,11 @@ typedef struct cmdline_options cmdline_options_t;
         return message; \
     } while (0)
 
-#define BITCOINRPC_RUN_TEST(test, options, data)  \
+#define BITCOINRPC_RUN_TEST(test, options, testdata)  \
   do \
     { \
       fprintf(stderr, ",\n{ \"test\": \"" # test "\", \"id\": %d, \"subtests\": [", tests_run++); \
-      char *message = test_ ## test(options, data); \
+      char *message = test_ ## test(options, testdata); \
       if (message) \
         { \
           fprintf(stderr, "], \"result\": false, \"error\": \"%s\"}", message); \
@@ -87,7 +87,7 @@ typedef struct cmdline_options cmdline_options_t;
   do \
     { \
       (void)o; \
-      (void)data; \
+      (void)testdata; \
       return val; \
     } while (0)
 
@@ -100,6 +100,7 @@ BITCOINRPC_TESTU(global);
 BITCOINRPC_TESTU(client);
 BITCOINRPC_TESTU(method);
 BITCOINRPC_TESTU(resp);
+BITCOINRPC_TESTU(call);
 
 
 #endif /* BITCOINRPC_TEST_H_fbc8b015_1d8d_4c5c_8ec1_b4ca0a8ce138 */
