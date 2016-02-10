@@ -50,6 +50,12 @@ bitcoinrpc_resp_set_json_(bitcoinrpc_resp_t *resp, json_t *json)
   if (NULL == resp || NULL == json)
     return BITCOINRPCE_BUG;
 
+  if (NULL == json)
+    {
+      resp->json = NULL;
+      return BITCOINRPCE_OK;
+    }
+
   resp->json = json_deep_copy(json);
   if (NULL == resp->json)
     return BITCOINRPCE_JSON;
@@ -122,6 +128,9 @@ json_t *
 bitcoinrpc_resp_get(bitcoinrpc_resp_t *resp)
 {
   if (NULL == resp)
+    return NULL;
+
+  if (NULL == resp->json)
     return NULL;
 
   return json_deep_copy(resp->json);
