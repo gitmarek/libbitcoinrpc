@@ -25,7 +25,6 @@
 #ifndef BITCOINRPC_H_51fe7847_aafe_4e78_9823_eff094a30775
 #define BITCOINRPC_H_51fe7847_aafe_4e78_9823_eff094a30775
 
-#include <stdlib.h>
 #include <jansson.h>
 
 
@@ -51,19 +50,16 @@
  */
 #define BITCOINRPC_URL_MAXLEN 143
 
-/* Maximal length of the name of a RPC method */
-#define BITCOINRPC_METHOD_STR_MAXLEN 65
-
 /* Maximal length of an error message */
 #define BITCOINRPC_ERRMSG_MAXLEN 1000
 
-/* satoshi typedef: one hundred millionth of a bitcoin */
-typedef unsigned long long int bitcoinrpc_satoshi_t;
-
-/* How many satoshi is in one bitcoin */
-#define BITCOINRPC_SATOSHI_BTC 1000000
-#define BITCOINRPC_DOUBLE_TO_SATOSHI(d) (bitcoinrpc_satoshi_t)d * BITCOINRPC_SATOSHI_BTC
-#define BITCOINRPC_SATOSHI_TO_DOUBLE(n) (double)n / BITCOINRPC_SATOSHI_BTC
+// /* satoshi typedef: one hundred millionth of a bitcoin */
+// typedef unsigned long long int bitcoinrpc_satoshi_t;
+//
+// /* How many satoshi is in one bitcoin */
+// #define BITCOINRPC_SATOSHI_BTC 1000000
+// #define BITCOINRPC_DOUBLE_TO_SATOSHI(d) (bitcoinrpc_satoshi_t)d * BITCOINRPC_SATOSHI_BTC
+// #define BITCOINRPC_SATOSHI_TO_DOUBLE(n) (double)n / BITCOINRPC_SATOSHI_BTC
 
 /* Error codes */
 typedef enum {
