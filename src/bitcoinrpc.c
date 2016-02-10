@@ -22,7 +22,6 @@
    WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-#include <stdio.h>
 #include <string.h>
 
 #include <curl/curl.h>
@@ -31,8 +30,8 @@
 
 #include "bitcoinrpc.h"
 #include "bitcoinrpc_cl.h"
-#include "bitcoinrpc_global.h"
 #include "bitcoinrpc_err.h"
+#include "bitcoinrpc_global.h"
 #include "bitcoinrpc_method.h"
 #include "bitcoinrpc_resp.h"
 
@@ -69,7 +68,7 @@ bitcoinrpc_call_write_callback_(char *ptr, size_t size, size_t nmemb, void *user
       curl_resp->e.code = BITCOINRPCE_ALLOC;
       snprintf(curl_resp->e.msg, BITCOINRPC_ERRMSG_MAXLEN,
                "cannot allocate more memory");
-      return n;
+      return 0;
     }
   /* concatenate old and new data */
   if (NULL != curl_resp->data)
@@ -120,11 +119,11 @@ bitcoinrpc_call(bitcoinrpc_cl_t * cl, bitcoinrpc_method_t * method,
   char errbuf[BITCOINRPC_ERRMSG_MAXLEN];
   char curl_errbuf[CURL_ERROR_SIZE];
 
-  /* make sure the error message will not be trash */
-  memset(e->msg, 0, 1);
-
   if (NULL == cl || NULL == method || NULL == resp)
     return BITCOINRPCE_ARG;
+
+  /* make sure the error message will not be trash */
+  *(e->msg) = '\0';
 
   j = json_object();
   if (NULL == j)
@@ -136,7 +135,6 @@ bitcoinrpc_call(bitcoinrpc_cl_t * cl, bitcoinrpc_method_t * method,
   data = json_dumps(j, JSON_COMPACT);
   if (NULL == data)
     bitcoinrpc_RETURN(e, BITCOINRPCE_JSON, "JSON error while writing POST data");
-  //fprintf (stderr, "%s\n", data);
 
   if (NULL == curl)
     bitcoinrpc_RETURN(e, BITCOINRPCE_BUG, "this should not happen; please report a bug");
@@ -177,9 +175,6 @@ bitcoinrpc_call(bitcoinrpc_cl_t * cl, bitcoinrpc_method_t * method,
     {
       bitcoinrpc_RETURN(e, BITCOINRPCE_CON, curl_resp.e.msg);
     }
-
-  // fprintf (stderr, "curl_resp.data =  %s\n", curl_resp.data);
-  // fprintf (stderr, "\nbytes written: %d\n", (int) curl_resp.data_len);
 
   /* parse read data into json */
   json_error_t jerr;
