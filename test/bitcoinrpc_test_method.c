@@ -44,27 +44,25 @@ BITCOINRPC_TESTU(method_init)
   BITCOINRPC_ASSERT(m != NULL,
                     "cannot initialise a new method");
   bitcoinrpc_method_free(m);
-  m = NULL;
 
   m = bitcoinrpc_method_init_params(BITCOINRPC_METHOD_HELP, NULL);
   BITCOINRPC_ASSERT(m != NULL,
                     "cannot initialise a new method with params: NULL");
   bitcoinrpc_method_free(m);
-  m = NULL;
 
   json_t *j = json_object();
   m = bitcoinrpc_method_init_params(BITCOINRPC_METHOD_HELP, j);
   BITCOINRPC_ASSERT(m != NULL,
                     "cannot initialise a new method with params: {}");
   bitcoinrpc_method_free(m);
-  m = NULL;
+  json_decref(j);
 
   char invalid[1000] = "THI:S IS IN,VALI}D JS{ON DAT\"A: @@@,,@@@,,,}{{,,,";
   j = (json_t*)invalid;
   m = bitcoinrpc_method_init_params(BITCOINRPC_METHOD_HELP, j);
   BITCOINRPC_ASSERT(m == NULL,
                     "bitcoinrpc_method_init_params does not check for invalid json as params");
-  m = NULL;
+  bitcoinrpc_method_free(m);
 
   BITCOINRPC_TESTU_RETURN(0);
 }
@@ -128,7 +126,8 @@ BITCOINRPC_TESTU(method_params)
 
 
   bitcoinrpc_method_free(m);
-  m = NULL;
+  json_decref(ja);
+  json_decref(jo);
 
   BITCOINRPC_TESTU_RETURN(0);
 }
@@ -158,8 +157,6 @@ BITCOINRPC_TESTU(method_set_nonstandard)
                     "a nonstandard method name has been set anyway");
 
   bitcoinrpc_method_free(m);
-  m = NULL;
-
 
 
   m = bitcoinrpc_method_init(BITCOINRPC_METHOD_NONSTANDARD);
