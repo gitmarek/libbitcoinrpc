@@ -51,7 +51,6 @@ bitcoinrpc_call_write_callback_(char *ptr, size_t size, size_t nmemb, void *user
   size_t n = size * nmemb;
   struct bitcoinrpc_call_curl_resp_ *curl_resp = (struct bitcoinrpc_call_curl_resp_*)userdata;
 
-  fprintf(stderr, "%s\n", ptr);
   if (!curl_resp->called_before)
     {
       /* initialise the data structure */

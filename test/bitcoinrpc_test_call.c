@@ -52,6 +52,7 @@ BITCOINRPC_TESTU(call_getconnectioncount)
                     "cannot initialise a new response");
 
   bitcoinrpc_call(cl, m, r, &e);
+
   BITCOINRPC_ASSERT(e.code == BITCOINRPCE_OK,
                     "cannot perform a call");
 
@@ -70,11 +71,92 @@ BITCOINRPC_TESTU(call_getconnectioncount)
 
   BITCOINRPC_ASSERT(json_is_integer(jval),
                     "getconnectioncount value is not an integer");
-  json_decref(jval);
+                    
   json_decref(j);
 
   bitcoinrpc_resp_free(r);
   bitcoinrpc_method_free(m);
+  BITCOINRPC_TESTU_RETURN(0);
+}
+
+
+BITCOINRPC_TESTU(call_getblock)
+{
+  BITCOINRPC_TESTU_INIT;
+  bitcoinrpc_cl_t *cl = (bitcoinrpc_cl_t*)testdata;
+  bitcoinrpc_method_t *m = NULL;
+  bitcoinrpc_method_t *m2 = NULL;
+  bitcoinrpc_resp_t *r = NULL;
+  bitcoinrpc_err_t e;
+  json_t *j = NULL;
+  json_t *j2 = NULL;
+  json_t *jval = NULL;
+  json_t *jval2 = NULL;
+  json_t *jparams = NULL;
+
+  m = bitcoinrpc_method_init(BITCOINRPC_METHOD_GETBESTBLOCKHASH);
+  BITCOINRPC_ASSERT(m != NULL,
+                    "cannot initialise a new method");
+
+  r = bitcoinrpc_resp_init();
+  BITCOINRPC_ASSERT(r != NULL,
+                    "cannot initialise a new response");
+
+  bitcoinrpc_call(cl, m, r, &e);
+  BITCOINRPC_ASSERT(e.code == BITCOINRPCE_OK,
+                    "cannot perform a call");
+
+  j = bitcoinrpc_resp_get(r);
+  BITCOINRPC_ASSERT(j != NULL,
+                    "cannot parse response from the server");
+
+  json_t *jerr = json_object_get(j, "error");
+  BITCOINRPC_ASSERT(json_equal(jerr, json_null()),
+                    "the server returned non zero error code");
+  json_decref(jerr);
+
+  jval = json_object_get(j, "result");
+  BITCOINRPC_ASSERT(jval != NULL,
+                    "the response has no key: \"result\"");
+
+  BITCOINRPC_ASSERT(json_is_string(jval),
+                    "getbestblockhash value is not a string");
+
+
+  jparams = json_array();
+  json_array_append(jparams, jval);
+  json_array_append_new(jparams, json_false());
+
+  m2 = bitcoinrpc_method_init_params(BITCOINRPC_METHOD_GETBLOCK, jparams);
+  BITCOINRPC_ASSERT(m2 != NULL,
+                    "cannot initialise a new method");
+
+  bitcoinrpc_call(cl, m2, r, &e);
+  BITCOINRPC_ASSERT(e.code == BITCOINRPCE_OK,
+                    "cannot perform a call: getbestblockhash");
+
+  j2 = bitcoinrpc_resp_get(r);
+  BITCOINRPC_ASSERT(j2 != NULL,
+                    "cannot parse response from the server: getblock");
+
+  jval2 = json_object_get(j2, "result");
+  BITCOINRPC_ASSERT(jval != NULL,
+                    "the response has no key: \"result\"");
+
+  BITCOINRPC_ASSERT(json_is_string(jval2),
+                    "getblock value is not a string");
+
+  //fprintf(stderr, "\n\n\n%s\n\n\n", json_string_value(jval2));
+
+  json_decref(j2);
+  json_decref(j);
+  json_decref(jparams);
+
+
+  bitcoinrpc_resp_free(r);
+  bitcoinrpc_method_free(m2);
+  bitcoinrpc_method_free(m);
+
   BITCOINRPC_TESTU_RETURN(0);
 }
 
@@ -93,7 +175,7 @@ BITCOINRPC_TESTU(call)
 
   /* Perform test with the same client */
   BITCOINRPC_RUN_TEST(call_getconnectioncount, o, cl);
-
+  BITCOINRPC_RUN_TEST(call_getblock, o, cl);
 
   bitcoinrpc_cl_free(cl);
   cl = NULL;
