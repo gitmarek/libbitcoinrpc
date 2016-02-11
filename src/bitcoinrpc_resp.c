@@ -50,6 +50,9 @@ bitcoinrpc_resp_set_json_(bitcoinrpc_resp_t *resp, json_t *json)
   if (NULL == resp)
     return BITCOINRPCE_BUG;
 
+  if (NULL != resp->json)
+    json_decref(resp->json);
+
   if (NULL == json)
     {
       resp->json = NULL;
@@ -113,7 +116,8 @@ bitcoinrpc_resp_free(bitcoinrpc_resp_t *resp)
   if (NULL == resp)
     return BITCOINRPCE_ARG;
 
-  json_decref(resp->json);
+  if (resp->json != NULL)
+    json_decref(resp->json);
   bitcoinrpc_global_freefunc(resp);
   resp = NULL;
 
