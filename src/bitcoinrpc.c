@@ -65,6 +65,8 @@ bitcoinrpc_call_write_callback_(char *ptr, size_t size, size_t nmemb, void *user
   data = bitcoinrpc_global_allocfunc(data_len);
   if (NULL == data)
     {
+      if (curl_resp->data != NULL)
+        bitcoinrpc_global_freefunc(curl_resp->data);
       curl_resp->e.code = BITCOINRPCE_ALLOC;
       snprintf(curl_resp->e.msg, BITCOINRPC_ERRMSG_MAXLEN,
                "cannot allocate more memory");
@@ -184,6 +186,7 @@ bitcoinrpc_call(bitcoinrpc_cl_t * cl, bitcoinrpc_method_t * method,
       bitcoinrpc_RETURN(e, BITCOINRPCE_JSON, "cannot parse data from server");
     }
   bitcoinrpc_resp_set_json_(resp, jtmp);
+  bitcoinrpc_global_freefunc(curl_resp.data);
   json_decref(jtmp);
 
   if (bitcoinrpc_resp_check(resp, method) != BITCOINRPCE_OK)
