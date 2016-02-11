@@ -86,7 +86,7 @@ $(SRCDIR)/%.o: $(SRCDIR)/%.c
 
 # --------- test -----------------
 BITCOINDATADIR := $(shell mktemp -d)
-BITCOINPARAMS   = -regtest -datadir=$(BITCOINDATADIR)
+BITCOINPARAMS   = -regtest -datadir=$(BITCOINDATADIR) -rpcpassword=test
 
 TESTSRCFILES = $(shell find $(TESTDIR) -maxdepth 1 -iname '*.c')
 TESTOBJFILES = $(shell echo $(TESTSRCFILES) | sed 's/\.c/\.o/g')
@@ -111,17 +111,22 @@ prep-test:
 	@echo "Prepare regtest blockchain"
 	@echo "datadir: $(BITCOINDATADIR)"
 	@mkdir -p $(BITCOINDATADIR)
-	echo 'rpcpassword=test' > $(BITCOINDATADIR)/bitcoin.conf
 	bitcoind -daemon $(BITCOINPARAMS)
 	@sleep 3s;
-	@echo "Generate 50 blocks"
-  # Wait for the server to start
-	while ! bitcoin-cli $(BITCOINPARAMS) generate 50 > /dev/null; do sleep 3s; done
+	@echo "Generate 200 blocks"
+	@while ! bitcoin-cli $(BITCOINPARAMS) generate 200 > /dev/null; do sleep 3s; done
+	@echo Make a large block of 100 txs:
+	@for i in `seq 1 100`; do \
+			bitcoin-cli $(BITCOINPARAMS) sendtoaddress `bitcoin-cli $(BITCOINPARAMS) getnewaddress` 0.01;  \
+	done
+	bitcoin-cli $(BITCOINPARAMS) generate 1
+
 
 .PHONY: preform-test
 perform-test:
 	@echo "Start $(TESTNAME)"
 	$(TESTDIR)/$(TESTNAME) --rpc-password=test --rpc-port=18332
+
 
 .PHONY: clean-test
 clean-test:
@@ -131,6 +136,7 @@ clean-test:
 	@ #cat $(BITCOINDATADIR)/regtest/debug.log
 	@echo "Remove datadir"
 	rm -rf $(BITCOINDATADIR)
+
 
 .PHONY: test
 test: all build-test prep-test perform-test clean-test
