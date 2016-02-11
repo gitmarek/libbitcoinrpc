@@ -196,16 +196,16 @@ library's internal garbage at the end of the program.
   **bitcoinrpc_global_set_allocfunc** `( void* (* const f) (size_t size) )`
 
   Set a memory allocating function for the library routines
-  (the default is just standard malloc). <br>
-  *Return*: `BITCOINRPCE_OK`.
+  (the default is just standard malloc). If `f == NULL` he function does nothing.<br>
+  *Return*: `BITCOINRPCE_OK` or `BITCOINRPCE_ARG`, if `f == NULL`.
 
 
 * `BITCOINRPCEcode`
   **bitcoinrpc_global_set_freefunc** `( void (* const f) (void *ptr) )`
 
   Set a memory freeing function for the library routines
-  (the default is just standard free). <br>
-  *Return*: `BITCOINRPCE_OK`.
+  (the default is just standard free). If `f == NULL` he function does nothing.<br>
+  *Return*: `BITCOINRPCE_OK` or `BITCOINRPCE_ARG`, if `f == NULL`.
 
 
 ### bitcoinrpc_cl

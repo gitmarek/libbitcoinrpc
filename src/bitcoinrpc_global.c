@@ -58,7 +58,11 @@ bitcoinrpc_global_init(void)
     return BITCOINRPCE_ALLOC;
 
   if (curl_global_init(CURL_GLOBAL_ALL) != CURLE_OK)
-    return BITCOINRPCE_CURLE;
+    {
+      bitcoinrpc_global_freefunc_default_(bitcoinrpc_global_data_);
+      return BITCOINRPCE_CURLE;
+    }
+
 
   return BITCOINRPCE_OK;
 }
@@ -72,8 +76,11 @@ bitcoinrpc_global_cleanup(void)
      bitcoinrpc_global_allocfunc_default_(), so it has to be freed
      by the default as well.
    */
-  bitcoinrpc_global_freefunc_default_(bitcoinrpc_global_data_);
-  bitcoinrpc_global_data_ = NULL;
+  if (NULL != bitcoinrpc_global_data_)
+    {
+      bitcoinrpc_global_freefunc_default_(bitcoinrpc_global_data_);
+      bitcoinrpc_global_data_ = NULL;
+    }
   curl_global_cleanup();
 
   return BITCOINRPCE_OK;
@@ -95,7 +102,10 @@ bitcoinrpc_global_freefunc_default_(void *ptr)
 BITCOINRPCEcode
 bitcoinrpc_global_set_allocfunc(void * (*const f)(size_t size))
 {
+  if (NULL == f)
+    return BITCOINRPCE_ARG;
   bitcoinrpc_global_allocfunc = f;
+
   return BITCOINRPCE_OK;
 }
 
@@ -103,6 +113,9 @@ bitcoinrpc_global_set_allocfunc(void * (*const f)(size_t size))
 BITCOINRPCEcode
 bitcoinrpc_global_set_freefunc(void(*const f) (void *ptr))
 {
+  if (NULL == f)
+    return BITCOINRPCE_ARG;
   bitcoinrpc_global_freefunc = f;
+
   return BITCOINRPCE_OK;
 }
