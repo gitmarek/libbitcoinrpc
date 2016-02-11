@@ -71,6 +71,7 @@ BITCOINRPC_TESTU(call_getconnectioncount)
   BITCOINRPC_ASSERT(json_is_integer(jval),
                     "getconnectioncount value is not an integer");
   json_decref(jval);
+  json_decref(j);
 
   bitcoinrpc_resp_free(r);
   bitcoinrpc_method_free(m);
