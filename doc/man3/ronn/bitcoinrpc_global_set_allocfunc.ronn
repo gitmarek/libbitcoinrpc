@@ -13,7 +13,7 @@ Set a memory allocating function for the library routines
 (the default is just standard malloc).
 
 ### Return value:
-  `BITCOINRPCE_OK`.
+  `BITCOINRPCE_OK` or `BITCOINRPCE_ARG` if f == NULL.
 
 ## NOTES
 ## EXAMPLE

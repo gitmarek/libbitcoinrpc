@@ -1,10 +1,10 @@
-bitcoinrpc(3) -- C language interface to Bitcoin JSON-RPC API
+bitcoinrpc(3) -- C language library for Bitcoin JSON-RPC API
 =============================================================
 
 ## SYNOPSIS
 ## DESCRIPTION
 
-C language interface to JSON-RPC Bitcoin API.
+A C language library for JSON-RPC Bitcoin API.
 The library provides basic routines to send RPC queries to a listening Bitcoin
 node, fetch responses and analyse errors. Its main features include:
 
@@ -21,12 +21,11 @@ The following data structures are defined as typedefs:
   * `bircoinrpc_method_t`  -- a method to be sent
   * `bitcoinrpc_resp_t`    -- a JSON response from the server
   * `bitcoinrpc_err_t`     -- error handling
-  * `bitcoinrpc_satoshi_t` -- see: [SECURITY CONSIDERATIONS][]
 
-The is also enum type `BITCOINRPCEcode`(3) of error codes returned by most of
+The is also enum type `BITCOINRPCEcode` of error codes returned by most of
 the functions in the library.
 
-Also, the enum type `BITCOINRPC_METHOD`(3) contains symbols of Bitcoin RPC
+Also, the enum type `BITCOINRPC_METHOD` contains symbols of Bitcoin RPC
 method accepted by the server.  The naming convention is:
 `BITCOINRPC_METHOD_GETNEWADDRESS`, `BITCOINRPC_METHOD_SETTXFEE` etc.
 

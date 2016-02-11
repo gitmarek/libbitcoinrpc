@@ -27,6 +27,7 @@ main thread before any other call.
       bitcoinrpc_global_init();
 
       / * use the library */
+      
       bitcoinrpc_global_cleanup();
 
       return EXIT_SUCCESS;

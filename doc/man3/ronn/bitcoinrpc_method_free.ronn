@@ -9,7 +9,7 @@ bitcoinrpc_method_free(3) --  Destroy the method.
 
 ## DESCRIPTION
 
-Destroy the method and set the pointer `method` to NULL.
+Destroy the method and set the pointer: `method` to NULL.
 
 ### Return value:
   `BITCOINRPCE_OK`.
@@ -35,4 +35,3 @@ bitcoinrpc_method_init(3),
 bitcoinrpc_method_init_params(3),
 bitcoinrpc_method_set_params(3),
 bitcoinrpc_method_get_params(3)
-

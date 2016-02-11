@@ -13,7 +13,7 @@ Set a memory freeing function for the library routines.
 (the default is just standard free). <br>
 
 ### Return value:
-  `BITCOINRPCE_OK`.
+  `BITCOINRPCE_OK` or `BITCOINRPCE_ARG` if f == NULL.
 
 ## NOTES
 ## EXAMPLE
