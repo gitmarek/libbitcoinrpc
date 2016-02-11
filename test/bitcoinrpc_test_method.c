@@ -111,12 +111,13 @@ BITCOINRPC_TESTU(method_params)
                     "bitcoinrpc_method_get_params did not returned set parameters");
 
 
+  json_decref(jtmp);
+  jtmp = NULL;
 
   ecode = bitcoinrpc_method_set_params(m, ja);
   BITCOINRPC_ASSERT(ecode == BITCOINRPCE_OK,
                     "cannot set empty array as params");
 
-  jtmp = NULL;
   ecode = bitcoinrpc_method_get_params(m, &jtmp);
   BITCOINRPC_ASSERT(ecode == BITCOINRPCE_OK,
                     "cannot get params ([])");
@@ -128,6 +129,7 @@ BITCOINRPC_TESTU(method_params)
   bitcoinrpc_method_free(m);
   json_decref(ja);
   json_decref(jo);
+  json_decref(jtmp);
 
   BITCOINRPC_TESTU_RETURN(0);
 }
