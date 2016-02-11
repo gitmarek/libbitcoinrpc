@@ -47,7 +47,7 @@ struct bitcoinrpc_resp {
 BITCOINRPCEcode
 bitcoinrpc_resp_set_json_(bitcoinrpc_resp_t *resp, json_t *json)
 {
-  if (NULL == resp || NULL == json)
+  if (NULL == resp)
     return BITCOINRPCE_BUG;
 
   if (NULL == json)
