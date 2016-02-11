@@ -43,39 +43,32 @@ BITCOINRPC_TESTU(client_init)
   BITCOINRPC_ASSERT(cl != NULL,
                     "cannot initialise a new client");
   bitcoinrpc_cl_free(cl);
-  cl = NULL;
 
   cl = bitcoinrpc_cl_init_params(o.user, o.pass, o.addr, o.port);
   BITCOINRPC_ASSERT(cl != NULL,
                     "cannot initialise a new client");
   bitcoinrpc_cl_free(cl);
-  cl = NULL;
 
   /* Check if the function checks for wrong parameters */
   cl = bitcoinrpc_cl_init_params(o.user, o.pass, NULL, o.port);
   BITCOINRPC_ASSERT(cl == NULL,
                     "bitcoinrpc_cl_init_params does not check for NULLs in addr");
   bitcoinrpc_cl_free(cl);
-  cl = NULL;
 
   cl = bitcoinrpc_cl_init_params(o.user, NULL, o.addr, o.port);
   BITCOINRPC_ASSERT(cl == NULL,
                     "bitcoinrpc_cl_init_params does not check for NULLs in pass");
   bitcoinrpc_cl_free(cl);
-  cl = NULL;
 
   cl = bitcoinrpc_cl_init_params(NULL, o.pass, o.addr, o.port);
   BITCOINRPC_ASSERT(cl == NULL,
                     "bitcoinrpc_cl_init_params does not check for NULLs in user");
   bitcoinrpc_cl_free(cl);
-  cl = NULL;
 
   cl = bitcoinrpc_cl_init_params(o.user, o.pass, o.addr, 77777);
   BITCOINRPC_ASSERT(cl == NULL,
                     "bitcoinrpc_cl_init_params does not check for wrong port number");
   bitcoinrpc_cl_free(cl);
-  cl = NULL;
-
 
   BITCOINRPC_TESTU_RETURN(0);
 }

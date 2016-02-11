@@ -86,6 +86,9 @@ bitcoinrpc_cl_t*
 bitcoinrpc_cl_init_params(const char* user, const char* pass,
                           const char* addr, const unsigned int port)
 {
+  if (NULL == user || NULL == pass || NULL == addr || port <= 0 || port > 65535)
+    return NULL;
+
   bitcoinrpc_cl_t *cl = bitcoinrpc_global_allocfunc(sizeof *cl);
 
   if (NULL == cl)
@@ -105,33 +108,28 @@ bitcoinrpc_cl_init_params(const char* user, const char* pass,
   uuid_generate_random(cl->uuid);
   uuid_unparse_lower(cl->uuid, cl->uuid_str);
 
-  if (NULL == user)
-    return NULL;
   /* make room for terminating '\0' */
   strncpy(cl->user, user, BITCOINRPC_PARAM_MAXLEN - 1);
 
-  if (NULL == pass)
-    return NULL;
   strncpy(cl->pass, pass, BITCOINRPC_PARAM_MAXLEN - 1);
-
-  if (NULL == addr)
-    return NULL;
   strncpy(cl->addr, addr, BITCOINRPC_PARAM_MAXLEN - 1);
-
-  if (port <= 0 || port > 65535 )
-    return NULL;
-
   cl->port = port;
 
   bitcoinrpc_cl_update_url_(cl);
 
   cl->curl = curl_easy_init();
   if (NULL == cl->curl)
-    return NULL;
+    {
+      bitcoinrpc_global_freefunc(cl);
+      return NULL;
+    }
 
   cl->curl_headers = curl_slist_append(cl->curl_headers, "content-type: text/plain;");
   if (NULL == cl->curl_headers)
-    return NULL;
+    {
+      bitcoinrpc_global_freefunc(cl);
+      return NULL;
+    }
 
   curl_easy_setopt(cl->curl, CURLOPT_HTTPHEADER, cl->curl_headers);
 
