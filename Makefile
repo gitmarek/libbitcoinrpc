@@ -122,11 +122,11 @@ prep-test:
 perform-test:
 	@echo "Start $(TESTNAME)"
 	$(TESTDIR)/$(TESTNAME) --rpc-password=test --rpc-port=18332
-	@bitcoin-cli $(BITCOINPARAMS) stop 2> /dev/null || true # server is probably alredy stoped by test programm
-	sleep 5s;
 
 .PHONY: clean-test
 clean-test:
+	@bitcoin-cli $(BITCOINPARAMS) stop 2> /dev/null || true # server is probably alredy stoped by test programm
+	sleep 5s;
 	@ #echo "Bitcoin Core logs:"
 	@ #cat $(BITCOINDATADIR)/regtest/debug.log
 	@echo "Remove datadir"
