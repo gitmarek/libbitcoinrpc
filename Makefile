@@ -117,7 +117,7 @@ prep-test:
 	@while ! bitcoin-cli $(BITCOINPARAMS) generate 200 > /dev/null; do sleep 3s; done
 	@echo Make a large block of 100 txs:
 	@for i in `seq 1 100`; do \
-			bitcoin-cli $(BITCOINPARAMS) sendtoaddress `bitcoin-cli $(BITCOINPARAMS) getnewaddress` 0.01;  \
+			bitcoin-cli $(BITCOINPARAMS) sendtoaddress `bitcoin-cli $(BITCOINPARAMS) getnewaddress` 0.01 > /dev/null; \
 	done
 	bitcoin-cli $(BITCOINPARAMS) generate 1
 
