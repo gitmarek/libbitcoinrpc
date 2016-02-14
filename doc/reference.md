@@ -67,14 +67,37 @@ see [tutorial](./tutorial.md) and [examples](./examples.md).
 
 ### Defined constants
 
-The following is the list of constants defined in `bitcoinrpc.h` header.
+The following is the list of preprocessor constants defined in
+the `bitcoinrpc.h` header.
 
 * `BITCOINRPC_LIBNAME` = "bitcoinrpc"
 
 
 * `BITCOINRPC_VERSION`
 
-  Version string: "MAJOR.MINOR.PATCH"
+  Version string: "BITCOINRPC_VERSION_MAJOR.BITCOINRPC_VERSION_MINOR.BITCOINRPC_VERSION_PATCH"
+  like: "0.1.0" or "2.31.11"
+
+
+* `BITCOINTPC_VERSION_MAJOR`
+* `BITCOINTPC_VERSION_MINOR`
+* `BITCOINTPC_VERSION_PATCH`
+
+  Integers specifying the major, minor version number and patch, respectively.
+
+
+* `BITCOINRPC_VERSION_HEX`
+
+    A 3-byte hexadecimal representation of the version, e.g. 0x000100
+    for version 0.1.0 and 0x010300 for version 1.3.
+    This is useful in numeric comparisons, e.g.:
+
+```
+
+    #if BITCOIN_VERSION_HEX >= 0x020100
+    /* Code specific to version 2.1 and above */
+    #endif
+```
 
 
 * `BITCOINRPC_USER_DEFAULT` = ""

@@ -30,7 +30,13 @@
 
 /* Name and version */
 #define BITCOINRPC_LIBNAME "bitcoinrpc"
+
 #define BITCOINRPC_VERSION "0.1.0"
+#define BITCOINTPC_VERSION_MAJOR 0
+#define BITCOINTPC_VERSION_MINOR 1
+#define BITCOINTPC_VERSION_PATCH 0
+#define BITCOINRPC_VERSION_HEX 0x000100
+
 
 /* Defalut parameters of a RPC client */
 #define BITCOINRPC_USER_DEFAULT ""
