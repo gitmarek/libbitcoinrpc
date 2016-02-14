@@ -17,6 +17,7 @@ the [tutorial](./tutorial.md) and [examples](./examples.md).  Besides, the
 following documents provide more information:
 
 * [Design](./design.md) -- Overview of the design behind the library.
+* [Development](./development.md) -- Coding conventions used for this library.
 * [Reference](./reference.md) -- Full ABI and API reference.
 
 Instructions how to build and install the library can be found in
