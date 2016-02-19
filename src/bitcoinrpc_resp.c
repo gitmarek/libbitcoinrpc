@@ -31,17 +31,6 @@
 #include "bitcoinrpc_resp.h"
 
 
-struct bitcoinrpc_resp {
-  uuid_t uuid;
-  json_t  *json;
-
-  /*
-     This is a legacy pointer. You can point to an auxilliary structure,
-     if you prefer not to touch this one (e.g. not to break ABI).
-   */
-  void* legacy_ptr_0a942f71_58af_4869_a9f8_4a7c48ddae9c;
-};
-
 
 /* Internal stuff */
 BITCOINRPCEcode

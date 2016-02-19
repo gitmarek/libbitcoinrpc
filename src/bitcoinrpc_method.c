@@ -157,23 +157,6 @@ bitcoinrpc_method_st_(const BITCOINRPC_METHOD m)
 }
 /* ------------------------------------------------------------------------- */
 
-struct bitcoinrpc_method {
-  BITCOINRPC_METHOD m;
-  char* mstr;
-
-  uuid_t uuid;
-  char uuid_str[37];      /* why 37? see: man 3 uuid_unparse */
-
-  json_t  *params_json;
-  json_t  *post_json;
-
-  /*
-     This is a legacy pointer. You can point to an auxilliary structure,
-     if you prefer not to touch this one (e.g. not to break ABI).
-   */
-  void *legacy_ptr_025ed4e5_7a59_4086_83b5_abc3a4767894;
-};
-
 
 /*
    Internal methods
