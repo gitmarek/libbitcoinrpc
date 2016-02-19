@@ -29,7 +29,21 @@
 #ifndef BITCOINRPC_RESP_H_fba55207_d817_4c13_b509_5ac187863cb9
 #define BITCOINRPC_RESP_H_fba55207_d817_4c13_b509_5ac187863cb9
 
+#include <uuid/uuid.h>
 #include "bitcoinrpc.h"
+
+
+struct bitcoinrpc_resp {
+  uuid_t uuid;
+  json_t  *json;
+
+  /*
+     This is a legacy pointer. You can point to an auxilliary structure,
+     if you prefer not to touch this one (e.g. not to break ABI).
+   */
+  void* legacy_ptr_0a942f71_58af_4869_a9f8_4a7c48ddae9c;
+};
+
 
 BITCOINRPCEcode
 bitcoinrpc_resp_set_json_(bitcoinrpc_resp_t *resp, json_t *json);

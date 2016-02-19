@@ -196,3 +196,122 @@ bitcoinrpc_call(bitcoinrpc_cl_t * cl, bitcoinrpc_method_t * method,
 
   bitcoinrpc_RETURN_OK;
 }
+
+
+
+BITCOINRPCEcode
+bitcoinrpc_calln(bitcoinrpc_cl_t *cl, size_t n, bitcoinrpc_method_t **methods,
+                 bitcoinrpc_resp_t **resps, bitcoinrpc_err_t *e)
+
+{
+  json_t *j = NULL;
+  json_t *jtmp = NULL;
+  char *data = NULL;
+  char url[BITCOINRPC_URL_MAXLEN];
+  char user[BITCOINRPC_PARAM_MAXLEN];
+  char pass[BITCOINRPC_PARAM_MAXLEN];
+  char credentials[2 * BITCOINRPC_PARAM_MAXLEN + 1];
+  struct bitcoinrpc_call_curl_resp_ curl_resp;
+  BITCOINRPCEcode ecode;
+  CURL * const curl = bitcoinrpc_cl_get_curl_(cl);
+  CURLcode curl_err;
+  char errbuf[BITCOINRPC_ERRMSG_MAXLEN];
+  char curl_errbuf[CURL_ERROR_SIZE];
+
+  if (NULL == cl || NULL == methods || NULL == resps)
+    return BITCOINRPCE_ARG;
+
+  /* make sure the error message will not be trash */
+  *(e->msg) = '\0';
+
+  j = json_array();
+  if (NULL == j)
+    bitcoinrpc_RETURN(e, BITCOINRPCE_JSON, "JSON error while creating a new json_array");
+
+  for (size_t i = 0; i < n; i++)
+    {
+      jtmp = json_object();
+      if (NULL == jtmp)
+        bitcoinrpc_RETURN(e, BITCOINRPCE_JSON, "JSON error while creating a new json_object");
+
+      json_object_set_new(jtmp, "jsonrpc", json_string("2.0"));
+      json_object_update(jtmp, bitcoinrpc_method_get_postjson_(methods[i]));
+      json_array_append_new(j, jtmp);
+    }
+
+  data = json_dumps(j, JSON_COMPACT);
+  if (NULL == data)
+    bitcoinrpc_RETURN(e, BITCOINRPCE_JSON, "JSON error while writing POST data");
+  if (NULL == curl)
+    bitcoinrpc_RETURN(e, BITCOINRPCE_BUG, "this should not happen; please report a bug");
+
+  curl_easy_setopt(curl, CURLOPT_POSTFIELDSIZE, (long)strlen(data));
+  curl_easy_setopt(curl, CURLOPT_POSTFIELDS, data);
+  curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, bitcoinrpc_call_write_callback_);
+  curl_resp.called_before = 0;
+  curl_easy_setopt(curl, CURLOPT_WRITEDATA, &curl_resp);
+
+  ecode = bitcoinrpc_cl_get_url(cl, url);
+
+  if (ecode != BITCOINRPCE_OK)
+    bitcoinrpc_RETURN(e, BITCOINRPCE_BUG, "url malformed; please report a bug");
+  curl_easy_setopt(curl, CURLOPT_URL, url);
+
+  bitcoinrpc_cl_get_user(cl, user);
+  bitcoinrpc_cl_get_pass(cl, pass);
+  snprintf(credentials, 2 * BITCOINRPC_PARAM_MAXLEN + 1,
+           "%s:%s", user, pass);
+  curl_easy_setopt(curl, CURLOPT_USERPWD, credentials);
+
+  curl_easy_setopt(curl, CURLOPT_USE_SSL, CURLUSESSL_TRY);
+  curl_easy_setopt(curl, CURLOPT_ERRORBUFFER, curl_errbuf);
+  curl_err = curl_easy_perform(curl);
+
+  json_decref(j);     /* no longer needed */
+  free(data);
+
+  if (curl_err != CURLE_OK)
+    {
+      snprintf(errbuf, BITCOINRPC_ERRMSG_MAXLEN, "curl error: %s", curl_errbuf);
+      bitcoinrpc_RETURN(e, BITCOINRPCE_CURLE, errbuf);
+    }
+
+  /* Check if server returned valid json object */
+  if (curl_resp.e.code != BITCOINRPCE_OK)
+    {
+      bitcoinrpc_RETURN(e, BITCOINRPCE_CON, curl_resp.e.msg);
+    }
+
+  /* parse read data into json */
+  json_error_t jerr;
+  j = NULL;
+  j = json_loads(curl_resp.data, 0, &jerr);
+  if (NULL == j)
+    {
+      snprintf(errbuf, BITCOINRPC_ERRMSG_MAXLEN,
+               "cannot parse JSON data from the server: %s", curl_resp.data);
+      bitcoinrpc_RETURN(e, BITCOINRPCE_CURLE, errbuf);
+    }
+
+  for (size_t i = 0; i < n; i++)
+    {
+      jtmp = json_array_get(j, i);
+      if (NULL == jtmp)
+        {
+          bitcoinrpc_RETURN(e, BITCOINRPCE_JSON, "cannot parse data returned from the server");
+        }
+      bitcoinrpc_resp_set_json_(resps[i], jtmp);
+    }
+
+  bitcoinrpc_global_freefunc(curl_resp.data);
+  json_decref(j);
+
+  for (size_t i = 0; i < n; i++)
+    {
+      if (bitcoinrpc_resp_check(resps[i], methods[i])
+          != BITCOINRPCE_OK)
+        bitcoinrpc_RETURN(e, BITCOINRPCE_CHECK,
+                          "at least one response id does not match corresponding post id");
+    }
+  bitcoinrpc_RETURN_OK;
+}

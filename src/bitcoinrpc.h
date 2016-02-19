@@ -365,19 +365,20 @@ bitcoinrpc_resp_check(bitcoinrpc_resp_t *resp, bitcoinrpc_method_t *method);
    If e == NULL, it is ignored.
  */
 BITCOINRPCEcode
-bitcoinrpc_call(bitcoinrpc_cl_t * cl, bitcoinrpc_method_t * method,
+bitcoinrpc_call(bitcoinrpc_cl_t *cl, bitcoinrpc_method_t * method,
                 bitcoinrpc_resp_t *resp, bitcoinrpc_err_t *e);
 
 
 /*
-   Call the server with and array of methods (JSON_RPC method batching)
-   where n is the length of the array. Save response in the array resp
-   (also of the length n) error messages in e. If e == NULL, it is ignored.
-   If n == 1, it is the same as bitcoinrpc_call().
+   Call the server with a contingent array of pointers to methods
+   (JSON_RPC method batching) where n is the length of the array. Save the
+   response in the contingent array resps of pointers to response objects
+   (also of the length n). Save error messages in e. If e == NULL, it
+   is ignored. If n == 1, it is the same as bitcoinrpc_call().
  */
 BITCOINRPCEcode
-bitcoinrpc_calln(bitcoinrpc_cl_t * cl, size_t n, bitcoinrpc_method_t * method,
-                 bitcoinrpc_resp_t *resp, bitcoinrpc_err_t *e);
+bitcoinrpc_calln(bitcoinrpc_cl_t * cl, size_t n, bitcoinrpc_method_t **methods,
+                 bitcoinrpc_resp_t **resps, bitcoinrpc_err_t *e);
 
 
 #endif /* BITCOINRPC_H_51fe7847_aafe_4e78_9823_eff094a30775 */
