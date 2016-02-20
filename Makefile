@@ -85,8 +85,9 @@ $(SRCDIR)/%.o: $(SRCDIR)/%.c
 
 
 # --------- test -----------------
-BITCOINDATADIR := $(shell mktemp -d)
-BITCOINPARAMS   = -regtest -datadir=$(BITCOINDATADIR) -rpcpassword=test
+BITCOINDPASS = libbitcoinrpc-test
+BITCOINDATADIR := /tmp/libbitcoinrpc-test
+BITCOINPARAMS   = -regtest -datadir=$(BITCOINDATADIR) -rpcpassword=$(BITCOINDPASS)
 
 TESTSRCFILES = $(shell find $(TESTDIR) -maxdepth 1 -iname '*.c')
 TESTOBJFILES = $(shell echo $(TESTSRCFILES) | sed 's/\.c/\.o/g')
@@ -125,7 +126,7 @@ prep-test:
 .PHONY: preform-test
 perform-test:
 	@echo "Start $(TESTNAME)"
-	$(TESTDIR)/$(TESTNAME) --rpc-password=test --rpc-port=18332
+	$(DEBUGGER) $(TESTDIR)/$(TESTNAME) --rpc-password=$(BITCOINDPASS) --rpc-port=18332
 
 
 .PHONY: clean-test
