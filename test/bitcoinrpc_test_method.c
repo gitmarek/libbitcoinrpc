@@ -140,7 +140,6 @@ BITCOINRPC_TESTU(method_set_nonstandard)
 {
   BITCOINRPC_TESTU_INIT;
 
-  char* mstr = NULL;
   BITCOINRPCEcode ecode;
   bitcoinrpc_method_t *m = NULL;
 
@@ -153,9 +152,7 @@ BITCOINRPC_TESTU(method_set_nonstandard)
   BITCOINRPC_ASSERT(ecode != BITCOINRPCE_OK,
                     "a nonstandard method name set to method other than BITCOINRPC_METHOD_NONSTANDARD");
 
-  mstr = NULL;
-  mstr = bitcoinrpc_method_get_mstr_(m);
-  BITCOINRPC_ASSERT(strncmp(mstr, "settxfee", 8) == 0,
+  BITCOINRPC_ASSERT(strncmp(m->mstr, "settxfee", 8) == 0,
                     "a nonstandard method name has been set anyway");
 
   bitcoinrpc_method_free(m);
@@ -170,9 +167,7 @@ BITCOINRPC_TESTU(method_set_nonstandard)
   BITCOINRPC_ASSERT(ecode == BITCOINRPCE_OK,
                     "cannot set a nonstandard method name");
 
-  mstr = NULL;
-  mstr = bitcoinrpc_method_get_mstr_(m);
-  BITCOINRPC_ASSERT(strncmp(mstr, "oneandonly", 10) == 0,
+  BITCOINRPC_ASSERT(strncmp(m->mstr, "oneandonly", 10) == 0,
                     "a nonstandard method name wrongly set");
 
   bitcoinrpc_method_free(m);

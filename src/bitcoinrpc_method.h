@@ -54,7 +54,4 @@ struct bitcoinrpc_method {
 BITCOINRPCEcode
 bitcoinrpc_method_compare_uuid_(bitcoinrpc_method_t *method, uuid_t u);
 
-char *
-bitcoinrpc_method_get_mstr_(bitcoinrpc_method_t *method);
-
 #endif /* BITCOINRPC_METHOD_H_1d9cedfd_a1d6_4b80_9ad4_fcc4549abcad */

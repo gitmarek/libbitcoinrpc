@@ -355,13 +355,3 @@ bitcoinrpc_method_set_nonstandard(bitcoinrpc_method_t *method, char *name)
 
   return bitcoinrpc_method_update_uuid_(method);
 }
-
-
-char *
-bitcoinrpc_method_get_mstr_(bitcoinrpc_method_t *method)
-{
-  if (method == NULL)
-    return NULL;
-
-  return method->mstr;
-}
