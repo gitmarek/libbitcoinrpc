@@ -192,16 +192,6 @@ bitcoinrpc_method_make_postjson_(bitcoinrpc_method_t *method)
 }
 
 
-json_t *
-bitcoinrpc_method_get_postjson_(bitcoinrpc_method_t *method)
-{
-  if (NULL == method)
-    return NULL;
-
-  return method->post_json;
-}
-
-
 BITCOINRPCEcode
 bitcoinrpc_method_compare_uuid_(bitcoinrpc_method_t *method, uuid_t u)
 {

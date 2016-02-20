@@ -132,7 +132,7 @@ bitcoinrpc_call(bitcoinrpc_cl_t * cl, bitcoinrpc_method_t * method,
     bitcoinrpc_RETURN(e, BITCOINRPCE_JSON, "JSON error while creating a new json_object");
 
   json_object_set_new(j, "jsonrpc", json_string("1.0"));    /* 2.0 if you ever implement method batching */
-  json_object_update(j, bitcoinrpc_method_get_postjson_(method));
+  json_object_update(j, method->post_json);
 
   data = json_dumps(j, JSON_COMPACT);
   if (NULL == data)
