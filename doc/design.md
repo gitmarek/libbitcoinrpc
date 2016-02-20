@@ -73,8 +73,7 @@ thus saving time and memory. It is also possible to use the same method to
 call many servers, collecting responses either to separate structures or
 to the same `bitcoinrpc_resp` in sequence.
 
-The data structures are independent as they do not share memory and have
-only very limited read-only access to each other's internals.  That probably
+The data structures are independent as they do not share memory. That probably
 makes bitcoinrpc rather thread-safe, although it still waits for proper testing
 in this regard.
 
@@ -111,4 +110,4 @@ a successful RPC call should therefore look as follows:
 For more specific explanation of how to you the library, please refer to
 the [tutorial](./tutorial.md) and [examples](./examples.md).
 
-*last updated: 2016-02-08*
+*last updated: 2016-02-20*
