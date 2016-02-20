@@ -30,9 +30,29 @@
 #define BITCOINRPC_CL_H_6b1e267b_bbce_4a84_8a18_172da32608a5
 
 #include <curl/curl.h>
+#include <uuid/uuid.h>
 #include "bitcoinrpc.h"
 
-CURL*
-bitcoinrpc_cl_get_curl_(bitcoinrpc_cl_t *cl);
+struct bitcoinrpc_cl {
+  uuid_t uuid;
+  char uuid_str[37];  /* man 3 uuid_unparse */
+
+  char user[BITCOINRPC_PARAM_MAXLEN];
+  char pass[BITCOINRPC_PARAM_MAXLEN];
+  char addr[BITCOINRPC_PARAM_MAXLEN];
+  unsigned int port;
+
+  char url[BITCOINRPC_URL_MAXLEN];
+
+  CURL *curl;
+  struct curl_slist *curl_headers;
+
+  /*
+     This is a legacy pointer. You can point to an auxilliary structure,
+     if you prefer not to touch this one (e.g. not to break ABI).
+   */
+  void *legacy_ptr_4f1af859_c918_484a_b3f6_9fe51235a3a0;
+};
+
 
 #endif /* BITCOINRPC_CL_H_6b1e267b_bbce_4a84_8a18_172da32608a5 */

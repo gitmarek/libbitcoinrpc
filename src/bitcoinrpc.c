@@ -116,7 +116,6 @@ bitcoinrpc_call(bitcoinrpc_cl_t * cl, bitcoinrpc_method_t * method,
   char credentials[2 * BITCOINRPC_PARAM_MAXLEN + 1];
   struct bitcoinrpc_call_curl_resp_ curl_resp;
   BITCOINRPCEcode ecode;
-  CURL * const curl = bitcoinrpc_cl_get_curl_(cl);
   CURLcode curl_err;
   char errbuf[BITCOINRPC_ERRMSG_MAXLEN];
   char curl_errbuf[CURL_ERROR_SIZE];
@@ -138,30 +137,30 @@ bitcoinrpc_call(bitcoinrpc_cl_t * cl, bitcoinrpc_method_t * method,
   if (NULL == data)
     bitcoinrpc_RETURN(e, BITCOINRPCE_JSON, "JSON error while writing POST data");
 
-  if (NULL == curl)
+  if (NULL == cl->curl)
     bitcoinrpc_RETURN(e, BITCOINRPCE_BUG, "this should not happen; please report a bug");
 
-  curl_easy_setopt(curl, CURLOPT_POSTFIELDSIZE, (long)strlen(data));
-  curl_easy_setopt(curl, CURLOPT_POSTFIELDS, data);
-  curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, bitcoinrpc_call_write_callback_);
+  curl_easy_setopt(cl->curl, CURLOPT_POSTFIELDSIZE, (long)strlen(data));
+  curl_easy_setopt(cl->curl, CURLOPT_POSTFIELDS, data);
+  curl_easy_setopt(cl->curl, CURLOPT_WRITEFUNCTION, bitcoinrpc_call_write_callback_);
   curl_resp.called_before = 0;
-  curl_easy_setopt(curl, CURLOPT_WRITEDATA, &curl_resp);
+  curl_easy_setopt(cl->curl, CURLOPT_WRITEDATA, &curl_resp);
 
   ecode = bitcoinrpc_cl_get_url(cl, url);
 
   if (ecode != BITCOINRPCE_OK)
     bitcoinrpc_RETURN(e, BITCOINRPCE_BUG, "url malformed; please report a bug");
-  curl_easy_setopt(curl, CURLOPT_URL, url);
+  curl_easy_setopt(cl->curl, CURLOPT_URL, url);
 
   bitcoinrpc_cl_get_user(cl, user);
   bitcoinrpc_cl_get_pass(cl, pass);
   snprintf(credentials, 2 * BITCOINRPC_PARAM_MAXLEN + 1,
            "%s:%s", user, pass);
-  curl_easy_setopt(curl, CURLOPT_USERPWD, credentials);
+  curl_easy_setopt(cl->curl, CURLOPT_USERPWD, credentials);
 
-  curl_easy_setopt(curl, CURLOPT_USE_SSL, CURLUSESSL_TRY);
-  curl_easy_setopt(curl, CURLOPT_ERRORBUFFER, curl_errbuf);
-  curl_err = curl_easy_perform(curl);
+  curl_easy_setopt(cl->curl, CURLOPT_USE_SSL, CURLUSESSL_TRY);
+  curl_easy_setopt(cl->curl, CURLOPT_ERRORBUFFER, curl_errbuf);
+  curl_err = curl_easy_perform(cl->curl);
 
   json_decref(j); /* no longer needed */
   free(data);
