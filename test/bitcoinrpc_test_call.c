@@ -395,6 +395,54 @@ BITCOINRPC_TESTU(call_settxfee47)
 
 
 
+BITCOINRPC_TESTU(call_getbalance_noparams)
+{
+  BITCOINRPC_TESTU_INIT;
+  bitcoinrpc_cl_t *cl = (bitcoinrpc_cl_t*)testdata;
+  bitcoinrpc_method_t *m = NULL;
+  bitcoinrpc_resp_t *r = NULL;
+  bitcoinrpc_err_t e;
+  json_t *j = NULL;
+  json_t *jparams = NULL;
+
+  m = bitcoinrpc_method_init(BITCOINRPC_METHOD_GETBALANCE);
+  BITCOINRPC_ASSERT(m != NULL,
+                    "cannot initialise a new method");
+
+  r = bitcoinrpc_resp_init();
+  BITCOINRPC_ASSERT(r != NULL,
+                    "cannot initialise a new response");
+
+  bitcoinrpc_call(cl, m, r, &e);
+
+  BITCOINRPC_ASSERT(e.code == BITCOINRPCE_OK,
+                    "cannot perform a call");
+
+  j = bitcoinrpc_resp_get(r);
+  BITCOINRPC_ASSERT(j != NULL,
+                    "cannot parse response from the server");
+
+  json_t *jerr = json_object_get(j, "error");
+  BITCOINRPC_ASSERT(json_equal(jerr, json_null()),
+                    "the server returned non zero error code");
+  json_decref(jerr);
+
+  json_t *jresult = json_object_get(j, "result");
+  BITCOINRPC_ASSERT(jresult != NULL,
+                    "the response has no key: \"result\"");
+
+  BITCOINRPC_ASSERT(json_is_real(jresult),
+                    "getinfo value is not an real number");
+
+
+  json_decref(jparams);
+  json_decref(j);
+  bitcoinrpc_resp_free(r);
+  bitcoinrpc_method_free(m);
+  BITCOINRPC_TESTU_RETURN(0);
+}
+
+
 BITCOINRPC_TESTU(call)
 {
   BITCOINRPC_TESTU_INIT;
@@ -412,6 +460,7 @@ BITCOINRPC_TESTU(call)
   BITCOINRPC_RUN_TEST(call_getinfo, o, cl);
   BITCOINRPC_RUN_TEST(call_settxfee, o, cl);
   BITCOINRPC_RUN_TEST(call_settxfee47, o, cl);
+  BITCOINRPC_RUN_TEST(call_getbalance_noparams, o, cl);
 
   bitcoinrpc_cl_free(cl);
   cl = NULL;
