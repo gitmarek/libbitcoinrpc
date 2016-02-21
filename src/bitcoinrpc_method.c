@@ -158,6 +158,8 @@ bitcoinrpc_method_st_(const BITCOINRPC_METHOD m)
 /* ------------------------------------------------------------------------- */
 
 
+
+
 /*
    Internal methods
  */
@@ -189,6 +191,16 @@ bitcoinrpc_method_make_postjson_(bitcoinrpc_method_t *method)
     }
 
   return BITCOINRPCE_OK;
+}
+
+
+json_t *
+bitcoinrpc_method_get_postjson_(bitcoinrpc_method_t *method)
+{
+  if (NULL == method)
+    return NULL;
+
+  return method->post_json;
 }
 
 
@@ -354,4 +366,14 @@ bitcoinrpc_method_set_nonstandard(bitcoinrpc_method_t *method, char *name)
   method->mstr = name;
 
   return bitcoinrpc_method_update_uuid_(method);
+}
+
+
+char *
+bitcoinrpc_method_get_mstr_(bitcoinrpc_method_t *method)
+{
+  if (method == NULL)
+    return NULL;
+
+  return method->mstr;
 }

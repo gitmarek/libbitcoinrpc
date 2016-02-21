@@ -188,6 +188,7 @@ static char * all_tests(cmdline_options_t o)
   BITCOINRPC_RUN_TEST(method, o, NULL);
   BITCOINRPC_RUN_TEST(resp, o, NULL);
   BITCOINRPC_RUN_TEST(call, o, NULL);
+  BITCOINRPC_RUN_TEST(calln, o, NULL);
   return 0;
 }
 

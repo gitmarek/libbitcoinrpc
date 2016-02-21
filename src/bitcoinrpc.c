@@ -108,7 +108,21 @@ BITCOINRPCEcode
 bitcoinrpc_call(bitcoinrpc_cl_t * cl, bitcoinrpc_method_t * method,
                 bitcoinrpc_resp_t *resp, bitcoinrpc_err_t *e)
 {
+  if (NULL == cl || NULL == method || NULL == resp)
+    return BITCOINRPCE_ARG;
+
+  return bitcoinrpc_calln(cl, 1, &method, &resp, e);
+}
+
+
+
+BITCOINRPCEcode
+bitcoinrpc_calln(bitcoinrpc_cl_t *cl, size_t n, bitcoinrpc_method_t **methods,
+                 bitcoinrpc_resp_t **resps, bitcoinrpc_err_t *e)
+
+{
   json_t *j = NULL;
+  json_t *jtmp = NULL;
   char *data = NULL;
   char url[BITCOINRPC_URL_MAXLEN];
   char user[BITCOINRPC_PARAM_MAXLEN];
@@ -120,18 +134,26 @@ bitcoinrpc_call(bitcoinrpc_cl_t * cl, bitcoinrpc_method_t * method,
   char errbuf[BITCOINRPC_ERRMSG_MAXLEN];
   char curl_errbuf[CURL_ERROR_SIZE];
 
-  if (NULL == cl || NULL == method || NULL == resp)
+  if (NULL == cl || NULL == methods || NULL == resps)
     return BITCOINRPCE_ARG;
 
   /* make sure the error message will not be trash */
   *(e->msg) = '\0';
 
-  j = json_object();
+  j = json_array();
   if (NULL == j)
-    bitcoinrpc_RETURN(e, BITCOINRPCE_JSON, "JSON error while creating a new json_object");
+    bitcoinrpc_RETURN(e, BITCOINRPCE_JSON, "JSON error while creating a new json_array");
 
-  json_object_set_new(j, "jsonrpc", json_string("1.0"));    /* 2.0 if you ever implement method batching */
-  json_object_update(j, method->post_json);
+  for (size_t i = 0; i < n; i++)
+    {
+      jtmp = json_object();
+      if (NULL == jtmp)
+        bitcoinrpc_RETURN(e, BITCOINRPCE_JSON, "JSON error while creating a new json_object");
+
+      json_object_set_new(jtmp, "jsonrpc", json_string("2.0"));
+      json_object_update(jtmp, bitcoinrpc_method_get_postjson_(methods[i]));
+      json_array_append_new(j, jtmp);
+    }
 
   data = json_dumps(j, JSON_COMPACT);
   if (NULL == data)
@@ -179,19 +201,34 @@ bitcoinrpc_call(bitcoinrpc_cl_t * cl, bitcoinrpc_method_t * method,
 
   /* parse read data into json */
   json_error_t jerr;
-  json_t *jtmp = json_loads(curl_resp.data, 0, &jerr);
-  if (NULL == jtmp)
+  j = NULL;
+  j = json_loads(curl_resp.data, 0, &jerr);
+  if (NULL == j)
     {
       snprintf(errbuf, BITCOINRPC_ERRMSG_MAXLEN,
                "cannot parse JSON data from the server: %s", curl_resp.data);
       bitcoinrpc_RETURN(e, BITCOINRPCE_CURLE, errbuf);
     }
-  bitcoinrpc_resp_set_json_(resp, jtmp);
+
+  for (size_t i = 0; i < n; i++)
+    {
+      jtmp = json_array_get(j, i);
+      if (NULL == jtmp)
+        {
+          bitcoinrpc_RETURN(e, BITCOINRPCE_JSON, "cannot parse data returned from the server");
+        }
+      bitcoinrpc_resp_set_json_(resps[i], jtmp);
+    }
+
   bitcoinrpc_global_freefunc(curl_resp.data);
-  json_decref(jtmp);
+  json_decref(j);
 
-  if (bitcoinrpc_resp_check(resp, method) != BITCOINRPCE_OK)
-    bitcoinrpc_RETURN(e, BITCOINRPCE_CHECK, "response id does not match post id");
-
+  for (size_t i = 0; i < n; i++)
+    {
+      if (bitcoinrpc_resp_check(resps[i], methods[i])
+          != BITCOINRPCE_OK)
+        bitcoinrpc_RETURN(e, BITCOINRPCE_CHECK,
+                          "at least one response id does not match corresponding post id");
+    }
   bitcoinrpc_RETURN_OK;
 }
