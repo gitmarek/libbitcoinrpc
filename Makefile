@@ -32,7 +32,7 @@ TESTDIR  := test
 LIBDIR      := .lib
 BINDIR      := bin
 LDFLAGS     := -luuid -ljansson -lcurl
-TESTLDFLAGS := -ljansson
+TESTLDFLAGS := -ljansson -lm
 
 CFLAGS := -fPIC -O3 -g -Wall -Werror -Wextra -std=c99
 CC := gcc
