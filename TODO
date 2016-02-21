@@ -1,8 +1,7 @@
 TODO
 ====
 
-To be done before the next release (0.2.0):
+To be done before the next release (0.3.0):
 
 1. Never enough unit tests!
 2. Improve and expand documentation.
-3. Implement RPC method batching.
