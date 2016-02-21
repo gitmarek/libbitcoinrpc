@@ -320,7 +320,7 @@ the original pointer by decreasing its reference count:
 
     typedef enum {
 
-    BITCOINRPC_METHOD_NOTIMPLEMENTED,        /* reserved for possible */
+    BITCOINRPC_METHOD_NONSTANDARD,           /* reserved for possible */
                                              /* user extensions       */
 
     BITCOINRPC_METHOD_GETBESTBLOCKHASH,      /* getbestblockhash */
