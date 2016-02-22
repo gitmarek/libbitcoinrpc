@@ -175,6 +175,9 @@ install:
 .PHONY: uninstall
 uninstall:
 	@echo "Removing from $(INSTALL_LIBPATH)/"
-	@$(RM) $(INSTALL_LIBPATH)/lib$(NAME).so*
+	@$(RM) $(INSTALL_LIBPATH)/lib$(NAME).so
+	@$(RM) $(INSTALL_LIBPATH)/lib$(NAME).so.$(MAJOR)
+	@$(RM) $(INSTALL_LIBPATH)/lib$(NAME).so.$(MAJOR).$(MINOR)
+	ldconfig  -n $(INSTALL_LIBPATH)
 	@$(RM) $(INSTALL_HEADERPATH)/$(NAME).h
 	@$(RM) $(INSTALL_MANPATH)/man3/$(NAME)*.gz
