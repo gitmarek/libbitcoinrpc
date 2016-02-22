@@ -253,6 +253,67 @@ BITCOINRPC_TESTU(calln_getconnectioncount27_settxfee41)
 }
 
 
+BITCOINRPC_TESTU(calln_getbalance99_minconf)
+{
+  BITCOINRPC_TESTU_INIT;
+
+  const size_t n = 99;
+  bitcoinrpc_cl_t *cl = (bitcoinrpc_cl_t*)testdata;
+  bitcoinrpc_method_t *m[n];
+  bitcoinrpc_resp_t *r[n];
+  bitcoinrpc_err_t e;
+  json_t *j = NULL;
+  json_t *jparams = NULL;
+
+
+  for (size_t i = 0; i < n; i++)
+    {
+      jparams = json_array();
+      json_array_append_new(jparams, json_string(""));
+      json_array_append_new(jparams, json_integer(n - i - 1));
+
+      m[i] = bitcoinrpc_method_init_params(BITCOINRPC_METHOD_GETBALANCE, jparams);
+      BITCOINRPC_ASSERT(m[i] != NULL,
+                        "cannot initialise a new method");
+
+      r[i] = bitcoinrpc_resp_init();
+      BITCOINRPC_ASSERT(r[i] != NULL,
+                        "cannot initialise a new response");
+
+      json_decref(jparams);
+    }
+
+  bitcoinrpc_calln(cl, n, m, r, &e);
+
+  BITCOINRPC_ASSERT(e.code == BITCOINRPCE_OK,
+                    "cannot perform a call");
+
+  for (size_t i = 0; i < n; i++)
+    {
+      j = bitcoinrpc_resp_get(r[i]);
+      BITCOINRPC_ASSERT(j != NULL,
+                        "cannot parse response from the server");
+
+      json_t *jerr = json_object_get(j, "error");
+      BITCOINRPC_ASSERT(json_equal(jerr, json_null()),
+                        "the server returned non zero error code");
+      json_decref(jerr);
+
+      json_t *jresult = json_object_get(j, "result");
+      BITCOINRPC_ASSERT(jresult != NULL,
+                        "the response has no key: \"result\"");
+
+      BITCOINRPC_ASSERT(json_is_real(jresult),
+                        "getinfo value is not an real number");
+
+      json_decref(j);
+      bitcoinrpc_resp_free(r[i]);
+      bitcoinrpc_method_free(m[i]);
+    }
+
+  BITCOINRPC_TESTU_RETURN(0);
+}
+
 
 
 BITCOINRPC_TESTU(calln)
@@ -270,7 +331,7 @@ BITCOINRPC_TESTU(calln)
   BITCOINRPC_RUN_TEST(calln_getconnectioncount13, o, cl);
   BITCOINRPC_RUN_TEST(calln_settxfee703, o, cl);
   BITCOINRPC_RUN_TEST(calln_getconnectioncount27_settxfee41, o, cl);
-
+  BITCOINRPC_RUN_TEST(calln_getbalance99_minconf, o, cl);
 
   bitcoinrpc_cl_free(cl);
   cl = NULL;
