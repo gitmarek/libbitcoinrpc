@@ -1,6 +1,9 @@
 language: c
 compiler:
   - gcc
+branches:
+  except:
+    - /^.*doc-.*$/
 install:
   - sudo add-apt-repository -y ppa:bitcoin/bitcoin
   - sudo apt-get update -qq
