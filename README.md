@@ -60,11 +60,12 @@ as a privileged user  (on Debian-like systems: `sudo make install`).
 By default, it will install the library in `/usr/local/lib` and the header
 file in `/usr/local/include`.  It will also install documentation files in
 `/usr/share/doc/bitcoinrpc`, as well as man pages that all start with:
-'bitcoinrpc'.
+'bitcoinrpc'.  You can specify the variable `INSTALL_PREFIX` to install sources
+to some other destination (e.g. chrooted file system).
 
 On some systems, especially Ubuntu, the directory `/usr/local/lib` is not
 included by default to the `ldconfig` search path.  So either you change
-the `Makefile`'s `INSTALL_PREFIX` value from `/usr/local` to `/usr`
+the `Makefile`'s `INSTALL_LIBPATH` value from `/usr/local/lib` to `/usr/lib`
 (which may be not a very good idea, since most of the libraries installed by
 `apt-get` are there), or add the following line to your `/etc/ld.so.conf`:
 
@@ -108,4 +109,4 @@ The source code is released under the terms of the MIT license.  Please, see
 [LICENSE](./LICENSE) for more information.
 
 
-*last updated: 2016-02-08*
+*last updated: 2016-02-23*

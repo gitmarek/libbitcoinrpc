@@ -39,12 +39,12 @@ CC := gcc
 
 SHELL := /bin/sh
 
-INSTALL_PREFIX   := /usr/local
-INSTALL_DOCSPATH := /usr/share/doc
+INSTALL_PREFIX     ?= 		# leave empty for /
 
-INSTALL_LIBPATH    := $(INSTALL_PREFIX)/lib
-INSTALL_HEADERPATH := $(INSTALL_PREFIX)/include
-INSTALL_MANPATH    := $(shell manpath | cut -f 1 -d ":")
+INSTALL_DOCSPATH   := $(INSTALL_PREFIX)/usr/share/doc
+INSTALL_LIBPATH    := $(INSTALL_PREFIX)/usr/local/lib
+INSTALL_HEADERPATH := $(INSTALL_PREFIX)/usr/local/include
+INSTALL_MANPATH    := $(INSTALL_PREFIX)$(shell manpath | cut -f 1 -d ":")
 
 # Programs for installation
 INSTALL_PROGRAM = $(INSTALL)
@@ -52,6 +52,7 @@ INSTALL = install
 INSTALL_DATA = $(INSTALL) -m 644
 
 RM = rm -fv
+
 # -----------------------------------------------------------------------------
 CFLAGS += -D VERSION=\"$(VERSION)\"
 
@@ -85,13 +86,13 @@ $(SRCDIR)/%.o: $(SRCDIR)/%.c
 
 
 # --------- test -----------------
-BITCOINDPASS = libbitcoinrpc-test
-BITCOINDATADIR := /tmp/libbitcoinrpc-test
+BITCOINDPASS    := libbitcoinrpc-test
+BITCOINDATADIR  := /tmp/libbitcoinrpc-test
 
 BITCOINBINPATH  ?= /usr/local/bin
-BITCOIND  		  = $(BITCOINBINPATH)/bitcoind
-BITCOINCLI 		  = $(BITCOINBINPATH)/bitcoin-cli
-BITCOINPARAMS   = -regtest -datadir=$(BITCOINDATADIR) -rpcpassword=$(BITCOINDPASS)
+BITCOIND         = $(BITCOINBINPATH)/bitcoind
+BITCOINCLI       = $(BITCOINBINPATH)/bitcoin-cli
+BITCOINPARAMS    = -regtest -datadir=$(BITCOINDATADIR) -rpcpassword=$(BITCOINDPASS)
 
 TESTSRCFILES = $(shell find $(TESTDIR) -maxdepth 1 -iname '*.c')
 TESTOBJFILES = $(shell echo $(TESTSRCFILES) | sed 's/\.c/\.o/g')
@@ -161,7 +162,8 @@ clean:
 # ---------- install --------------
 .PHONY: install
 install:
-	@echo "Installing to $(INSTALL_PREFIX)/"
+	@echo "Installing to $(INSTALL_PREFIX)"
+	@mkdir -p $(INSTALL_PREFIX) $(INSTALL_LIBPATH) $(INSTALL_DOCSPATH) $(INSTALL_MANPATH) $(INSTALL_HEADERPATH)
 	$(INSTALL) $(LIBDIR)/lib$(NAME).so.$(VERSION) $(INSTALL_LIBPATH)
 	ldconfig  -n $(INSTALL_LIBPATH)
 	ln -fs lib$(NAME).so.$(MAJOR) $(INSTALL_LIBPATH)/lib$(NAME).so
