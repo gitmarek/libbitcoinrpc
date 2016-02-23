@@ -87,6 +87,10 @@ $(SRCDIR)/%.o: $(SRCDIR)/%.c
 # --------- test -----------------
 BITCOINDPASS = libbitcoinrpc-test
 BITCOINDATADIR := /tmp/libbitcoinrpc-test
+
+BITCOINBINPATH  ?= /usr/local/bin
+BITCOIND  		  = $(BITCOINBINPATH)/bitcoind
+BITCOINCLI 		  = $(BITCOINBINPATH)/bitcoin-cli
 BITCOINPARAMS   = -regtest -datadir=$(BITCOINDATADIR) -rpcpassword=$(BITCOINDPASS)
 
 TESTSRCFILES = $(shell find $(TESTDIR) -maxdepth 1 -iname '*.c')
@@ -107,21 +111,21 @@ $(TESTDIR)/%.o: $(TESTDIR)/%.c
 .PHONY: prep-test
 prep-test:
 	@echo "Testing library routines in regtest mode (bitcoind and bitcoin-cli needed!)"
-	@if ! which bitcoind ; then echo "Can't find bitcoind executable." ; exit 1; fi
-	@if ! which bitcoin-cli ; then echo "Can't find bitcoin-cli executable." ; exit 1; fi
+	@if ! which $(BITCOIND) ; then echo "Can't find bitcoind executable in $(BITCOINBINPATH). Try setting BITCOINBINPATH." ; exit 1; fi
+	@if ! which $(BITCOINCLI) ; then echo "Can't find bitcoin-cli executable $(BITCOINBINPATH). Try setting BITCOINBINPATH." ; exit 1; fi
 	@echo "Prepare regtest blockchain"
 	@echo "datadir: $(BITCOINDATADIR)"
 	@mkdir -p $(BITCOINDATADIR)
-	bitcoind -version || true
-	bitcoind -daemon $(BITCOINPARAMS)
+	$(BITCOIND) -version || true
+	$(BITCOIND) -daemon $(BITCOINPARAMS)
 	@sleep 3s;
 	@echo "Generate 200 blocks"
-	@while ! bitcoin-cli $(BITCOINPARAMS) generate 200 > /dev/null; do sleep 3s; done
+	@while ! $(BITCOINCLI) $(BITCOINPARAMS) generate 200 > /dev/null; do sleep 3s; done
 	@echo Make a large block of 100 txs:
 	@for i in `seq 1 100`; do \
-			bitcoin-cli $(BITCOINPARAMS) sendtoaddress `bitcoin-cli $(BITCOINPARAMS) getnewaddress` 0.01 > /dev/null; \
+			$(BITCOINCLI) $(BITCOINPARAMS) sendtoaddress `$(BITCOINCLI) $(BITCOINPARAMS) getnewaddress` 0.01 > /dev/null; \
 	done
-	bitcoin-cli $(BITCOINPARAMS) generate 1
+	$(BITCOINCLI) $(BITCOINPARAMS) generate 1
 
 
 .PHONY: preform-test
@@ -132,7 +136,7 @@ perform-test:
 
 .PHONY: clean-test
 clean-test:
-	@bitcoin-cli $(BITCOINPARAMS) stop 2> /dev/null || true # server is probably alredy stoped by test programm
+	@$(BITCOINCLI) $(BITCOINPARAMS) stop 2> /dev/null || true # server is probably alredy stoped by test programm
 	sleep 5s;
 	@ #echo "Bitcoin Core logs:"
 	@ #cat $(BITCOINDATADIR)/regtest/debug.log

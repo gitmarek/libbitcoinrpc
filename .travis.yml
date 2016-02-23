@@ -36,7 +36,7 @@ addons:
 before_install:
   - dpkg -s libcurl4-openssl-dev libjansson-dev uuid-dev
 before_script:
-  # Disable cache size limit
+  # Compile Bitcoin Core
   - ccache -F 0 && ccache -M 2G
   - ccache -s
   - git clone https://github.com/bitcoin/bitcoin.git
@@ -49,4 +49,4 @@ before_script:
   - cd ..
 script:
   - make
-  - make test
+  - make test BITCOINBINPATH=./bitcoin/src
