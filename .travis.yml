@@ -1,5 +1,8 @@
 language: c
-cache: ccache
+cache:
+  ccache: true
+  directories:
+    - $HOME/.ccache
 compiler:
   - gcc
 branches:
@@ -21,9 +24,7 @@ before_install:
   - dpkg -s libcurl4-openssl-dev libjansson-dev uuid-dev
 before_script:
   # Disable cache size limit
-  - ccache -F 0 && ccache -M 0
   - ccache -s
-  - echo "Compile bitcoind source"
   - git clone https://github.com/bitcoin/bitcoin.git
   - cd bitcoin
   - git checkout ${BITCOINVERSION}
@@ -34,7 +35,6 @@ before_script:
   - sudo make install
   - cd ..
 script:
-  - echo "Compile and test libbitcoinrpc library"
   - make
   - sudo make install
   - make test
