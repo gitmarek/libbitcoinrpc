@@ -112,6 +112,7 @@ prep-test:
 	@echo "Prepare regtest blockchain"
 	@echo "datadir: $(BITCOINDATADIR)"
 	@mkdir -p $(BITCOINDATADIR)
+	bitcoind -version || true
 	bitcoind -daemon $(BITCOINPARAMS)
 	@sleep 3s;
 	@echo "Generate 200 blocks"
