@@ -123,13 +123,13 @@ prep-test:
 	$(BITCOIND) -version || true
 	$(BITCOIND) -daemon $(BITCOINPARAMS)
 	@sleep 3s;
-	@echo "Generate 200 blocks"
-	@while ! $(BITCOINCLI) $(BITCOINPARAMS) generate 200 > /dev/null; do sleep 3s; done
-	@echo Make a large block of 100 txs:
-	@for i in `seq 1 100`; do \
-			$(BITCOINCLI) $(BITCOINPARAMS) sendtoaddress `$(BITCOINCLI) $(BITCOINPARAMS) getnewaddress` 0.01 > /dev/null; \
-	done
-	$(BITCOINCLI) $(BITCOINPARAMS) generate 1
+	#@echo "Generate 200 blocks"
+	#@while ! $(BITCOINCLI) $(BITCOINPARAMS) generate 200 > /dev/null; do sleep 3s; done
+	#@echo Make a large block of 100 txs:
+	#@for i in `seq 1 100`; do \
+	#		$(BITCOINCLI) $(BITCOINPARAMS) sendtoaddress `$(BITCOINCLI) $(BITCOINPARAMS) getnewaddress` 0.01 > /dev/null; \
+	#done
+	#$(BITCOINCLI) $(BITCOINPARAMS) generate 1
 
 
 .PHONY: preform-test
