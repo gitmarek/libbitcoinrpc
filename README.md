@@ -5,7 +5,12 @@
 A C library for JSON-RPC Bitcoin API.
 
 The library provides basic routines to send RPC queries to a listening
-Bitcoin node, fetch responses and analyse errors.
+Bitcoin node, fetch responses and analyse errors.  It features:
+
+* Simple API to access all remote procedure calls of Bitcoin Core >=0.11
+* JSON-RPC 2.0 method batching (see: [http://www.jsonrpc.org/specification#batch](http://www.jsonrpc.org/specification#batch))
+* Extensive testing (*in progress*)
+
 Currently, the code is tested against stable Bitcoin Core v0.11.2.0-g7e27892.
 
 
