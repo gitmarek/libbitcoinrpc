@@ -10,7 +10,7 @@ branches:
     - /^.*doc-.*$/
 env:
   matrix:
-    - BITCOINVERSION=v0.11.2
+    - BITCOIN_VERSION=v0.11.2  BITCOIN_VERSION_HEX=0x001102
 sudo: false
 addons:
   apt:
@@ -41,7 +41,7 @@ before_script:
   - ccache -s
   - git clone https://github.com/bitcoin/bitcoin.git
   - cd bitcoin
-  - git checkout ${BITCOINVERSION}
+  - git checkout ${BITCOIN_VERSION}
   - ./autogen.sh
   - ./configure --without-gui --with-incompatible-bdb
   - make
@@ -49,6 +49,6 @@ before_script:
   - cd ..
 script:
   - make
-  - make test BITCOINBINPATH=./bitcoin/src
+  - make test BITCOINBINPATH=./bitcoin/src BITCOIN_VERSION_HEX=${BITCOIN_VERSION_HEX}
   - make install INSTALL_PREFIX=./build
   - make uninstall INSTALL_PREFIX=./build
