@@ -38,7 +38,7 @@ before_install:
   - dpkg -s libcurl4-openssl-dev libjansson-dev uuid-dev
 before_script:
   # Compile Bitcoin Core
-  - ccache -F 0 && ccache -M 2G
+  - ccache -F 0 && ccache -M 0
   - ccache -s
   - git clone https://github.com/bitcoin/bitcoin.git
   - cd bitcoin
