@@ -11,31 +11,42 @@ branches:
 env:
   matrix:
     - BITCOINVERSION=v0.11.2
+sudo: false
+addons:
+  apt:
+    sources:
+    - boost-latest
+    packages:
+    # Bitcoin Core dependencies
+    - build-essential
+    - libtool
+    - autotools-dev
+    - automake
+    - pkg-config
+    - libssl-dev
+    - libevent-dev
+    - bsdmainutils
+    - libboost1.55-all-dev
+    - libdb-dev
+    - libdb++-dev
+    # libbitcoinrpc dependencies
+    - libcurl4-openssl-dev
+    - libjansson-dev
+    - uuid-dev
 before_install:
-  # For libdb4.8
-  - sudo add-apt-repository -y ppa:bitcoin/bitcoin
-  - sudo apt-get update -qq
-  # Install Bitcoin Core dependencies
-  - sudo apt-get install -y build-essential libtool autotools-dev automake pkg-config libssl-dev libevent-dev bsdmainutils
-  - sudo apt-get install -y libboost1.48-all-dev
-  - sudo apt-get install -y libdb4.8-dev libdb4.8++-dev
-  # Install libbitcoinrpc dependencies
-  - sudo apt-get install -qq libcurl4-openssl-dev libjansson-dev uuid-dev
   - dpkg -s libcurl4-openssl-dev libjansson-dev uuid-dev
 before_script:
   # Disable cache size limit
+  - ccache -F 0 && ccache -M 2G
   - ccache -s
   - git clone https://github.com/bitcoin/bitcoin.git
   - cd bitcoin
   - git checkout ${BITCOINVERSION}
   - ./autogen.sh
-  - ./configure --with-gui=no
+  - ./configure --without-gui --with-incompatible-bdb
   - make
   - ccache -s
-  - sudo make install
   - cd ..
 script:
   - make
-  - sudo make install
   - make test
-  - sudo make uninstall
