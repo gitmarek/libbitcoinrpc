@@ -50,3 +50,5 @@ before_script:
 script:
   - make
   - make test BITCOINBINPATH=./bitcoin/src
+  - make install INSTALL_PREFIX=./build
+  - make uninstall INSTALL_PREFIX=./build
