@@ -35,7 +35,7 @@ LDFLAGS     := -luuid -ljansson -lcurl
 TESTLDFLAGS := -ljansson -lm
 
 CFLAGS := -fPIC -O3 -g -Wall -Werror -Wextra -std=c99
-TESTCFLAGS = $(CFLAGS)
+TESTCFLAGS =
 
 CC := gcc
 
@@ -57,7 +57,6 @@ RM = rm -fv
 
 # -----------------------------------------------------------------------------
 CFLAGS += -D VERSION=\"$(VERSION)\"
-TESTCFLAGS += -D BITCOIN_VERSION_HEX=$(BITCOIN_VERSION_HEX)
 
 SRCFILES = $(shell find $(SRCDIR) -maxdepth 1 -iname '*.c')
 OBJFILES = $(shell echo $(SRCFILES) | sed 's/\.c/\.o/g')
@@ -97,6 +96,9 @@ BITCOIND         = $(BITCOINBINPATH)/bitcoind
 BITCOINCLI       = $(BITCOINBINPATH)/bitcoin-cli
 BITCOINPARAMS    = -regtest -datadir=$(BITCOINDATADIR) -rpcpassword=$(BITCOINDPASS)
 
+BITCOIN_VERSION_HEX ?= 0xffffff
+TESTCFLAGS += -D BITCOIN_VERSION_HEX=$(BITCOIN_VERSION_HEX)
+
 TESTSRCFILES = $(shell find $(TESTDIR) -maxdepth 1 -iname '*.c')
 TESTOBJFILES = $(shell echo $(TESTSRCFILES) | sed 's/\.c/\.o/g')
 
@@ -123,14 +125,7 @@ prep-test:
 	$(BITCOIND) -version || true
 	$(BITCOIND) -daemon $(BITCOINPARAMS)
 	@sleep 3s;
-	#@echo "Generate 200 blocks"
-	#@while ! $(BITCOINCLI) $(BITCOINPARAMS) generate 200 > /dev/null; do sleep 3s; done
-	#@echo Make a large block of 100 txs:
-	#@for i in `seq 1 100`; do \
-	#		$(BITCOINCLI) $(BITCOINPARAMS) sendtoaddress `$(BITCOINCLI) $(BITCOINPARAMS) getnewaddress` 0.01 > /dev/null; \
-	#done
-	#$(BITCOINCLI) $(BITCOINPARAMS) generate 1
-
+	
 
 .PHONY: preform-test
 perform-test:

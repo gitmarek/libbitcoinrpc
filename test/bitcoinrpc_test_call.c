@@ -626,8 +626,11 @@ BITCOINRPC_TESTU(call)
   BITCOINRPC_RUN_TEST(call_settxfee47, o, cl);
   BITCOINRPC_RUN_TEST(call_getbalance_noparams, o, cl);
   BITCOINRPC_RUN_TEST(call_getbalance_minconf10, o, cl);
+
+#if BITCOIN_VERSION_HEX >= 0x001100
   BITCOINRPC_RUN_TEST(call_generate0, o, cl);
   BITCOINRPC_RUN_TEST(call_generate99, o, cl);
+#endif /* BITCOIN_VERSION_HEX >= 0x001100 */
 
   bitcoinrpc_cl_free(cl);
   cl = NULL;

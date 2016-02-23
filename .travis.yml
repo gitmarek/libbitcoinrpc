@@ -10,6 +10,7 @@ branches:
     - /^.*doc-.*$/
 env:
   matrix:
+    - BITCOIN_VERSION=v0.10.4  BITCOIN_VERSION_HEX=0x001004
     - BITCOIN_VERSION=v0.11.2  BITCOIN_VERSION_HEX=0x001102
 sudo: false
 addons:
