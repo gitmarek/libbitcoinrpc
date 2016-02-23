@@ -83,5 +83,11 @@ make clean-test
 
 to clean everything.
 
+During the compilation of the test application, you can set `BITCOIN_VERSION_HEX`
+number to inform the program against which version of Bitcoin Core the code
+is going to be tested, thus allowing it to disable e.g. deprecated RPC calls.
+The definition of `BITCOIN_VERSION_HEX` is analogous as `BITCOINRPC_VERSION_HEX`;
+see [Reference](./reference.md).
+
 Refer to the project's [Makefile](../Makefile) for additional information
 on how the test is performed.

@@ -35,6 +35,8 @@ LDFLAGS     := -luuid -ljansson -lcurl
 TESTLDFLAGS := -ljansson -lm
 
 CFLAGS := -fPIC -O3 -g -Wall -Werror -Wextra -std=c99
+TESTCFLAGS = $(CFLAGS)
+
 CC := gcc
 
 SHELL := /bin/sh
@@ -55,6 +57,7 @@ RM = rm -fv
 
 # -----------------------------------------------------------------------------
 CFLAGS += -D VERSION=\"$(VERSION)\"
+TESTCFLAGS += -D BITCOIN_VERSION_HEX=$(BITCOIN_VERSION_HEX)
 
 SRCFILES = $(shell find $(SRCDIR) -maxdepth 1 -iname '*.c')
 OBJFILES = $(shell echo $(SRCFILES) | sed 's/\.c/\.o/g')
@@ -101,11 +104,11 @@ TESTOBJFILES = $(shell echo $(TESTSRCFILES) | sed 's/\.c/\.o/g')
 build-test: $(TESTDIR)/$(TESTNAME)
 
 $(TESTDIR)/$(TESTNAME): $(TESTOBJFILES)
-	$(CC) $(CFLAGS) $(TESTOBJFILES) -o $@ \
+	$(CC) $(CFLAGS) $(TESTCFLAGS) $(TESTOBJFILES) -o $@ \
 		-l$(NAME) $(TESTLDFLAGS) -L$(LIBDIR) -Wl,-rpath=$(LIBDIR)
 
 $(TESTDIR)/%.o: $(TESTDIR)/%.c
-	$(CC) $(CFLAGS) -c $< -o $@ \
+	$(CC) $(CFLAGS) $(TESTCFLAGS) -c $< -o $@ \
 		-l$(NAME) -L$(LIBDIR) -I $(SRCDIR) -Wl,-rpath=$(LIBDIR)
 
 
@@ -167,7 +170,6 @@ install:
 	$(INSTALL) $(LIBDIR)/lib$(NAME).so.$(VERSION) $(INSTALL_LIBPATH)
 	ldconfig  -n $(INSTALL_LIBPATH)
 	ln -fs lib$(NAME).so.$(MAJOR) $(INSTALL_LIBPATH)/lib$(NAME).so
-	ldconfig
 	$(INSTALL_DATA) $(SRCDIR)/$(NAME).h $(INSTALL_HEADERPATH)
 	@echo "Installing docs to $(INSTALL_DOCSPATH)/$(NAME)"
 	mkdir -p $(INSTALL_DOCSPATH)/$(NAME)
