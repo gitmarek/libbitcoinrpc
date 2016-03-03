@@ -229,10 +229,15 @@ BITCOINRPC_TESTU(call_settxfee)
   json_t *j = NULL;
   json_t *jerr = NULL;
   json_t *jparams = NULL;
-  const double fee = 0.02341223;
-
   jparams = json_array();
+
+#if BITCOIN_VERSION_HEX < 0x001200
+  const double fee = 0.02341223;
   json_array_append_new(jparams, json_real(fee));
+#else
+  const char* fee = "0.02341223";
+  json_array_append_new(jparams, json_string(fee));
+#endif
 
   m = bitcoinrpc_method_init_params(BITCOINRPC_METHOD_SETTXFEE, jparams);
   BITCOINRPC_ASSERT(m != NULL,
@@ -252,7 +257,6 @@ BITCOINRPC_TESTU(call_settxfee)
                     "cannot parse response from the server");
 
   jerr = json_object_get(j, "error");
-  fprintf(stderr, "%s\n", json_dumps(jerr, JSON_COMPACT));
   BITCOINRPC_ASSERT(json_equal(jerr, json_null()),
                     "the server returned non zero error code");
 
@@ -291,14 +295,17 @@ BITCOINRPC_TESTU(call_settxfee)
   BITCOINRPC_ASSERT(json_is_object(jresult),
                     "getinfo value is not an object");
 
+#if BITCOIN_VERSION_HEX < 0x001200
   BITCOINRPC_ASSERT(json_real_value(json_object_get(jresult, "paytxfee")) == fee,
                     "the tx fee wrongly set");
+#else
+  BITCOINRPC_ASSERT(json_real_value(json_object_get(jresult, "paytxfee")) == atof(fee),
+                    "the tx fee wrongly set");
+#endif
 
   json_decref(j);
   bitcoinrpc_resp_free(r);
   bitcoinrpc_method_free(m);
-
-
   BITCOINRPC_TESTU_RETURN(0);
 }
 
@@ -313,16 +320,19 @@ BITCOINRPC_TESTU(call_settxfee47)
   json_t *j = NULL;
   json_t *jerr = NULL;
   json_t *jparams = NULL;
-  double fee = 0.00001;
 
   const size_t n = 47;
 
   for (size_t i = 0; i < n; i++)
     {
-      fee = rint(fee * 1.0132112342 * 100000000) / 100000000;
-
       jparams = json_array();
+#if BITCOIN_VERSION_HEX < 0x001200
+      const double fee = 0.02300601;
       json_array_append_new(jparams, json_real(fee));
+#else
+      const char* fee = "0.02300601";
+      json_array_append_new(jparams, json_string(fee));
+#endif
 
       m = bitcoinrpc_method_init_params(BITCOINRPC_METHOD_SETTXFEE, jparams);
       BITCOINRPC_ASSERT(m != NULL,
@@ -380,8 +390,13 @@ BITCOINRPC_TESTU(call_settxfee47)
       BITCOINRPC_ASSERT(json_is_object(jresult),
                         "getinfo value is not an object");
 
+#if BITCOIN_VERSION_HEX < 0x001200
       BITCOINRPC_ASSERT(json_real_value(json_object_get(jresult, "paytxfee")) == fee,
                         "the tx fee wrongly set");
+#else
+      BITCOINRPC_ASSERT(json_real_value(json_object_get(jresult, "paytxfee")) == atof(fee),
+                        "the tx fee wrongly set");
+#endif
 
       json_decref(j);
       bitcoinrpc_resp_free(r);

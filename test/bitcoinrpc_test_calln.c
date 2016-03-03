@@ -97,7 +97,6 @@ BITCOINRPC_TESTU(calln_settxfee703)
   BITCOINRPC_TESTU_INIT;
 
   const size_t n = 703;
-  double fee = 0.001;
   bitcoinrpc_cl_t *cl = (bitcoinrpc_cl_t*)testdata;
 
   bitcoinrpc_method_t *m[n];
@@ -109,9 +108,14 @@ BITCOINRPC_TESTU(calln_settxfee703)
   for (size_t i = 0; i < n; i++)
     {
       json_t *jparams = json_array();
+#if BITCOIN_VERSION_HEX < 0x001200
+      const double fee = 0.00162377;
       json_array_append_new(jparams, json_real(fee));
+#else
+      const char* fee = "0.00162377";
+      json_array_append_new(jparams, json_string(fee));
+#endif
       m[i] = bitcoinrpc_method_init_params(BITCOINRPC_METHOD_SETTXFEE, jparams);
-      fee += fee / 100;
       json_decref(jparams);
 
       BITCOINRPC_ASSERT(m[i] != NULL,
@@ -163,7 +167,6 @@ BITCOINRPC_TESTU(calln_getconnectioncount27_settxfee41)
 
   const size_t n1 = 27;
   const size_t n2 = 41;
-  double fee = 0.001;
   bitcoinrpc_cl_t *cl = (bitcoinrpc_cl_t*)testdata;
 
   bitcoinrpc_method_t *m[n1 + n2];
@@ -186,9 +189,14 @@ BITCOINRPC_TESTU(calln_getconnectioncount27_settxfee41)
   for (size_t i = n1; i < n1 + n2; i++)
     {
       json_t *jparams = json_array();
+#if BITCOIN_VERSION_HEX < 0x001200
+      const double fee = 0.35462110;
       json_array_append_new(jparams, json_real(fee));
+#else
+      const char* fee = "0.35462110";
+      json_array_append_new(jparams, json_string(fee));
+#endif
       m[i] = bitcoinrpc_method_init_params(BITCOINRPC_METHOD_SETTXFEE, jparams);
-      fee += fee / 2;
       json_decref(jparams);
 
       BITCOINRPC_ASSERT(m[i] != NULL,
