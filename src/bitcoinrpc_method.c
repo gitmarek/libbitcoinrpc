@@ -93,7 +93,7 @@ const struct BITCOINRPC_METHOD_struct_
   { BITCOINRPC_METHOD_DECODESCRIPT, "decodescript" },
   { BITCOINRPC_METHOD_GETRAWTRANSACTION, "getrawtransaction" },
   { BITCOINRPC_METHOD_SENDRAWTRANSACTION, "sendrawtransaction" },
-  { BITCOINRPC_METHOD_SIGNRAWTRANSACTION, "signrawtransaction" },
+  { BITCOINRPC_METHOD_SIGNRAWTRANSACTION, "signrawtransactionwithwallet" },
 
   /* Utility RPCs */
   { BITCOINRPC_METHOD_CREATEMULTISIG, "createmultisig" },
