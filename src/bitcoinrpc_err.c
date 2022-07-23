@@ -36,7 +36,7 @@ bitcoinrpc_err_set_(bitcoinrpc_err_t *e, BITCOINRPCEcode code, char* msg)
     {
       e->code = code;
       if (msg != NULL && msg != NULL)
-        strncpy(e->msg, msg, BITCOINRPC_ERRMSG_MAXLEN);
+        strncpy(e->msg, msg, BITCOINRPC_ERRMSG_MAXLEN-1);
     }
   return code;
 }
